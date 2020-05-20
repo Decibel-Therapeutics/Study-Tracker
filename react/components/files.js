@@ -110,11 +110,11 @@ class Folder extends React.Component {
             />
             &nbsp;&nbsp;
             <FontAwesomeIcon icon={faFolder}/> {this.state.folder.name}
-            <div hidden={!this.state.isExpanded}>
-              <FolderContents folder={this.state.folder}
-                              depth={this.state.depth + 1}/>
-            </div>
           </a>
+          <div hidden={!this.state.isExpanded}>
+            <FolderContents folder={this.state.folder}
+                            depth={this.state.depth + 1}/>
+          </div>
         </li>
     )
   }
@@ -123,7 +123,7 @@ class Folder extends React.Component {
 const File = ({file}) => {
   return (
       <li>
-        <div className="ml-2">
+        <div className="ml-3">
           <a href={file.url} target="_blank">
             <FontAwesomeIcon icon={faFile}/>
             &nbsp;
@@ -169,7 +169,8 @@ const FolderContents = ({folder, depth}) => {
 
   return items.length
       ? (
-          <ul className="list-unstyled">
+          <ul className="list-unstyled"
+              style={{marginLeft: (depth - 1) + "em"}}>
             {items}
           </ul>
       ) : '';
