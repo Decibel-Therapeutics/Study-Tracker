@@ -170,7 +170,7 @@ const FolderContents = ({folder, depth}) => {
   return items.length
       ? (
           <ul className="list-unstyled"
-              style={{marginLeft: (depth - 1) + "em"}}>
+              style={{marginLeft: (depth > 0 ? 1 : 0) + "em"}}>
             {items}
           </ul>
       ) : '';
