@@ -132,6 +132,13 @@
       <groupId>org.springframework.security</groupId>
     </dependency>
 
+    <!-- Other -->
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+    </dependency>
+
     <!-- Testing -->
     <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
