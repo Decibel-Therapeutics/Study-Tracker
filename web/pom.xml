@@ -197,6 +197,14 @@
         <version>2.1.7.RELEASE</version>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.2.3</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
 
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
