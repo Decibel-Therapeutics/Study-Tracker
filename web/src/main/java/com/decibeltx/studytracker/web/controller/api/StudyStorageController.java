@@ -16,8 +16,8 @@
 
 package com.decibeltx.studytracker.web.controller.api;
 
-import com.decibeltx.studytracker.core.events.StudyEvent.Type;
 import com.decibeltx.studytracker.core.events.StudyEventPublisher;
+import com.decibeltx.studytracker.core.events.type.StudyEvent.Type;
 import com.decibeltx.studytracker.core.exception.FileStorageException;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.model.Study;
