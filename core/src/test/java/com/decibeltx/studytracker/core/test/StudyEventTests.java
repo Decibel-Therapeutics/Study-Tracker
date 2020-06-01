@@ -118,8 +118,8 @@ public class StudyEventTests {
     Activity activity = activityList.get(1);
     Assert.assertEquals(EventType.STUDY_STATUS_CHANGED, activity.getEventType());
     Assert.assertFalse(activity.getData().isEmpty());
-    Assert.assertTrue(activity.getData().containsKey("status"));
-    Assert.assertEquals(Status.COMPLETE.toString(), activity.getData().get("status"));
+    Assert.assertTrue(activity.getData().containsKey("newStatus"));
+    Assert.assertEquals(Status.COMPLETE.toString(), activity.getData().get("newStatus"));
   }
 
 }

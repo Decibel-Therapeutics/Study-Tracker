@@ -83,7 +83,6 @@ public class AssayServiceImpl implements AssayService {
     LOGGER.info("Updating assay record with code: " + updated.getCode());
     Assay assay = assayRepository.findById(updated.getId())
         .orElseThrow(RecordNotFoundException::new);
-    Study study = assay.getStudy();
     assayRepository.save(updated);
     eventPublisher.publishUpdatedAssayEvent(assay, assay.getLastModifiedBy());
   }
@@ -91,7 +90,6 @@ public class AssayServiceImpl implements AssayService {
   @Override
   public void delete(Assay assay) {
     assay.setActive(false);
-    Study study = assay.getStudy();
     assayRepository.save(assay);
     eventPublisher.publishDeletedAssayEvent(assay, assay.getLastModifiedBy());
   }

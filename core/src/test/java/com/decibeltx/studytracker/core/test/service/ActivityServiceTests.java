@@ -69,6 +69,8 @@ public class ActivityServiceTests {
     }
     Assert.assertEquals(ACTION_COUNT, activityList.size());
     Map<String, Object> data = new HashMap<>();
+    data.put("code", study.getCode());
+    data.put("name", study.getName());
     data.put("oldStatus", Status.IN_PLANNING);
     data.put("newStatus", Status.COMPLETE);
     StudyEvent event = new StudyEvent(this, study, study.getLastModifiedBy(),
@@ -84,8 +86,8 @@ public class ActivityServiceTests {
     activity = activityList.get(ACTION_COUNT);
     Assert.assertEquals(study.getCode(), activity.getData().get("code"));
     Assert.assertEquals(study.getCreatedBy().getAccountName(), activity.getUser().getAccountName());
-    Assert.assertEquals(EventType.STUDY_STATUS_CHANGED.toString(), activity.getEventType());
-    Assert.assertEquals(Status.COMPLETE.toString(), activity.getData());
+    Assert.assertEquals(EventType.STUDY_STATUS_CHANGED, activity.getEventType());
+    Assert.assertEquals(Status.COMPLETE.toString(), activity.getData().get("newStatus"));
 
   }
 
