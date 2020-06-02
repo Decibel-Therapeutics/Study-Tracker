@@ -17,7 +17,6 @@
 package com.decibeltx.studytracker.web.controller.api;
 
 import com.decibeltx.studytracker.core.events.StudyEventPublisher;
-import com.decibeltx.studytracker.core.events.type.StudyEvent.Type;
 import com.decibeltx.studytracker.core.exception.FileStorageException;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.model.Study;
@@ -84,7 +83,7 @@ public class StudyStorageController extends StudyController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     StorageFile storageFile = studyStorageService.saveStudyFile(path.toFile(), study);
-    studyEventPublisher.publishStudyEvent(study, user, Type.FILE_UPLOADED, storageFile);
+    studyEventPublisher.publishFileUploadEvent(study, user, storageFile);
     return new ResponseEntity<>(storageFile, HttpStatus.CREATED);
   }
 
