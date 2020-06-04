@@ -57,6 +57,7 @@ public class StudyEventPublisher {
     data.put("description", study.getDescription());
     data.put("name", study.getName());
     data.put("status", study.getStatus());
+    data.put("keywords", study.getKeywords());
     StudyEvent event = new StudyEvent(this, study, triggeredBy, EventType.NEW_STUDY, data);
     publisher.publishEvent(event);
   }
@@ -73,6 +74,7 @@ public class StudyEventPublisher {
     data.put("description", study.getDescription());
     data.put("name", study.getName());
     data.put("status", study.getStatus());
+    data.put("keywords", study.getKeywords());
     StudyEvent event = new StudyEvent(this, study, triggeredBy, EventType.UPDATED_STUDY, data);
     publisher.publishEvent(event);
   }

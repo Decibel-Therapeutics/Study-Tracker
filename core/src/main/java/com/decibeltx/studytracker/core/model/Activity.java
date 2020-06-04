@@ -20,7 +20,6 @@ import com.decibeltx.studytracker.core.events.type.AssayEvent;
 import com.decibeltx.studytracker.core.events.type.EventType;
 import com.decibeltx.studytracker.core.events.type.ProgramEvent;
 import com.decibeltx.studytracker.core.events.type.StudyEvent;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import java.util.Map;
@@ -46,7 +45,6 @@ public class Activity {
   @Linked(model = User.class)
   @NotNull
   @DBRef
-  @JsonIgnore
   private User user;
 
   public static Activity from(StudyEvent event) {
