@@ -22,7 +22,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class DefaultController {
 
-  @GetMapping({"/", "/study/**", "/studies/**", "/assay/**", "/assays/**"})
+  @GetMapping({"/", "/study/**", "/studies/**", "/assay/**", "/assays/**", "/programs/**",
+      "/program/**"})
   public String index() {
     return "index";
   }

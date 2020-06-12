@@ -18,11 +18,11 @@ import React from 'react';
 import MainPageWrapper from "../structure/MainPageWrapper";
 import LoadingMessage from "../structure/LoadingMessage";
 import ErrorMessage from "../structure/ErrorMessage";
-import StudyList from "../components/study/StudyList";
 import {connect} from 'react-redux';
 import {compose} from 'redux';
 import crossfilter from "crossfilter2";
 import {withRouter} from 'react-router-dom';
+import ProgramList from "../components/program/ProgramList";
 
 const qs = require('qs');
 
@@ -92,22 +92,22 @@ class ProgramListView extends React.Component {
         console.log("Filters: ");
         console.log(this.props.filters);
 
-        for (let key of Object.keys(this.state.data.dimensions)) {
-          this.state.data.dimensions[key].filterAll();
-          if (this.props.filters.hasOwnProperty(key) && this.props.filters[key]
-              != null) {
-            if (Array.isArray(this.props.filters[key])) {
-              this.state.data.dimensions[key].filter(
-                  d => this.props.filters[key].indexOf(d) > -1);
-            } else {
-              this.state.data.dimensions[key].filter(this.props.filters[key]);
-            }
-          }
-        }
+        // for (let key of Object.keys(this.state.data.dimensions)) {
+        //   this.state.data.dimensions[key].filterAll();
+        //   if (this.props.filters.hasOwnProperty(key) && this.props.filters[key]
+        //       != null) {
+        //     if (Array.isArray(this.props.filters[key])) {
+        //       this.state.data.dimensions[key].filter(
+        //           d => this.props.filters[key].indexOf(d) > -1);
+        //     } else {
+        //       this.state.data.dimensions[key].filter(this.props.filters[key]);
+        //     }
+        //   }
+        // }
 
         content =
-            <StudyList
-                studies={this.state.data.dimensions.allData.top(Infinity)}
+            <ProgramList
+                programs={this.state.data.dimensions.allData.top(Infinity)}
                 title={this.state.title}
                 filters={this.props.filters}
                 user={this.props.user}
@@ -138,4 +138,4 @@ export default compose(
           user: store.user
         })
     )
-)(StudyListView);
+)(ProgramListView);

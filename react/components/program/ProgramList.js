@@ -15,193 +15,64 @@
  */
 
 import React from "react";
-import {StatusBadge} from "../status";
-import {Button, Card, CardBody, Col, Container, Media, Row} from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  FormGroup,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+  UncontrolledAlert
+} from "reactstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit';
 import paginationFactory from "react-bootstrap-table2-paginator";
-import {Activity, Clipboard, File, Star, ThumbsUp, Users} from "react-feather";
-import {Timeline} from "../activity";
-import {studyActions} from "../../config/activityConstants";
-import {statuses} from "../../config/statusConstants";
+import {File} from "react-feather";
+import Select from "react-select";
 
 const columns = [
-  {
-    dataField: "code",
-    text: "Code",
-    sort: true,
-    headerStyle: {width: '10%'},
-    formatter: (cell, d, index, x) => {
-      return (
-          <a href={"/study/" + d.code}>
-            {d.code}
-          </a>
-      )
-    },
-    sortFunc: (a, b, order, dataField, rowA, rowB) => {
-      if (rowA.code > rowB.code) {
-        return order === "desc" ? -1 : 1;
-      }
-      if (rowB.code > rowA.code) {
-        return order === "desc" ? 1 : -1;
-      }
-      return 0;
-    },
-  },
-  {
-    dataField: "status",
-    text: "Status",
-    sort: true,
-    headerStyle: {width: '10%'},
-    sortFunc: (a, b, order, dataField, rowA, rowB) => {
-      if (rowA.status.label > rowB.status.label) {
-        return order === "desc" ? -1 : 1;
-      }
-      if (rowB.status.label > rowA.status.label) {
-        return order === "desc" ? 1 : -1;
-      }
-      return 0;
-    },
-    formatter: (c, d, i, x) => <StatusBadge status={d.status}/>
-  },
-  {
-    dataField: "updatedAt",
-    text: "Last Updated",
-    sort: true,
-    searchable: false,
-    headerStyle: {width: '10%'},
-    formatter: (c, d, i, x) => new Date(d.updatedAt).toLocaleDateString()
-  },
-  {
-    dataField: "program",
-    text: "Program",
-    sort: true,
-    headerStyle: {width: '10%'},
-    sortFunc: (a, b, order, dataField, rowA, rowB) => {
-      if (rowA.program.name > rowB.program.name) {
-        return order === "desc" ? -1 : 1;
-      }
-      if (rowB.program.name > rowA.program.name) {
-        return order === "desc" ? 1 : -1;
-      }
-      return 0;
-    },
-    formatter: (cell, d, i, x) => d.program.name
-  },
   {
     dataField: "name",
     text: "Name",
     sort: true,
-    headerStyle: {width: '25%'},
+    headerStyle: {width: '50%%'},
     formatter: (c, d, i, x) => d.name
   },
   {
-    dataField: "owner",
-    text: "Owner",
+    dataField: "code",
+    text: "Code",
     sort: true,
-    headerStyle: {width: '10%'},
-    formatter: (c, d, i, x) => d.owner.displayName
+    headerStyle: {width: '25%'},
+    formatter: (cell, d, index, x) => d.code
   },
   {
-    dataField: "cro",
-    text: "CRO / Collaborator",
+    dataField: "active",
+    text: "Active",
     sort: true,
-    headerStyle: {width: '15%'},
-    sortFunc: (a, b, order, dataField, rowA, rowB) => {
-      const da = !!rowA.collaborator ? rowA.collaborator.organizationName
-          : '';
-      const db = !!rowB.collaborator ? rowB.collaborator.organizationName
-          : '';
-      if (da > db) {
-        return order === "desc" ? -1 : 1;
-      }
-      if (db > da) {
-        return order === "desc" ? 1 : -1;
-      }
-      return 0;
-    },
-    formatter: (c, d, i, x) => !!d.collaborator
-        ? (
-            <div>
-              <p style={{fontWeight: 'bold', marginBottom: '0.2rem'}}>
-                {d.collaborator.organizationName}
-              </p>
-              <p>
-                {d.externalCode}
-              </p>
-            </div>
-
-        ) : ''
-  },
-  {
-    dataField: "links",
-    text: "Links",
-    sort: false,
-    searchable: false,
-    headerStyle: {width: '10%'},
+    headerStyle: {width: '25%'},
     formatter: (c, d, i, x) => {
-      let links = [];
-      if (!!d.storageFolder) {
-        links.push(
-            <a key={'files-links-' + d.id} target="_blank"
-               href={d.storageFolder.url}>Files</a>
+      if (d.active) {
+        return (
+            <div className="badge badge-success">
+              Active
+            </div>
+        )
+      } else {
+        return (
+            <div className="badge badge-warning">
+              Inactive
+            </div>
         )
       }
-      if (!!d.notebookEntries && d.notebookEntries.length > 0) {
-        const e = d.notebookEntries[0];
-        if (links.length > 0) {
-          links.push(" | ");
-        }
-        links.push(
-            <a key={'eln-links-' + d.id} target="_blank" href={e.url}>ELN</a>
-        )
-      }
-      return (
-          <div>
-            {links}
-          </div>
-      )
-    }
-  },
-  {
-    dataField: 'search',
-    text: 'Search',
-    sort: false,
-    isDummyField: true,
-    hidden: true,
-    formatter: (c, d, i, x) => '',
-    filterValue: (c, d, i, x) => {
-      const CRO = !!d.collaborator
-          ? d.collaborator.organizationName +
-          ' ' +
-          d.collaborator.contactName
-          : '';
-      let text =
-          d.name +
-          ' ' +
-          d.status +
-          ' ' +
-          d.description +
-          ' ' +
-          d.program.name +
-          ' ' +
-          d.code +
-          ' ' +
-          CRO +
-          ' ' +
-          d.createdBy.displayName +
-          ' ' +
-          d.owner.displayName +
-          ' ' +
-          (d.externalCode || '');
-      if (d.keywords != null) {
-        d.keywords.forEach(keyword => {
-          text = text + ' ' + keyword.keyword;
-        });
-      }
-      return text;
     }
   }
 ];
@@ -215,239 +86,277 @@ const ExportToCsv = (props) => {
         <Button color={'primary'} onClick={handleClick}>
           Export to CSV
           &nbsp;
-          {/*<FontAwesomeIcon icon={faFile} />*/}
           <File className="feather align-middle ml-2 mb-1"/>
         </Button>
       </span>
   );
 };
 
-const StudyList = ({studies, title, filters, user}) => {
+class ProgramList extends React.Component {
 
-  // Get study activity
-  let activities = [];
-  studies.forEach(s => {
-    activities = [...activities, ...s.activity]
-  });
-  activities.sort((a, b) => {
-    if (a.date > b.date) {
-      return -1;
-    } else if (a.date < b.date) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
+  constructor(props) {
+    super(props);
+    this.state = {
+      programs: props.programs,
+      modalIsOpen: false,
+      modalError: null,
+      newProgram: {
+        name: '',
+        code: '',
+        active: true
+      }
+    };
+    this.toggleModal = this.toggleModal.bind(this);
+    this.handleNewProgramChange = this.handleNewProgramChange.bind(this);
+    this.handleNewProgramSubmit = this.handleNewProgramSubmit.bind(this);
+  }
 
-  // Get count of recent activity
-  let activityCount = 0;
-  let completed = 0;
-  let newStudies = 0;
-  let activeUsers = [];
-  const day = 24 * 60 * 60 * 60;
-  const week = day * 7;
-  const month = day * 30;
-  activities.forEach(a => {
-    if (a.date >= day) {
-      activityCount = activityCount + 1;
-    }
-    if (a.action === studyActions.NEW_STUDY && a.date
-        >= week) {
-      newStudies = newStudies + 1;
-    }
-    if (a.action === studyActions.STUDY_STATUS_CHANGED
-        && a.data === statuses.COMPLETE.value && a.date
-        >= month) {
-      completed = completed + 1;
-    }
-    if (a.date >= month && activeUsers.indexOf(a.userAccountName)
-        === -1) {
-      activeUsers.push(a.userAccountName);
-    }
-  });
+  toggleModal() {
+    this.setState({
+      modalIsOpen: !this.state.modalIsOpen
+    })
+  }
 
-  return (
-      <Container fluid className="animated fadeIn">
+  handleNewProgramChange(props) {
+    this.setState({
+      newProgram: {
+        ...this.state.newProgram,
+        ...props
+      }
+    })
+  }
 
-        <Row className="justify-content-between align-items-center">
-          <Col xs="8">
-            <h1>{title}</h1>
-          </Col>
-          <Col className="col-auto">
-            {
-              !!user
-                  ? (
-                      <a href="/studies/new">
-                        <Button color="primary" className="mr-1 mb-1">
-                          <FontAwesomeIcon icon={faPlusCircle}/> New Study
-                        </Button>
-                      </a>
-                  ) : ''
-            }
-          </Col>
-        </Row>
+  handleNewProgramSubmit() {
+    console.log(this.state.newProgram);
+    let p = this.state.newProgram;
+    if (!p.name || !p.code) {
+      this.setState({
+        modalError: "One or more required fields are missing. Please check your inputs and then try again."
+      });
+      return;
+    }
+    let duplicate = false;
+    for (let program of this.state.programs) {
+      if (p.name === program.name) {
+        duplicate = true;
+      }
+    }
+    if (duplicate) {
+      this.setState({
+        modalError: "A program with this name already exists. Please provide a unique name and try again."
+      });
+      return;
+    }
+    return fetch("/api/program", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(p)
+    })
+    .then(response => response.json())
+    .then(program => {
+      this.setState({
+        programs: [...this.state.programs, program],
+        newProgram: {
+          name: '',
+          code: '',
+          active: true
+        },
+        modalError: null
+      });
+      this.toggleModal();
+    })
+    .catch(e => {
+      console.error(e);
+      this.setState({
+        modalError: e.message
+      });
+    })
+  }
 
-        <Row>
-          <Col lg="12">
-            <Card>
-              <CardBody>
-                <ToolkitProvider
-                    keyField="id"
-                    data={studies}
-                    columns={columns}
-                    search
-                    exportCSV
-                >
-                  {props => (
-                      <div>
-                        <div className="float-right">
-                          <ExportToCsv{...props.csvProps} />
-                          &nbsp;&nbsp;
-                          <Search.SearchBar
-                              {...props.searchProps}
-                          />
+  render() {
+
+    let {title, filters, user} = this.props;
+
+    return (
+        <Container fluid className="animated fadeIn">
+
+          <Row className="justify-content-between align-items-center">
+            <Col xs="8">
+              <h1>{title}</h1>
+            </Col>
+            <Col className="col-auto">
+              {
+                !!user
+                    ? (
+                        <a onClick={() => this.toggleModal()}>
+                          <Button color="primary" className="mr-1 mb-1">
+                            <FontAwesomeIcon icon={faPlusCircle}/> New Program
+                          </Button>
+                        </a>
+                    ) : ''
+              }
+            </Col>
+          </Row>
+
+          <Row>
+            <Col lg="12">
+              <Card>
+                <CardBody>
+                  <ToolkitProvider
+                      keyField="id"
+                      data={this.state.programs}
+                      columns={columns}
+                      search
+                      exportCSV
+                  >
+                    {props => (
+                        <div>
+                          <div className="float-right">
+                            <ExportToCsv{...props.csvProps} />
+                            &nbsp;&nbsp;
+                            <Search.SearchBar
+                                {...props.searchProps}
+                            />
+                          </div>
+                          <BootstrapTable
+                              bootstrap4
+                              keyField="id"
+                              // data={studies}
+                              // columns={columns}
+                              bordered={false}
+                              pagination={paginationFactory({
+                                sizePerPage: 10,
+                                sizePerPageList: [10, 20, 40, 80]
+                              })}
+                              defaultSorted={[{
+                                dataField: "updatedAt",
+                                order: "desc"
+                              }]}
+                              {...props.baseProps}
+                          >
+                          </BootstrapTable>
                         </div>
-                        <BootstrapTable
-                            bootstrap4
-                            keyField="id"
-                            // data={studies}
-                            // columns={columns}
-                            bordered={false}
-                            pagination={paginationFactory({
-                              sizePerPage: 10,
-                              sizePerPageList: [10, 20, 40, 80]
-                            })}
-                            defaultSorted={[{
-                              dataField: "updatedAt",
-                              order: "desc"
-                            }]}
-                            {...props.baseProps}
-                        >
-                        </BootstrapTable>
-                      </div>
-                  )}
-                </ToolkitProvider>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
+                    )}
+                  </ToolkitProvider>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
 
-        <Row>
+          <Modal
+              isOpen={this.state.modalIsOpen}
+              toggle={() => this.toggleModal()}
+              size={"md"}
+          >
 
-          <Col lg={3}>
+            <ModalHeader toggle={() => this.toggleModal()}>
+              Add New Program
+            </ModalHeader>
 
-            <Row className="study-statistics">
+            <ModalBody className="m-3">
 
-              <Col xs={6} md={4} lg={12}>
-                <Card className="flex-fill">
-                  <CardBody className="py-4">
-                    <Media>
-                      <div className="d-inline-block mt-2 mr-3">
-                        <Activity className="feather-lg text-warning"/>
-                      </div>
-                      <Media body>
-                        <h3 className="mb-2">{activityCount}</h3>
-                        <div className="mb-0">Study Updates Today</div>
-                      </Media>
-                    </Media>
-                  </CardBody>
-                </Card>
-              </Col>
+              <Row form>
 
-              <Col xs={6} sm={4} md={3} lg={12}>
-                <Card className="flex-fill">
-                  <CardBody className="py-4">
-                    <Media>
-                      <div className="d-inline-block mt-2 mr-3">
-                        <Users className="feather-lg text-primary"/>
-                      </div>
-                      <Media body>
-                        <h3 className="mb-2">{activeUsers.length}</h3>
-                        <div className="mb-0">Active Users</div>
-                      </Media>
-                    </Media>
-                  </CardBody>
-                </Card>
-              </Col>
+                <Col sm={12}>
+                  <p>
+                    Please provide a unique name to identify the program, and an
+                    alphanumeric code that will be used as a prefix for all new
+                    study codes. The program code does not need to be unique.
+                    All fields are required.
+                  </p>
+                </Col>
 
-              <Col xs={6} sm={4} md={3} lg={12}>
-                <Card className="flex-fill">
-                  <CardBody className="py-4">
-                    <Media>
-                      <div className="d-inline-block mt-2 mr-3">
-                        <Star className="feather-lg text-warning"/>
-                      </div>
-                      <Media body>
-                        <h3 className="mb-2">{newStudies}</h3>
-                        <div className="mb-0">New Studies This Week</div>
-                      </Media>
-                    </Media>
-                  </CardBody>
-                </Card>
-              </Col>
+                <Col sm="12">
+                  <FormGroup>
+                    <Label>Name *</Label>
+                    <Input
+                        type="text"
+                        defaultValue={this.state.newProgram.name}
+                        onChange={(e) => this.handleNewProgramChange({
+                          name: e.target.value
+                        })}
+                    />
+                  </FormGroup>
+                </Col>
 
-              <Col xs={6} sm={4} md={3} lg={12}>
-                <Card className="flex-fill">
-                  <CardBody className="py-4">
-                    <Media>
-                      <div className="d-inline-block mt-2 mr-3">
-                        <ThumbsUp className="feather-lg text-success"/>
-                      </div>
-                      <Media body>
-                        <h3 className="mb-2">{completed}</h3>
-                        <div className="mb-0">Studies Completed This Month</div>
-                      </Media>
-                    </Media>
-                  </CardBody>
-                </Card>
-              </Col>
+                <Col sm="12">
+                  <FormGroup>
+                    <Label>Program Code *</Label>
+                    <Input
+                        type="text"
+                        value={this.state.newProgram.code}
+                        onChange={(e) => this.handleNewProgramChange({
+                          code: e.target.value.toUpperCase().replace(
+                              /[^A-Z0-9]/g, "")
+                        })}
+                    />
+                  </FormGroup>
+                </Col>
 
-              <Col xs={6} sm={4} md={3} lg={12}>
-                <Card className="flex-fill">
-                  <CardBody className="py-4">
-                    <Media>
-                      <div className="d-inline-block mt-2 mr-3">
-                        <Clipboard className="feather-lg text-primary"/>
-                      </div>
-                      <Media body>
-                        <h3 className="mb-2">{studies.length}</h3>
-                        <div className="mb-0">Total Studies</div>
-                      </Media>
-                    </Media>
-                  </CardBody>
-                </Card>
-              </Col>
+                <Col sm="12">
+                  <FormGroup>
+                    <Label>Is this program active?</Label>
+                    <Select
+                        className="react-select-container"
+                        classNamePrefix="react-select"
+                        options={[
+                          {
+                            value: true,
+                            label: "Active"
+                          },
+                          {
+                            value: false,
+                            label: "Inactive"
+                          }
+                        ]}
+                        defaultValue={{
+                          value: true,
+                          label: "Active"
+                        }}
+                        onChange={(selected) => this.handleNewProgramChange({
+                          active: selected.value
+                        })}
+                    />
+                  </FormGroup>
+                </Col>
 
-            </Row>
+              </Row>
+              {
+                !!this.state.modalError
+                    ? (
+                        <Row>
+                          <Col sm={12}>
+                            <UncontrolledAlert color={"warning"}>
+                              <div className="alert-message mr-4">
+                                {this.state.modalError}
+                              </div>
+                            </UncontrolledAlert>
+                          </Col>
+                        </Row>
+                    ) : ''
+              }
 
-          </Col>
+            </ModalBody>
 
-          <Col lg={9}>
-            <Card>
-              <CardBody>
-                <Row>
+            <ModalFooter>
+              <Button color={"secondary"} onClick={() => this.toggleModal()}>
+                Cancel
+              </Button>
+              <Button color={"primary"}
+                      onClick={this.handleNewProgramSubmit}>
+                Save
+              </Button>
+            </ModalFooter>
 
-                  <Col xs={12}>
-                    <h3>Latest Activity</h3>
-                  </Col>
+          </Modal>
 
-                  <Col xs={12}>
-                    <hr/>
-                  </Col>
+        </Container>
+    );
+  }
 
-                  <Col xs={12}>
-                    <Timeline activities={activities}/>
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
-          </Col>
+}
 
-        </Row>
-
-      </Container>
-  );
-
-};
-
-export default StudyList;
+export default ProgramList;

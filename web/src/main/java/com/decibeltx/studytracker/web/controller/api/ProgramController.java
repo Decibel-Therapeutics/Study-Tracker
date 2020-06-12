@@ -18,12 +18,25 @@ package com.decibeltx.studytracker.web.controller.api;
 
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.model.Program;
+import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.service.ProgramService;
+import com.decibeltx.studytracker.core.service.UserService;
+import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,8 +45,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/program")
 public class ProgramController {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProgramController.class);
+
   @Autowired
   private ProgramService programService;
+
+  @Autowired
+  private UserService userService;
 
   @GetMapping("")
   public List<Program> getAllPrograms() throws Exception {
@@ -48,6 +66,61 @@ public class ProgramController {
     } else {
       throw new RecordNotFoundException();
     }
+  }
+
+  @PostMapping("")
+  public HttpEntity<Program> createProgram(@RequestBody Program program) {
+
+    LOGGER.info("Creating new program: " + program.toString());
+
+    // Get authenticated user
+    String username = UserAuthenticationUtils
+        .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
+    User user = userService.findByAccountName(username)
+        .orElseThrow(RecordNotFoundException::new);
+    program.setCreatedBy(user);
+
+    programService.create(program);
+    return new ResponseEntity<>(program, HttpStatus.CREATED);
+
+  }
+
+  @PutMapping("/{id}")
+  public HttpEntity<Program> updateProgram(@PathVariable("id") String programId,
+      @RequestBody Program program) {
+
+    Optional<Program> optional = programService.findById(programId);
+    if (!optional.isPresent()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    // Get authenticated user
+    String username = UserAuthenticationUtils
+        .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
+    User user = userService.findByAccountName(username)
+        .orElseThrow(RecordNotFoundException::new);
+    program.setLastModifiedBy(user);
+    programService.update(program);
+    return new ResponseEntity<>(program, HttpStatus.CREATED);
+
+  }
+
+  @DeleteMapping("/{id}")
+  public HttpEntity<?> deleteProgram(@PathVariable("id") String programId) {
+    Optional<Program> optional = programService.findById(programId);
+    if (!optional.isPresent()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    Program program = optional.get();
+
+    // Get authenticated user
+    String username = UserAuthenticationUtils
+        .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
+    User user = userService.findByAccountName(username)
+        .orElseThrow(RecordNotFoundException::new);
+    program.setLastModifiedBy(user);
+    programService.delete(program);
+    return new ResponseEntity<>(program, HttpStatus.OK);
   }
 
 }

@@ -28,6 +28,7 @@ import AssayFormView from './views/AssayForm'
 import AssayDetailsView from "./views/AssayDetailsView";
 import Error, {ErrorBoundary} from "./views/Error";
 import ScrollToTop from "./structure/ScrollToTop";
+import ProgramListView from "./views/ProgramListView";
 
 export const history = createBrowserHistory();
 
@@ -46,7 +47,7 @@ export default class App extends React.Component {
               <ScrollToTop>
                 <Switch>
 
-                  {/*Home page*/}
+                  {/*Home page / study list*/}
                   <Route exact path={["/", "/studies"]}
                          render={props =>
                              <StudyListView {...props} title={"All Studies"}/>}
@@ -75,6 +76,13 @@ export default class App extends React.Component {
                   {/*Edit assay*/}
                   <Route exact path={"/study/:studyCode/assay/:assayCode/edit"}
                          render={props => <AssayFormView {...props} />}/>
+
+                  {/*Program list*/}
+                  <Route
+                      exact
+                      path={"/programs"}
+                      render={props => <ProgramListView {...props} />}
+                  />
 
                   {/*404*/}
                   <Route render={props => <Error {...props} code={404}/>}/>
