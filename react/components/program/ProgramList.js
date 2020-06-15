@@ -189,7 +189,7 @@ class ProgramList extends React.Component {
             </Col>
             <Col className="col-auto">
               {
-                !!user
+                !!user && !!user.admin
                     ? (
                         <a onClick={() => this.toggleModal()}>
                           <Button color="primary" className="mr-1 mb-1">
