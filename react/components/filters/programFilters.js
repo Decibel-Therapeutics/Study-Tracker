@@ -12,24 +12,18 @@ import {cleanQueryParams, FilterLabel, FilterSidebar} from "./filters";
 const qs = require('qs');
 
 export const labels = {
-  LEGACY: "legacy",
-  MY_STUDY: "myStudy",
-  PROGRAM: "program",
-  EXTERNAL: "external",
-  STATUS: "status",
-  ACTIVE: "active"
+  INACTIVE: "inactive",
+  ACTIVE: "active",
+  MY_PROGRAM: "myProgram"
 };
 
 const defaults = {
-  [labels.LEGACY]: null,
+  [labels.INACTIVE]: null,
   [labels.MY_STUDY]: null,
-  [labels.EXTERNAL]: null,
-  [labels.ACTIVE]: null,
-  [labels.STATUS]: Object.values(statuses).map(status => status.value),
-  [labels.PROGRAM]: []
+  [labels.ACTIVE]: null
 };
 
-class StudyFilters extends React.Component {
+class ProgramFilters extends React.Component {
 
   constructor(props) {
     super(props);
@@ -290,4 +284,4 @@ export default compose(
           user: store.user
         })
     )
-)(StudyFilters);
+)(ProgramFilters);

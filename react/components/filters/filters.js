@@ -89,7 +89,7 @@ export const cleanQueryParams = (params) => {
   return params;
 }
 
-const FilterLabel = ({text}) => {
+export const FilterLabel = ({text}) => {
   return (
       <small className="d-block font-weight-bold text-muted mb-2">
         {text}

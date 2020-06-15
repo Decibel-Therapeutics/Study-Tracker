@@ -15,7 +15,6 @@
  */
 
 import React from 'react';
-import MainPageWrapper from "../structure/MainPageWrapper";
 import LoadingMessage from "../structure/LoadingMessage";
 import ErrorMessage from "../structure/ErrorMessage";
 import {connect} from 'react-redux';
@@ -23,6 +22,10 @@ import {compose} from 'redux';
 import crossfilter from "crossfilter2";
 import {withRouter} from 'react-router-dom';
 import ProgramList from "../components/program/ProgramList";
+import SideBar from "../structure/SideBar";
+import NavBar from "../structure/NavBar";
+import Footer from "../structure/Footer";
+import StudyFilters from "../components/filters/studyFilters";
 
 const qs = require('qs');
 
@@ -121,9 +124,19 @@ class ProgramListView extends React.Component {
     }
 
     return (
-        <MainPageWrapper {...this.props}>
-          {content}
-        </MainPageWrapper>
+        <React.Fragment>
+          <div className="wrapper">
+            <SideBar/>
+            <div className="main">
+              <NavBar user={this.props.user}/>
+              <div className="content">
+                {content}
+              </div>
+              <Footer/>
+            </div>
+          </div>
+          <StudyFilters/>
+        </React.Fragment>
     );
 
   }
