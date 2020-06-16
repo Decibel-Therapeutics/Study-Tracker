@@ -25,7 +25,7 @@ import ProgramList from "../components/program/ProgramList";
 import SideBar from "../structure/SideBar";
 import NavBar from "../structure/NavBar";
 import Footer from "../structure/Footer";
-import StudyFilters from "../components/filters/studyFilters";
+import ProgramFilters, {labels as filter} from "../components/filters/programFilters";
 
 const qs = require('qs');
 
@@ -56,13 +56,10 @@ class ProgramListView extends React.Component {
       data.cf = crossfilter(programs);
       data.dimensions = {};
       data.dimensions.allData = data.cf.dimension(d => d);
-      // data.dimensions[filter.PROGRAM] = data.cf.dimension(d => d.program.id);
-      // data.dimensions[filter.LEGACY] = data.cf.dimension(d => d.legacy);
-      // data.dimensions[filter.EXTERNAL] = data.cf.dimension(
-      //     d => !!d.collaborator);
-      // data.dimensions[filter.MY_STUDY] = data.cf.dimension(
+      data.dimensions[filter.ACTIVE] = data.cf.dimension(d => d.active)
+      data.dimensions[filter.INACTIVE] = data.cf.dimension(d => !d.active)
+      // data.dimensions[filter.MY_PROGRAM] = data.cf.dimension(
       //     d => this.props.user && d.owner.id === this.props.user.id);
-      // data.dimensions[filter.STATUS] = data.cf.dimension(d => d.status);
 
       this.setState({
         data: data,
@@ -95,18 +92,18 @@ class ProgramListView extends React.Component {
         console.log("Filters: ");
         console.log(this.props.filters);
 
-        // for (let key of Object.keys(this.state.data.dimensions)) {
-        //   this.state.data.dimensions[key].filterAll();
-        //   if (this.props.filters.hasOwnProperty(key) && this.props.filters[key]
-        //       != null) {
-        //     if (Array.isArray(this.props.filters[key])) {
-        //       this.state.data.dimensions[key].filter(
-        //           d => this.props.filters[key].indexOf(d) > -1);
-        //     } else {
-        //       this.state.data.dimensions[key].filter(this.props.filters[key]);
-        //     }
-        //   }
-        // }
+        for (let key of Object.keys(this.state.data.dimensions)) {
+          this.state.data.dimensions[key].filterAll();
+          if (this.props.filters.hasOwnProperty(key)
+              && this.props.filters[key] != null) {
+            if (Array.isArray(this.props.filters[key])) {
+              this.state.data.dimensions[key].filter(
+                  d => this.props.filters[key].indexOf(d) > -1);
+            } else {
+              this.state.data.dimensions[key].filter(this.props.filters[key]);
+            }
+          }
+        }
 
         content =
             <ProgramList
@@ -135,7 +132,7 @@ class ProgramListView extends React.Component {
               <Footer/>
             </div>
           </div>
-          <StudyFilters/>
+          <ProgramFilters/>
         </React.Fragment>
     );
 

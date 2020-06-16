@@ -1,26 +1,24 @@
 import React from "react";
-import {CustomInput, FormGroup} from 'reactstrap';
+import {CustomInput, FormGroup, Input, Label} from 'reactstrap';
 import {setFilters} from "../../redux/actions/filterActions";
 import {connect} from 'react-redux';
-import {statuses} from "../../config/statusConstants";
-import {setPrograms} from "../../redux/actions/programActions";
 import {compose} from 'redux';
 import {withRouter} from 'react-router-dom';
 import {history} from "../../App";
-import {cleanQueryParams, FilterLabel, FilterSidebar} from "./filters";
+import {cleanQueryParams, FilterSidebar} from "./filters";
 
 const qs = require('qs');
 
 export const labels = {
-  INACTIVE: "inactive",
   ACTIVE: "active",
+  INACTIVE: "inactive",
   MY_PROGRAM: "myProgram"
 };
 
 const defaults = {
+  [labels.ACTIVE]: null,
   [labels.INACTIVE]: null,
-  [labels.MY_STUDY]: null,
-  [labels.ACTIVE]: null
+  [labels.MY_PROGRAM]: null
 };
 
 class ProgramFilters extends React.Component {
@@ -30,8 +28,7 @@ class ProgramFilters extends React.Component {
 
     this.state = {
       defaults: defaults,
-      filters: defaults,
-      programs: []
+      filters: defaults
     };
 
     this.updateFilters = this.updateFilters.bind(this);
@@ -43,82 +40,30 @@ class ProgramFilters extends React.Component {
     const keys = Object.keys(filters);
     let params = [];
     for (const k of keys) {
-      if (k === labels.PROGRAM) {
-        if (filters[k].length < this.state.programs.length) {
-          const param = k + "=" + filters[k].join(",");
-          params.push(param);
-        }
-      } else if (k === labels.STATUS) {
-        if (filters[k].length < Object.keys(statuses).length) {
-          const param = k + "=" + filters[k].join(",");
-          params.push(param);
-        }
-      } else {
-        if (Array.isArray(filters[k])) {
-          const param = k + "=" + filters[k].join(",");
-          params.push(param);
-        } else {
-          if (!!filters[k]) {
-            const param = k + "=" + filters[k];
-            params.push(param);
-          }
-        }
+      if (!!filters[k]) {
+        const param = k + "=" + filters[k];
+        params.push(param);
       }
     }
     return params.join("&");
   }
 
   componentDidMount() {
-    fetch("/api/program")
-    .then(response => response.json())
-    .then(programs => {
 
-      programs = programs.sort((a, b) => {
-        if (a.name < b.name) {
-          return -1;
-        } else if (a.name > b.name) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
+    const params = cleanQueryParams(
+        qs.parse(this.props.location.search, {ignoreQueryPrefix: true}));
+    const filters = {
+      ...this.state.defaults,
+      ...params
+    };
+    console.log(filters);
 
-      const params = cleanQueryParams(
-          qs.parse(this.props.location.search, {ignoreQueryPrefix: true}));
-      if (params.hasOwnProperty(
-          labels.PROGRAM)) {
-        params[labels.PROGRAM] = [...params[labels.PROGRAM].split(
-            ",")];
-      }
-      if (params.hasOwnProperty(
-          labels.STATUS)) {
-        params[labels.STATUS] = [...params[labels.STATUS].split(
-            ",")];
-      }
+    this.setState({
+      filters: filters
+    });
 
-      const updatedDefaults = {
-        ...this.state.defaults,
-        [labels.PROGRAM]: programs.map(p => p.id)
-      };
+    this.props.dispatch(setFilters(filters));
 
-      const filters = {
-        ...updatedDefaults,
-        ...params
-      };
-      console.log(filters);
-
-      this.setState({
-        programs: programs,
-        defaults: updatedDefaults,
-        filters: filters
-      });
-
-      this.props.dispatch(setPrograms(programs));
-      this.props.dispatch(setFilters(filters))
-
-    }).catch(e => {
-      console.error(e);
-    })
   }
 
   updateFilters(filter) {
@@ -146,127 +91,90 @@ class ProgramFilters extends React.Component {
 
           <div className="settings-section">
 
-            <small className="d-block font-weight-bold text-muted mb-2">
-              Quick Views
-            </small>
-
             {
               !!this.props.user ? (
-                  <FormGroup>
-                    <CustomInput
-                        id="my-studies-check"
-                        type="checkbox"
-                        label="My Studies"
-                        checked={!!this.state.filters[labels.MY_STUDY]}
-                        onChange={(e) => this.updateFilters({
-                          [labels.MY_STUDY]: e.target.checked ? true
-                              : null
-                        })}
-                    />
-                  </FormGroup>
+                  <React.Fragment>
+
+                    <small className="d-block font-weight-bold text-muted mb-2">
+                      Quick Views
+                    </small>
+
+                    <FormGroup>
+                      <CustomInput
+                          id="my-programs-check"
+                          type="checkbox"
+                          label="My Programs"
+                          checked={!!this.state.filters[labels.MY_PROGRAM]}
+                          onChange={(e) => this.updateFilters({
+                            [labels.MY_PROGRAM]: e.target.checked ? true : null
+                          })}
+                      />
+                    </FormGroup>
+
+                  </React.Fragment>
               ) : ''
             }
 
-            <FormGroup>
-              <CustomInput
-                  id="legacy-study-check"
-                  type="checkbox"
-                  label="Legacy Studies"
-                  checked={!!this.state.filters[labels.LEGACY]}
-                  onChange={(e) => this.updateFilters({
-                    [labels.LEGACY]: e.target.checked ? true : null
-                  })}
-              />
+            <small className="d-block font-weight-bold text-muted mb-2">
+              Program Status
+            </small>
+
+            <FormGroup className="mb-2 ml-4">
+              <Label check>
+                <Input
+                    type="radio"
+                    name="program-status"
+                    checked={
+                      !this.state.filters[labels.ACTIVE]
+                      && !this.state.filters[labels.INACTIVE]
+                    }
+                    onChange={() => {
+                      this.updateFilters({
+                        [labels.ACTIVE]: null,
+                        [labels.INACTIVE]: null
+                      })
+                    }}
+                />
+                {" "}
+                Show all programs
+              </Label>
             </FormGroup>
 
-            <FormGroup>
-              <CustomInput
-                  id="cro-study-check"
-                  type="checkbox"
-                  label="External Studies"
-                  checked={!!this.state.filters[labels.EXTERNAL]}
-                  onChange={(e) => this.updateFilters({
-                    [labels.EXTERNAL]: e.target.checked ? true : null
-                  })}
-              />
+            <FormGroup className="mb-2 ml-4">
+              <Label check>
+                <Input
+                    type="radio"
+                    name="program-status"
+                    checked={!!this.state.filters[labels.ACTIVE]}
+                    onChange={() => {
+                      this.updateFilters({
+                        [labels.ACTIVE]: true,
+                        [labels.INACTIVE]: null
+                      })
+                    }}
+                />
+                {" "}
+                Active programs only
+              </Label>
             </FormGroup>
 
-          </div>
-
-          <hr/>
-
-          <div className="settings-section">
-
-            <FormGroup>
-              <FilterLabel text="Status"/>
-              <div>
-                {
-                  Object.values(statuses).map(status => {
-                    return (
-                        <CustomInput
-                            key={"status-checkbox-" + status.value}
-                            id={"status-checkbox-" + status.value}
-                            type={"checkbox"}
-                            label={status.label}
-                            checked={this.state.filters[labels.STATUS].indexOf(
-                                status.value) > -1}
-                            onChange={(e) => {
-                              let values = this.state.filters[labels.STATUS];
-                              if (e.target.checked) {
-                                values.push(
-                                    status.value);
-                              } else {
-                                values = values.filter(
-                                    v => v !== status.value);
-                              }
-                              this.updateFilters({
-                                [labels.STATUS]: values
-                              })
-                            }}
-                        />
-                    )
-                  })
-                }
-
-              </div>
+            <FormGroup className="mb-2 ml-4">
+              <Label check>
+                <Input
+                    type="radio"
+                    name="program-status"
+                    checked={!!this.state.filters[labels.INACTIVE]}
+                    onChange={() => {
+                      this.updateFilters({
+                        [labels.ACTIVE]: null,
+                        [labels.INACTIVE]: true
+                      })
+                    }}
+                />
+                {" "}
+                Inactive programs only
+              </Label>
             </FormGroup>
-
-            {
-              !!this.state.programs ? (
-                  <FormGroup>
-                    <FilterLabel text={"Programs"}/>
-                    <div>
-                      {
-                        this.state.programs.map(program => {
-                          return (
-                              <CustomInput
-                                  key={"program-checkbox-" + program.id}
-                                  id={"program-checkbox-" + program.id}
-                                  type={"checkbox"}
-                                  label={program.name}
-                                  checked={this.state.filters[labels.PROGRAM].indexOf(
-                                      program.id) > -1}
-                                  onChange={(e) => {
-                                    let values = this.state.filters[labels.PROGRAM];
-                                    if (e.target.checked) {
-                                      values.push(program.id);
-                                    } else {
-                                      values = values.filter(
-                                          v => v !== program.id);
-                                    }
-                                    this.updateFilters({
-                                      [labels.PROGRAM]: values
-                                    })
-                                  }}
-                              />
-                          )
-                        })
-                      }
-
-                    </div>
-                  </FormGroup>
-              ) : ''
-            }
 
           </div>
 

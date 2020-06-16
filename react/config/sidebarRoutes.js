@@ -87,7 +87,7 @@ const programRoutes = {
       name: 'All Programs'
     },
     {
-      path: '/programs?my=true&title=My Programs',
+      path: '/programs?myProgram=true&title=My Programs',
       name: 'My Programs',
       protected: true
     },
@@ -96,7 +96,7 @@ const programRoutes = {
       name: 'Active Programs'
     },
     {
-      path: '/programs?legacy=true&title=Legacy Programs',
+      path: '/programs?inactive=true&title=Legacy Programs',
       name: 'Legacy Programs'
     }
   ]

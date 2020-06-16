@@ -91,15 +91,11 @@ class StudyFilters extends React.Component {
 
       const params = cleanQueryParams(
           qs.parse(this.props.location.search, {ignoreQueryPrefix: true}));
-      if (params.hasOwnProperty(
-          labels.PROGRAM)) {
-        params[labels.PROGRAM] = [...params[labels.PROGRAM].split(
-            ",")];
+      if (params.hasOwnProperty(labels.PROGRAM)) {
+        params[labels.PROGRAM] = [...params[labels.PROGRAM].split(",")];
       }
-      if (params.hasOwnProperty(
-          labels.STATUS)) {
-        params[labels.STATUS] = [...params[labels.STATUS].split(
-            ",")];
+      if (params.hasOwnProperty(labels.STATUS)) {
+        params[labels.STATUS] = [...params[labels.STATUS].split(",")];
       }
 
       const updatedDefaults = {
