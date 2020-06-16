@@ -97,7 +97,6 @@ class ProgramList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      programs: props.programs,
       modalIsOpen: false,
       modalError: null,
       newProgram: {
@@ -136,7 +135,7 @@ class ProgramList extends React.Component {
       return;
     }
     let duplicate = false;
-    for (let program of this.state.programs) {
+    for (let program of this.props.programs) {
       if (p.name === program.name) {
         duplicate = true;
       }
@@ -158,7 +157,6 @@ class ProgramList extends React.Component {
     .then(response => response.json())
     .then(program => {
       this.setState({
-        programs: [...this.state.programs, program],
         newProgram: {
           name: '',
           code: '',
@@ -166,6 +164,7 @@ class ProgramList extends React.Component {
         },
         modalError: null
       });
+      this.props.handleNewProgram(program);
       this.toggleModal();
     })
     .catch(e => {
@@ -207,7 +206,7 @@ class ProgramList extends React.Component {
                 <CardBody>
                   <ToolkitProvider
                       keyField="id"
-                      data={this.state.programs}
+                      data={this.props.programs}
                       columns={columns}
                       search
                       exportCSV

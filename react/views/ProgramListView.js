@@ -39,34 +39,60 @@ class ProgramListView extends React.Component {
       title: this.props.title,
       data: {}
     };
+    this.indexPrograms = this.indexPrograms.bind(this);
+    this.handleNewProgram = this.handleNewProgram.bind(this);
+    this.applyFilters = this.applyFilters.bind(this);
+  }
+
+  indexPrograms(programs) {
+    console.log(programs);
+    const data = {};
+    data.cf = crossfilter(programs);
+    data.dimensions = {};
+    data.dimensions.allData = data.cf.dimension(d => d);
+    data.dimensions[filter.ACTIVE] = data.cf.dimension(d => d.active)
+    data.dimensions[filter.INACTIVE] = data.cf.dimension(d => !d.active)
+    // data.dimensions[filter.MY_PROGRAM] = data.cf.dimension(
+    //     d => this.props.user && d.owner.id === this.props.user.id);
+
+    this.setState({
+      data: data,
+      isLoaded: true
+    });
+  }
+
+  handleNewProgram(newProgram) {
+    this.applyFilters({}); // reset filters
+    const programs = [...this.state.data.dimensions.allData.top(Infinity),
+      newProgram];
+    this.indexPrograms(programs); //re-index programs
+    this.applyFilters(this.props.filters); //re-apply filters
+  }
+
+  applyFilters(filters) {
+    for (let key of Object.keys(this.state.data.dimensions)) {
+      this.state.data.dimensions[key].filterAll();
+      if (filters.hasOwnProperty(key) && filters[key] != null) {
+        if (Array.isArray(filters[key])) {
+          this.state.data.dimensions[key].filter(
+              d => filters[key].indexOf(d) > -1);
+        } else {
+          this.state.data.dimensions[key].filter(filters[key]);
+        }
+      }
+    }
   }
 
   componentDidMount() {
     const params = qs.parse(this.props.location.search,
         {ignoreQueryPrefix: true});
     let title = params.title || this.state.title;
+    this.setState({title: title});
 
     fetch("/api/program")
     .then(response => response.json())
     .then(async programs => {
-
-      console.log(programs);
-
-      const data = {};
-      data.cf = crossfilter(programs);
-      data.dimensions = {};
-      data.dimensions.allData = data.cf.dimension(d => d);
-      data.dimensions[filter.ACTIVE] = data.cf.dimension(d => d.active)
-      data.dimensions[filter.INACTIVE] = data.cf.dimension(d => !d.active)
-      // data.dimensions[filter.MY_PROGRAM] = data.cf.dimension(
-      //     d => this.props.user && d.owner.id === this.props.user.id);
-
-      this.setState({
-        data: data,
-        isLoaded: true,
-        title: title
-      });
-
+      this.indexPrograms(programs);
     })
     .catch(error => {
       console.error(error);
@@ -91,19 +117,7 @@ class ProgramListView extends React.Component {
 
         console.log("Filters: ");
         console.log(this.props.filters);
-
-        for (let key of Object.keys(this.state.data.dimensions)) {
-          this.state.data.dimensions[key].filterAll();
-          if (this.props.filters.hasOwnProperty(key)
-              && this.props.filters[key] != null) {
-            if (Array.isArray(this.props.filters[key])) {
-              this.state.data.dimensions[key].filter(
-                  d => this.props.filters[key].indexOf(d) > -1);
-            } else {
-              this.state.data.dimensions[key].filter(this.props.filters[key]);
-            }
-          }
-        }
+        this.applyFilters(this.props.filters)
 
         content =
             <ProgramList
@@ -111,6 +125,7 @@ class ProgramListView extends React.Component {
                 title={this.state.title}
                 filters={this.props.filters}
                 user={this.props.user}
+                handleNewProgram={this.handleNewProgram}
             />;
 
       }
