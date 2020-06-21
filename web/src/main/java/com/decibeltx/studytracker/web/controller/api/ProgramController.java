@@ -17,8 +17,10 @@
 package com.decibeltx.studytracker.web.controller.api;
 
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.User;
+import com.decibeltx.studytracker.core.service.ActivityService;
 import com.decibeltx.studytracker.core.service.ProgramService;
 import com.decibeltx.studytracker.core.service.UserService;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -52,6 +55,9 @@ public class ProgramController {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private ActivityService activityService;
 
   @GetMapping("")
   public List<Program> getAllPrograms() throws Exception {
@@ -121,6 +127,35 @@ public class ProgramController {
     program.setLastModifiedBy(user);
     programService.delete(program);
     return new ResponseEntity<>(program, HttpStatus.OK);
+  }
+
+  @PostMapping("/{id}/status")
+  public HttpEntity<?> updateProgramStatus(@PathVariable("id") String programId,
+      @RequestParam("active") boolean active) {
+    Optional<Program> optional = programService.findById(programId);
+    if (!optional.isPresent()) {
+      throw new RecordNotFoundException("Program not found: " + programId);
+    }
+    Program program = optional.get();
+    String username = UserAuthenticationUtils
+        .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
+    User user = userService.findByAccountName(username)
+        .orElseThrow(RecordNotFoundException::new);
+    program.setLastModifiedBy(user);
+    program.setActive(active);
+    programService.update(program);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @GetMapping("/{id}/activity")
+  public HttpEntity<List<Activity>> getProgramActivity(@PathVariable("id") String programId) {
+    Optional<Program> optional = programService.findById(programId);
+    if (!optional.isPresent()) {
+      throw new RecordNotFoundException("Program not found: " + programId);
+    }
+    Program program = optional.get();
+    List<Activity> activities = activityService.findByProgram(program);
+    return new ResponseEntity<>(activities, HttpStatus.OK);
   }
 
 }

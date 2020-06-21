@@ -29,6 +29,7 @@ import AssayDetailsView from "./views/AssayDetailsView";
 import Error, {ErrorBoundary} from "./views/Error";
 import ScrollToTop from "./structure/ScrollToTop";
 import ProgramListView from "./views/ProgramListView";
+import ProgramDetailsView from "./views/ProgramDetailsView";
 
 export const history = createBrowserHistory();
 
@@ -83,6 +84,9 @@ export default class App extends React.Component {
                       path={"/programs"}
                       render={props => <ProgramListView {...props} />}
                   />
+
+                  <Route exact path={"/program/:programId"}
+                         render={props => <ProgramDetailsView {...props} />}/>
 
                   {/*404*/}
                   <Route render={props => <Error {...props} code={404}/>}/>

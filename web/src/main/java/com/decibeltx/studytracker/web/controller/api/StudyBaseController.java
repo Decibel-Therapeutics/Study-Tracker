@@ -18,6 +18,7 @@ package com.decibeltx.studytracker.web.controller.api;
 
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.exception.StudyTrackerException;
+import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.User;
@@ -64,12 +65,22 @@ public class StudyBaseController extends StudyController {
       @RequestParam(value = "legacy", defaultValue = "false") boolean legacy,
       @RequestParam(value = "external", defaultValue = "false") boolean external,
       @RequestParam(value = "my", defaultValue = "false") boolean my,
-      @RequestParam(value = "search", required = false) String search
+      @RequestParam(value = "search", required = false) String search,
+      @RequestParam(value = "program", required = false) String programId
   ) {
 
     // Search
     if (!StringUtils.isEmpty(search)) {
       return getStudyService().search(search);
+    }
+
+    // Find by program
+    else if (programId != null) {
+      Optional<Program> optional = getProgramService().findById(programId);
+      if (!optional.isPresent()) {
+        throw new RecordNotFoundException("Cannot find program with ID: " + programId);
+      }
+      return getStudyService().findByProgram(optional.get());
     }
 
     // Find by owner

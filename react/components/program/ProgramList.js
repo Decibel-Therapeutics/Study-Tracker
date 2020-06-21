@@ -45,20 +45,33 @@ const columns = [
     text: "Name",
     sort: true,
     headerStyle: {width: '50%%'},
-    formatter: (c, d, i, x) => d.name
+    formatter: (c, d, i, x) => {
+      return (
+          <a href={"/program/" + d.id}>{d.name}</a>
+      )
+    },
+    sortFunc: (a, b, order, dataField, rowA, rowB) => {
+      if (rowA.name > rowB.name) {
+        return order === "desc" ? -1 : 1;
+      }
+      if (rowB.name > rowA.name) {
+        return order === "desc" ? 1 : -1;
+      }
+      return 0;
+    },
   },
   {
     dataField: "code",
     text: "Code",
     sort: true,
-    headerStyle: {width: '25%'},
+    headerStyle: {width: '20%'},
     formatter: (cell, d, index, x) => d.code
   },
   {
     dataField: "active",
     text: "Active",
     sort: true,
-    headerStyle: {width: '25%'},
+    headerStyle: {width: '20%'},
     formatter: (c, d, i, x) => {
       if (d.active) {
         return (
@@ -177,7 +190,7 @@ class ProgramList extends React.Component {
 
   render() {
 
-    let {title, filters, user} = this.props;
+    let {title, user} = this.props;
 
     return (
         <Container fluid className="animated fadeIn">

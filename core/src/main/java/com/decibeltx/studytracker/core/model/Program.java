@@ -46,6 +46,8 @@ public class Program implements Persistable<String> {
   @NotNull(message = "Program name must not be empty")
   private String name;
 
+  private String description;
+
   @CreatedBy
   @Linked(model = User.class)
   @NotNull
