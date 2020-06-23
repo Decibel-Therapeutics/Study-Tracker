@@ -146,7 +146,7 @@ public class StudyServiceImpl implements StudyService {
       throw new StudyTrackerException("Legacy studies do not recieve new study codes.");
     }
     Program program = study.getProgram();
-    Integer count = 10001;
+    Integer count = 201;
     for (Program p : programService.findByCode(program.getCode())) {
       count = count + (studyRepository.findActiveProgramStudies(p.getId())).size();
     }
