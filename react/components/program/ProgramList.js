@@ -15,29 +15,13 @@
  */
 
 import React from "react";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Container,
-  FormGroup,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  UncontrolledAlert
-} from "reactstrap";
+import {Button, Card, CardBody, Col, Container, Row,} from "reactstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit';
 import paginationFactory from "react-bootstrap-table2-paginator";
 import {File} from "react-feather";
-import Select from "react-select";
 
 const columns = [
   {
@@ -105,269 +89,74 @@ const ExportToCsv = (props) => {
   );
 };
 
-class ProgramList extends React.Component {
+const ProgramList = ({title, user, programs}) => {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      modalIsOpen: false,
-      modalError: null,
-      newProgram: {
-        name: '',
-        code: '',
-        active: true
-      }
-    };
-    this.toggleModal = this.toggleModal.bind(this);
-    this.handleNewProgramChange = this.handleNewProgramChange.bind(this);
-    this.handleNewProgramSubmit = this.handleNewProgramSubmit.bind(this);
-  }
+  return (
+      <Container fluid className="animated fadeIn">
 
-  toggleModal() {
-    this.setState({
-      modalIsOpen: !this.state.modalIsOpen
-    })
-  }
+        <Row className="justify-content-between align-items-center">
+          <Col xs="8">
+            <h1>{title}</h1>
+          </Col>
+          <Col className="col-auto">
+            {
+              !!user && !!user.admin
+                  ? (
+                      <a href={"/programs/new"}>
+                        <Button color="primary" className="mr-1 mb-1">
+                          <FontAwesomeIcon icon={faPlusCircle}/> New Program
+                        </Button>
+                      </a>
+                  ) : ''
+            }
+          </Col>
+        </Row>
 
-  handleNewProgramChange(props) {
-    this.setState({
-      newProgram: {
-        ...this.state.newProgram,
-        ...props
-      }
-    })
-  }
-
-  handleNewProgramSubmit() {
-    console.log(this.state.newProgram);
-    let p = this.state.newProgram;
-    if (!p.name || !p.code) {
-      this.setState({
-        modalError: "One or more required fields are missing. Please check your inputs and then try again."
-      });
-      return;
-    }
-    let duplicate = false;
-    for (let program of this.props.programs) {
-      if (p.name === program.name) {
-        duplicate = true;
-      }
-    }
-    if (duplicate) {
-      this.setState({
-        modalError: "A program with this name already exists. Please provide a unique name and try again."
-      });
-      return;
-    }
-    return fetch("/api/program", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(p)
-    })
-    .then(response => response.json())
-    .then(program => {
-      this.setState({
-        newProgram: {
-          name: '',
-          code: '',
-          active: true
-        },
-        modalError: null
-      });
-      this.props.handleNewProgram(program);
-      this.toggleModal();
-    })
-    .catch(e => {
-      console.error(e);
-      this.setState({
-        modalError: e.message
-      });
-    })
-  }
-
-  render() {
-
-    let {title, user} = this.props;
-
-    return (
-        <Container fluid className="animated fadeIn">
-
-          <Row className="justify-content-between align-items-center">
-            <Col xs="8">
-              <h1>{title}</h1>
-            </Col>
-            <Col className="col-auto">
-              {
-                !!user && !!user.admin
-                    ? (
-                        <a onClick={() => this.toggleModal()}>
-                          <Button color="primary" className="mr-1 mb-1">
-                            <FontAwesomeIcon icon={faPlusCircle}/> New Program
-                          </Button>
-                        </a>
-                    ) : ''
-              }
-            </Col>
-          </Row>
-
-          <Row>
-            <Col lg="12">
-              <Card>
-                <CardBody>
-                  <ToolkitProvider
-                      keyField="id"
-                      data={this.props.programs}
-                      columns={columns}
-                      search
-                      exportCSV
-                  >
-                    {props => (
-                        <div>
-                          <div className="float-right">
-                            <ExportToCsv{...props.csvProps} />
-                            &nbsp;&nbsp;
-                            <Search.SearchBar
-                                {...props.searchProps}
-                            />
-                          </div>
-                          <BootstrapTable
-                              bootstrap4
-                              keyField="id"
-                              // data={studies}
-                              // columns={columns}
-                              bordered={false}
-                              pagination={paginationFactory({
-                                sizePerPage: 10,
-                                sizePerPageList: [10, 20, 40, 80]
-                              })}
-                              defaultSorted={[{
-                                dataField: "updatedAt",
-                                order: "desc"
-                              }]}
-                              {...props.baseProps}
-                          >
-                          </BootstrapTable>
+        <Row>
+          <Col lg="12">
+            <Card>
+              <CardBody>
+                <ToolkitProvider
+                    keyField="id"
+                    data={programs}
+                    columns={columns}
+                    search
+                    exportCSV
+                >
+                  {props => (
+                      <div>
+                        <div className="float-right">
+                          <ExportToCsv{...props.csvProps} />
+                          &nbsp;&nbsp;
+                          <Search.SearchBar
+                              {...props.searchProps}
+                          />
                         </div>
-                    )}
-                  </ToolkitProvider>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
+                        <BootstrapTable
+                            bootstrap4
+                            keyField="id"
+                            bordered={false}
+                            pagination={paginationFactory({
+                              sizePerPage: 10,
+                              sizePerPageList: [10, 20, 40, 80]
+                            })}
+                            defaultSorted={[{
+                              dataField: "updatedAt",
+                              order: "desc"
+                            }]}
+                            {...props.baseProps}
+                        >
+                        </BootstrapTable>
+                      </div>
+                  )}
+                </ToolkitProvider>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
 
-          <Modal
-              isOpen={this.state.modalIsOpen}
-              toggle={() => this.toggleModal()}
-              size={"md"}
-          >
-
-            <ModalHeader toggle={() => this.toggleModal()}>
-              Add New Program
-            </ModalHeader>
-
-            <ModalBody className="m-3">
-
-              <Row form>
-
-                <Col sm={12}>
-                  <p>
-                    Please provide a unique name to identify the program, and an
-                    alphanumeric code that will be used as a prefix for all new
-                    study codes. The program code does not need to be unique.
-                    All fields are required.
-                  </p>
-                </Col>
-
-                <Col sm="12">
-                  <FormGroup>
-                    <Label>Name *</Label>
-                    <Input
-                        type="text"
-                        defaultValue={this.state.newProgram.name}
-                        onChange={(e) => this.handleNewProgramChange({
-                          name: e.target.value
-                        })}
-                    />
-                  </FormGroup>
-                </Col>
-
-                <Col sm="12">
-                  <FormGroup>
-                    <Label>Program Code *</Label>
-                    <Input
-                        type="text"
-                        value={this.state.newProgram.code}
-                        onChange={(e) => this.handleNewProgramChange({
-                          code: e.target.value.toUpperCase().replace(
-                              /[^A-Z0-9]/g, "")
-                        })}
-                    />
-                  </FormGroup>
-                </Col>
-
-                <Col sm="12">
-                  <FormGroup>
-                    <Label>Is this program active?</Label>
-                    <Select
-                        className="react-select-container"
-                        classNamePrefix="react-select"
-                        options={[
-                          {
-                            value: true,
-                            label: "Active"
-                          },
-                          {
-                            value: false,
-                            label: "Inactive"
-                          }
-                        ]}
-                        defaultValue={{
-                          value: true,
-                          label: "Active"
-                        }}
-                        onChange={(selected) => this.handleNewProgramChange({
-                          active: selected.value
-                        })}
-                    />
-                  </FormGroup>
-                </Col>
-
-              </Row>
-              {
-                !!this.state.modalError
-                    ? (
-                        <Row>
-                          <Col sm={12}>
-                            <UncontrolledAlert color={"warning"}>
-                              <div className="alert-message mr-4">
-                                {this.state.modalError}
-                              </div>
-                            </UncontrolledAlert>
-                          </Col>
-                        </Row>
-                    ) : ''
-              }
-
-            </ModalBody>
-
-            <ModalFooter>
-              <Button color={"secondary"} onClick={() => this.toggleModal()}>
-                Cancel
-              </Button>
-              <Button color={"primary"}
-                      onClick={this.handleNewProgramSubmit}>
-                Save
-              </Button>
-            </ModalFooter>
-
-          </Modal>
-
-        </Container>
-    );
-  }
+      </Container>
+  );
 
 }
 

@@ -19,11 +19,12 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUserCircle} from "@fortawesome/free-solid-svg-icons";
 import {KeywordTypeBadge} from "../keywords";
 
-export const ProgramTeam = ({studies}) => {
+export const ProgramTeam = ({program, studies}) => {
   let users = [];
+  users.push(program.createdBy.displayName);
   for (let study of studies) {
     for (let user of study.users) {
-      if (users.indexOf(user.displayName) == -1) {
+      if (users.indexOf(user.displayName) === -1) {
         users.push(user.displayName);
       }
     }

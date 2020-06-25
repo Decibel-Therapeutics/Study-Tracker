@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class DefaultController {
 
   @GetMapping({"/", "/study/**", "/studies/**", "/assay/**", "/assays/**", "/programs/**",
-      "/program/**"})
+      "/program/**", "/user/**", "/users/**", "/animals/**", "/animal/**", "/samples/**",
+      "/sample/**"})
   public String index() {
     return "index";
   }

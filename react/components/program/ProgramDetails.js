@@ -52,7 +52,7 @@ const ProgramDetailHeader = ({program, user}) => {
   return (
       <Row className="justify-content-between align-items-center">
         <Col>
-          <h1>Program {program.name}</h1>
+          <h1>Program {program.name} ({program.code})</h1>
         </Col>
         <Col className="col-auto">
           {
@@ -92,6 +92,16 @@ class ProgramDetails extends React.Component {
       return {__html: content};
     };
 
+    let attributes = [];
+    for (let key of Object.keys(program.attributes)) {
+      attributes.push(
+          <React.Fragment key={'attribute-' + key}>
+            <h6 className="details-label">{key}</h6>
+            <p>{program.attributes[key]}</p>
+          </React.Fragment>
+      )
+    }
+
     return (
         <Container fluid className="animated fadeIn">
 
@@ -100,7 +110,7 @@ class ProgramDetails extends React.Component {
             <Col>
               <Breadcrumb>
                 <BreadcrumbItem>
-                  <a href={"/"}>Home</a>
+                  <a href={"/programs"}>Programs</a>
                 </BreadcrumbItem>
                 <BreadcrumbItem active>
                   Program Detail
@@ -178,6 +188,8 @@ class ProgramDetails extends React.Component {
                       <h6 className="details-label">Last Updated</h6>
                       <p>{new Date(program.updatedAt).toLocaleString()}</p>
 
+                      {attributes}
+
                     </Col>
                   </Row>
                 </CardBody>
@@ -185,8 +197,8 @@ class ProgramDetails extends React.Component {
                 <CardBody>
                   <Row>
                     <Col xs={12}>
-                      <h6 className="details-label">Study Team</h6>
-                      <ProgramTeam studies={studies}/>
+                      <h6 className="details-label">Program Team</h6>
+                      <ProgramTeam program={program} studies={studies}/>
                     </Col>
                   </Row>
                 </CardBody>
