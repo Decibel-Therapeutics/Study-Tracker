@@ -19,21 +19,56 @@ package com.decibeltx.studytracker.core.events.listener;
 import com.decibeltx.studytracker.core.events.type.EventType;
 import com.decibeltx.studytracker.core.events.type.StudyEvent;
 import com.decibeltx.studytracker.core.model.Study;
+import com.decibeltx.studytracker.core.notebook.NotebookEntry;
+import com.decibeltx.studytracker.core.notebook.NotebookService;
+//import com.decibeltx.studytracker.core.notebook.SimpleNotebookEntry;
+import com.decibeltx.studytracker.core.repository.StudyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+//import java.util.Optional;
 
 @Component
 public class NewStudyNotebookListener {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(NewStudyFolderListener.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(NewStudyNotebookListener.class);
+
+  @Autowired (required = false)
+  private NotebookService notebookService;
+
+  @Autowired
+  private StudyRepository studyRepository;
 
   @EventListener
   public void onApplicationEvent(StudyEvent studyEvent) {
     if (studyEvent.getEventType().equals(EventType.NEW_STUDY)) {
       Study study = studyEvent.getStudy();
       LOGGER.warn(String.format("TODO: Creating ELN entry for study: %s", study.getCode()));
+      if (notebookService != null) {
+
+        try {
+
+          //notebookService.createStudyEntry(study);
+
+          NotebookEntry notebookEntry = notebookService.createStudyEntry(study);
+
+          study.setNotebookEntry(notebookEntry);
+          study.setUpdatedAt(new Date());
+          studyRepository.save(study);
+
+        } catch (Exception e) {
+          e.printStackTrace();
+          LOGGER.error("Failed to create notebook entry for study: " + study.getCode());
+        }
+      } else {
+        LOGGER.warn(String.format("No notebook mode selected: "));
+
+      }
+
     }
   }
 }
