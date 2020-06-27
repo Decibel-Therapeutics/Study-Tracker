@@ -21,15 +21,15 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 import crossfilter from "crossfilter2";
 import {withRouter} from 'react-router-dom';
-import ProgramList from "../components/program/ProgramList";
 import SideBar from "../structure/SideBar";
 import NavBar from "../structure/NavBar";
 import Footer from "../structure/Footer";
-import ProgramFilters, {labels as filter} from "../components/filters/programFilters";
+import UserList from "../components/user/UserList";
+import UserFilters, {labels as filter} from "../components/filters/userFilters";
 
 const qs = require('qs');
 
-class ProgramListView extends React.Component {
+class UserListView extends React.Component {
 
   constructor(props) {
     super(props);
@@ -39,21 +39,19 @@ class ProgramListView extends React.Component {
       title: this.props.title,
       data: {}
     };
-    this.indexPrograms = this.indexPrograms.bind(this);
-    this.handleNewProgram = this.handleNewProgram.bind(this);
+    this.indexUsers = this.indexUsers.bind(this);
     this.applyFilters = this.applyFilters.bind(this);
   }
 
-  indexPrograms(programs) {
-    console.log(programs);
+  indexUsers(users) {
+    console.log(users);
     const data = {};
-    data.cf = crossfilter(programs);
+    data.cf = crossfilter(users);
     data.dimensions = {};
     data.dimensions.allData = data.cf.dimension(d => d);
     data.dimensions[filter.ACTIVE] = data.cf.dimension(d => d.active)
     data.dimensions[filter.INACTIVE] = data.cf.dimension(d => !d.active)
-    // data.dimensions[filter.MY_PROGRAM] = data.cf.dimension(
-    //     d => this.props.user && d.owner.id === this.props.user.id);
+    data.dimensions[filter.ADMIN] = data.cf.dimension(d => d.admin)
 
     this.setState({
       data: data,
@@ -81,10 +79,10 @@ class ProgramListView extends React.Component {
     let title = params.title || this.state.title;
     this.setState({title: title});
 
-    fetch("/api/program")
+    fetch("/api/user")
     .then(response => response.json())
-    .then(async programs => {
-      this.indexPrograms(programs);
+    .then(async users => {
+      this.indexUsers(users);
     })
     .catch(error => {
       console.error(error);
@@ -112,8 +110,8 @@ class ProgramListView extends React.Component {
         this.applyFilters(this.props.filters)
 
         content =
-            <ProgramList
-                programs={this.state.data.dimensions.allData.top(Infinity)}
+            <UserList
+                users={this.state.data.dimensions.allData.top(Infinity)}
                 title={this.state.title}
                 filters={this.props.filters}
                 user={this.props.user}
@@ -138,7 +136,7 @@ class ProgramListView extends React.Component {
               <Footer/>
             </div>
           </div>
-          <ProgramFilters/>
+          <UserFilters/>
         </React.Fragment>
     );
 
@@ -154,4 +152,4 @@ export default compose(
           user: store.user
         })
     )
-)(ProgramListView);
+)(UserListView);

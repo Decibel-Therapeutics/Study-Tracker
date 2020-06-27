@@ -31,6 +31,7 @@ import ScrollToTop from "./structure/ScrollToTop";
 import ProgramListView from "./views/ProgramListView";
 import ProgramDetailsView from "./views/ProgramDetailsView";
 import ProgramFormView from "./views/ProgramFormView";
+import UserListView from "./views/UserListView";
 
 export const history = createBrowserHistory();
 
@@ -97,6 +98,17 @@ export default class App extends React.Component {
                   {/*Edit Program*/}
                   <Route exact path={"/program/:programId/edit"}
                          render={props => <ProgramFormView {...props} />}/>
+
+                  {/* User list */}
+                  <Route
+                      exact
+                      path={"/users"}
+                      render={props => <UserListView {...props} />}
+                  />
+
+                  {/*User details*/}
+                  <Route exact path={"/user/:userId"}
+                         render={props => <ProgramDetailsView {...props} />}/>
 
                   {/*404*/}
                   <Route render={props => <Error {...props} code={404}/>}/>
