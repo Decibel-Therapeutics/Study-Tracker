@@ -117,8 +117,9 @@ public final class BenchlingNotebookService implements NotebookService<Benchling
 
     String urlBase = options.getRootFolderUrl(); //"https://fl60.benchling.com/fl60/f_/";
     String transformedURL = urlBase+entityIdForURL+'-'+name;
-    studyEntry.setUrl(transformedURL);
     studyEntry.setLabel("Benchling");
+    studyEntry.setUrl(transformedURL);
+
 
     return studyEntry;
   }

@@ -21,7 +21,6 @@ import com.decibeltx.studytracker.core.events.type.StudyEvent;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.notebook.NotebookEntry;
 import com.decibeltx.studytracker.core.notebook.NotebookService;
-//import com.decibeltx.studytracker.core.notebook.SimpleNotebookEntry;
 import com.decibeltx.studytracker.core.repository.StudyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,10 +51,7 @@ public class NewStudyNotebookListener {
 
         try {
 
-          //notebookService.createStudyEntry(study);
-
           NotebookEntry notebookEntry = notebookService.createStudyEntry(study);
-
           study.setNotebookEntry(notebookEntry);
           study.setUpdatedAt(new Date());
           studyRepository.save(study);

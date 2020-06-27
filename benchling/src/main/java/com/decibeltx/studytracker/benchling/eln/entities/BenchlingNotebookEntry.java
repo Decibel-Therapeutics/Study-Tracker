@@ -57,11 +57,15 @@ public class BenchlingNotebookEntry extends SimpleNotebookEntry {
     }
   }
 
-  @Override
+  /*@Override
   public String getLabel() {
     return entityName;
   }
 
+  @Override
+  public void setLabel(String label) {
+    this.label = label;
+  }*/
 
 
 }
