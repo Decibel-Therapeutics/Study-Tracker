@@ -115,8 +115,7 @@ export const StudySummaryCards = ({studies}) => {
     content.push(
         <Row className="text-center" key={"no-study-message"}>
           <Col>
-            <h4>This program does not have any studies</h4>
-            <p>Click the 'New Study' button to register a new one.</p>
+            <h4>No studies found</h4>
           </Col>
         </Row>
     );

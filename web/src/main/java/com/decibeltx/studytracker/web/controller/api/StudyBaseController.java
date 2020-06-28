@@ -101,9 +101,10 @@ public class StudyBaseController extends StudyController {
       if (!optional.isPresent()) {
         throw new RecordNotFoundException("Cannot find user record: " + userId);
       }
+      User user = optional.get();
       return getStudyService().findAll()
           .stream()
-          .filter(study -> study.getOwner().equals(optional.get().getId()) && study.isActive())
+          .filter(study -> study.getOwner().getId().equals(user.getId()) && study.isActive())
           .collect(Collectors.toList());
     }
 
