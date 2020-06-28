@@ -40,7 +40,6 @@ class ProgramListView extends React.Component {
       data: {}
     };
     this.indexPrograms = this.indexPrograms.bind(this);
-    this.handleNewProgram = this.handleNewProgram.bind(this);
     this.applyFilters = this.applyFilters.bind(this);
   }
 
