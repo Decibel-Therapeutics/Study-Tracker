@@ -27,6 +27,13 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BenchlingNotebookEntry extends SimpleNotebookEntry {
 
+
+  private String folderId;
+
+
+
+
+
   private String entityId;
   private String visibileUniqueId;
   private String viewableInEntityId;
@@ -40,7 +47,7 @@ public class BenchlingNotebookEntry extends SimpleNotebookEntry {
     if (map.containsKey("entityId")) {
       entityId = (String) map.get("entityId");
     }
-    if (map.containsKey("visibileUniqueId")) {
+  /*  if (map.containsKey("visibileUniqueId")) {
       visibileUniqueId = (String) map.get("visibileUniqueId");
     }
     if (map.containsKey("viewableInEntityId")) {
@@ -54,18 +61,17 @@ public class BenchlingNotebookEntry extends SimpleNotebookEntry {
     }
     if (map.containsKey("entityName")) {
       entityName = (String) map.get("entityName");
-    }
+    }*/
   }
 
-  /*@Override
-  public String getLabel() {
-    return entityName;
+  public String getFolderId() {
+    return folderId;
   }
 
-  @Override
-  public void setLabel(String label) {
-    this.label = label;
-  }*/
+  public void setFolderId(String folderId) {
+    this.folderId = folderId;
+  }
+
 
 
 }

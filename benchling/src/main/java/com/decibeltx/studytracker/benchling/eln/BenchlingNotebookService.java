@@ -104,18 +104,21 @@ public final class BenchlingNotebookService implements NotebookService<Benchling
     BenchlingNotebookEntry studyEntry = new BenchlingNotebookEntry();
     String studyEntityId = client.createStudyFolder(getStudyFolderName(study), programFolder.getEntityId());
 
+    studyEntry.setFolderId(studyEntityId);
     LOGGER.info("Created study entity id: " + studyEntityId);
-    final String entityHead = "id=lib_";
+    final String entityHead = "lib_";
     final int entityHeadSize = entityHead.length();
     String entityIdForURL = studyEntityId.substring(entityHeadSize);
 
     //lower case, replase spaces with - and remove ':'
-    String name = study.getName()
+    String name = getStudyFolderName(study)
             .toLowerCase()
             .replaceAll(" ","-")
-            .replaceAll(":","");
+            .replaceAll("[^A-Za-z0-9-_\\s()]+", "")
+            .replaceAll("[\\()]","")
+            .trim();
 
-    String urlBase = options.getRootFolderUrl(); //"https://fl60.benchling.com/fl60/f_/";
+    String urlBase = options.getRootFolderUrl();
     String transformedURL = urlBase+entityIdForURL+'-'+name;
     studyEntry.setLabel("Benchling");
     studyEntry.setUrl(transformedURL);
