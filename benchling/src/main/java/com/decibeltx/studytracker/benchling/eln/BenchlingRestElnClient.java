@@ -120,7 +120,6 @@ public class BenchlingRestElnClient implements BenchlingElnOperations {
 
     String responseString = response.toString();
     String start = responseString.substring(responseString.indexOf("id="));
-    //String studyEntityId = start.substring(0,start.indexOf(','));
 
     return start.substring(3,start.indexOf(','));
   }

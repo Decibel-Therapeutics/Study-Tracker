@@ -97,7 +97,7 @@ public final class BenchlingNotebookService implements NotebookService<Benchling
     LOGGER.info("Creating benchling notebook entry for study: " + study.getCode());
 
     Program program = study.getProgram();
-    BenchlingNotebookEntry programFolder = new BenchlingNotebookEntry(); //programOptional.get();
+    BenchlingNotebookEntry programFolder = new BenchlingNotebookEntry();
     if (program.getAttributes().containsKey(ENTITY_PROPERTY)) {
       programFolder.setEntityId((String) program.getAttributes().get(ENTITY_PROPERTY));
     }
