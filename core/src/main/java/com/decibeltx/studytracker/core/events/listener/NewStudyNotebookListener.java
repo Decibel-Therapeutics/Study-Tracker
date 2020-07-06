@@ -21,6 +21,7 @@ import com.decibeltx.studytracker.core.events.type.StudyEvent;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.notebook.NotebookEntry;
 import com.decibeltx.studytracker.core.notebook.NotebookService;
+import com.decibeltx.studytracker.core.notebook.SimpleNotebookEntry;
 import com.decibeltx.studytracker.core.repository.StudyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ public class NewStudyNotebookListener {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(NewStudyNotebookListener.class);
 
-  @Autowired (required = false)
+  @Autowired(required = false)
   private NotebookService notebookService;
 
   @Autowired
@@ -47,24 +48,37 @@ public class NewStudyNotebookListener {
     if (studyEvent.getEventType().equals(EventType.NEW_STUDY)) {
       Study study = studyEvent.getStudy();
       LOGGER.warn(String.format("TODO: Creating ELN entry for study: %s", study.getCode()));
+
       if (notebookService != null) {
 
-        try {
-
-          NotebookEntry notebookEntry = notebookService.createStudyEntry(study);
+        if (study.isLegacy()) {
+          LOGGER.warn(String.format("Legacy Study : %s", study.getCode()));
+          NotebookEntry notebookEntry = new SimpleNotebookEntry();
+          notebookEntry.setLabel("Benchling");
+          notebookEntry.setUrl(study.getElnUrl());
           study.setNotebookEntry(notebookEntry);
           study.setUpdatedAt(new Date());
           studyRepository.save(study);
+        } else {
 
-        } catch (Exception e) {
-          e.printStackTrace();
-          LOGGER.error("Failed to create notebook entry for study: " + study.getCode());
+          try {
+            NotebookEntry notebookEntry = notebookService.createStudyEntry(study);
+            study.setNotebookEntry(notebookEntry);
+            study.setUpdatedAt(new Date());
+            studyRepository.save(study);
+          } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("Failed to create notebook entry for study: " + study.getCode());
+          }
         }
       } else {
         LOGGER.warn(String.format("No notebook mode selected: "));
 
       }
 
+    } else {
+      LOGGER.warn(String.format("Not New Study"));
     }
   }
 }
+

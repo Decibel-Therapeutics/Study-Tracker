@@ -52,6 +52,8 @@ public class Study implements Persistable<String> {
 
   private String externalCode;
 
+  private String elnUrl;
+
   @NotNull
   private Status status;
 
