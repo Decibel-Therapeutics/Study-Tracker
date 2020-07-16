@@ -37,6 +37,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -68,6 +69,9 @@ public class AuthenticationTests {
   @Autowired
   private ExampleDataGenerator exampleDataGenerator;
 
+  @Autowired
+  private PasswordEncoder passwordEncoder;
+
   @Before
   public void doBefore() {
     exampleDataGenerator.populateDatabase();
@@ -76,6 +80,8 @@ public class AuthenticationTests {
     if (!optional.isPresent()) {
       User user = new User();
       user.setUsername(username);
+      user.setPassword(
+          passwordEncoder.encode(env.getRequiredProperty("security.example.password")));
       user.setDisplayName(username);
       user.setActive(true);
       user.setEmail(username + "@test.com");
