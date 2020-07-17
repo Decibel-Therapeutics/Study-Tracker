@@ -21,16 +21,13 @@ import com.decibeltx.studytracker.core.events.type.StudyEvent;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.notebook.NotebookEntry;
 import com.decibeltx.studytracker.core.notebook.NotebookService;
-import com.decibeltx.studytracker.core.notebook.SimpleNotebookEntry;
 import com.decibeltx.studytracker.core.repository.StudyRepository;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-//import java.util.Optional;
 
 @Component
 public class NewStudyNotebookListener {
@@ -53,14 +50,12 @@ public class NewStudyNotebookListener {
 
         if (study.isLegacy()) {
           LOGGER.warn(String.format("Legacy Study : %s", study.getCode()));
-          NotebookEntry notebookEntry = new SimpleNotebookEntry();
+          NotebookEntry notebookEntry = study.getNotebookEntry();
           notebookEntry.setLabel("Benchling");
-          notebookEntry.setUrl(study.getElnUrl());
           study.setNotebookEntry(notebookEntry);
           study.setUpdatedAt(new Date());
           studyRepository.save(study);
         } else {
-
           try {
             NotebookEntry notebookEntry = notebookService.createStudyEntry(study);
             study.setNotebookEntry(notebookEntry);

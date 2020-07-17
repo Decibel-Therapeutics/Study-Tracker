@@ -18,6 +18,11 @@ package com.decibeltx.studytracker.benchling.eln;
 
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingNotebookEntry;
 import com.decibeltx.studytracker.benchling.eln.entities.EntityList;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -27,13 +32,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 //import java.util.Collections;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class BenchlingRestElnClient implements BenchlingElnOperations {
 
@@ -54,7 +53,7 @@ public class BenchlingRestElnClient implements BenchlingElnOperations {
 
   @Override
   public BenchlingNotebookEntry findEntityById(String entityId) {
-    LOGGER.info("Im here");
+    LOGGER.info("Requesting entity with ID: " + entityId);
     URL url = joinUrls(rootUrl, "/api/v2/folder/");
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Basic " + authenticationToken);
@@ -75,7 +74,7 @@ public class BenchlingRestElnClient implements BenchlingElnOperations {
 
   @Override
   public List<BenchlingNotebookEntry> findEntityChildren(String entityId) {
-    LOGGER.info("Im also here");
+    LOGGER.info("Requesting children of entity with ID: " + entityId);
     URL url = joinUrls(rootUrl, "/api/v2/folder/");
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Basic " + authenticationToken);
@@ -115,13 +114,13 @@ public class BenchlingRestElnClient implements BenchlingElnOperations {
     body.put("name", studyName);
 
     HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-    ResponseEntity<Map> response = restTemplate
-        .exchange(url.toString(), HttpMethod.POST, request, Map.class);
+    ParameterizedTypeReference<Map<String, String>> responseType =
+        new ParameterizedTypeReference<Map<String, String>>() {
+        };
+    ResponseEntity<Map<String, String>> response = restTemplate
+        .exchange(url.toString(), HttpMethod.POST, request, responseType);
 
-    String responseString = response.toString();
-    String start = responseString.substring(responseString.indexOf("id="));
-
-    return start.substring(3,start.indexOf(','));
+    return response.getBody().get("id");
   }
 
   private URL joinUrls(URL root, String path) {
