@@ -40,7 +40,6 @@ public class User implements Persistable<String>, UserDetails {
   @NotNull
   private String username;
 
-  @NotNull
   private String password;
 
   private String department;
@@ -51,6 +50,7 @@ public class User implements Persistable<String>, UserDetails {
   private String displayName;
 
   @NotNull
+  @Indexed(unique = true)
   private String email;
 
   private boolean admin = false;
