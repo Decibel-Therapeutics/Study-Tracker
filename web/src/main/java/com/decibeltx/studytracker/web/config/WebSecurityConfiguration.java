@@ -133,8 +133,8 @@ public class WebSecurityConfiguration {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserAuthenticationSuccessHandler userAuthenticationSuccessHandler;
+//    @Autowired
+//    private UserAuthenticationSuccessHandler userAuthenticationSuccessHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -156,7 +156,10 @@ public class WebSecurityConfiguration {
           .permitAll()
           .and()
           .formLogin()
-          .successHandler(userAuthenticationSuccessHandler)
+          .loginPage("/login")
+          //.loginProcessingUrl("/authenticate")
+          //.failureUrl("/login?error=true")
+          //.successHandler(userAuthenticationSuccessHandler)
           .defaultSuccessUrl("/")
           .permitAll()
           .and()

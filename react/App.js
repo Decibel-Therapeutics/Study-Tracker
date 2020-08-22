@@ -34,6 +34,7 @@ import ProgramFormView from "./views/ProgramFormView";
 import UserListView from "./views/UserListView";
 import UserDetailsView from "./views/UserDetailsView";
 import UserFormView from "./views/UserFormView";
+import SignInView from "./views/SignInView";
 
 export const history = createBrowserHistory();
 
@@ -119,6 +120,10 @@ export default class App extends React.Component {
                   {/*Edit User*/}
                   <Route exact path={"/users/:userId/edit"}
                          render={props => <UserFormView {...props} />}/>
+
+                  {/* Sign in */}
+                  <Route exact path={"/login"}
+                         render={props => <SignInView {...props} />}/>
 
                   {/*404*/}
                   <Route render={props => <Error {...props} code={404}/>}/>
