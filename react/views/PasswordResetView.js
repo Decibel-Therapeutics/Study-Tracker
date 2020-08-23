@@ -33,31 +33,44 @@ import NoNavWrapper from "../structure/NoNavWrapper";
 
 const qs = require('qs');
 
-export default class SignInView extends React.Component {
+export default class PasswordResetView extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      auth: {}
+      auth: {},
+      inputIsValid: false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleInputChange(data) {
+    const auth = {
+      ...this.state.auth,
+      ...data
+    };
+    let inputIsValid = false;
+    if (auth.username != null && auth.username !== '' && auth.password != null
+        && auth.password !== '' && auth.passwordAgain != null
+        && auth.passwordAgain !== '' && auth.password === auth.passwordAgain) {
+      inputIsValid = true;
+    }
     this.setState({
-      auth: {
-        ...this.state.auth,
-        ...data
-      }
+      auth,
+      inputIsValid
     });
+  }
+
+  handleSubmit() {
+
   }
 
   render() {
 
     const params = qs.parse(this.props.location.search,
         {ignoreQueryPrefix: true});
-    const isError = params.hasOwnProperty("error");
-    const message = params.message || null;
+    let isError = params.hasOwnProperty("error");
 
     return (
         <NoNavWrapper>
@@ -66,9 +79,9 @@ export default class SignInView extends React.Component {
               <Col xs="12" sm="8" md="8" lg="6" xl="4">
 
                 <div className="text-center mt-4">
-                  <h2>Welcome to Study Tracker</h2>
-                  <p className="lead">Sign in with your username and password to
-                    continue</p>
+                  <h2>Password Reset</h2>
+                  <p className="lead">Please enter your username and a new
+                    password.</p>
                 </div>
 
                 <Card>
@@ -79,7 +92,7 @@ export default class SignInView extends React.Component {
                         <User size={80} className="align-middle mr-2"/>
                       </div>
 
-                      <Form action={"/login"} method={"post"}>
+                      <Form action={"/auth/passwordreset"} method={"post"}>
 
                         <FormGroup>
                           <Label>Username</Label>
@@ -105,31 +118,25 @@ export default class SignInView extends React.Component {
                           />
                         </FormGroup>
 
-                        <div className="text-center mt-3">
-                          <small>
-                            <a href="/auth/passwordreset">Forgot password?</a>
-                          </small>
-                        </div>
-
-                        {
-                          !!message
-                              ? (
-                                  <div className="text-center mt-3">
-                                    <Alert color="success" className="p-3">
-                                      {message}
-                                    </Alert>
-                                  </div>
-                              )
-                              : ''
-                        }
+                        <FormGroup>
+                          <Label>Password Again</Label>
+                          <Input
+                              bsSize="lg"
+                              type="password"
+                              name="passwordAgain"
+                              placeholder="Enter your password a second time"
+                              onChange={e => this.handleInputChange(
+                                  {passwordAgain: e.target.value})}
+                          />
+                        </FormGroup>
 
                         {
                           isError
                               ? (
                                   <div className="text-center mt-3">
                                     <Alert color="danger" className="p-3">
-                                      Failed to sign you in. Please check your
-                                      credentials and try again.
+                                      Failed to reset your password. Please try
+                                      again.
                                     </Alert>
                                   </div>
                               )
@@ -141,9 +148,12 @@ export default class SignInView extends React.Component {
                             Cancel
                           </a>
                           &nbsp;&nbsp;
-                          <button className="btn btn-lg btn-primary"
-                                  type="submit">
-                            Sign In
+                          <button
+                              className="btn btn-lg btn-primary"
+                              type="submit"
+                              disabled={!this.state.inputIsValid}
+                          >
+                            Submit
                           </button>
                         </div>
 

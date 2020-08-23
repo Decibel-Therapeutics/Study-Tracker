@@ -35,6 +35,7 @@ import UserListView from "./views/UserListView";
 import UserDetailsView from "./views/UserDetailsView";
 import UserFormView from "./views/UserFormView";
 import SignInView from "./views/SignInView";
+import PasswordResetView from "./views/PasswordResetView";
 
 export const history = createBrowserHistory();
 
@@ -124,6 +125,9 @@ export default class App extends React.Component {
                   {/* Sign in */}
                   <Route exact path={"/login"}
                          render={props => <SignInView {...props} />}/>
+
+                  <Route exact path={"/auth/passwordreset"}
+                         render={props => <PasswordResetView {...props} />}/>
 
                   {/*404*/}
                   <Route render={props => <Error {...props} code={404}/>}/>
