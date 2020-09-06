@@ -24,12 +24,12 @@ import com.decibeltx.studytracker.core.model.Collaborator;
 import com.decibeltx.studytracker.core.model.Comment;
 import com.decibeltx.studytracker.core.model.Conclusions;
 import com.decibeltx.studytracker.core.model.ExternalLink;
+import com.decibeltx.studytracker.core.model.NotebookEntry;
 import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.Task;
 import com.decibeltx.studytracker.core.model.User;
-import com.decibeltx.studytracker.core.notebook.SimpleNotebookEntry;
 import com.decibeltx.studytracker.core.repository.ActivityRepository;
 import com.decibeltx.studytracker.core.repository.AssayRepository;
 import com.decibeltx.studytracker.core.repository.CollaboratorRepository;
@@ -269,7 +269,7 @@ public class ExampleDataGenerator {
     study.setUsers(Collections.singletonList(user));
     study.setCollaborator(collaborator);
     study.setExternalCode(collaborator.getCode() + "-00001");
-    SimpleNotebookEntry notebookEntry = new SimpleNotebookEntry();
+    NotebookEntry notebookEntry = new NotebookEntry();
     notebookEntry.setLabel("IDBS ELN");
     notebookEntry.setUrl(
         "https://decibel.idbs-eworkbook.com:8443/EWorkbookWebApp/#entity/displayEntity?entityId=603e68c0e01411e7acd000000a0000a2&v=y");
@@ -301,7 +301,7 @@ public class ExampleDataGenerator {
     study.setStartDate(new Date());
     study.setOwner(user);
     study.setUsers(Collections.singletonList(user));
-    notebookEntry = new SimpleNotebookEntry();
+    notebookEntry = new NotebookEntry();
     notebookEntry.setLabel("ELN");
     notebookEntry.setUrl(
         "https://google.com");
@@ -346,7 +346,7 @@ public class ExampleDataGenerator {
     study.setEndDate(new Date());
     study.setOwner(user);
     study.setUsers(Collections.singletonList(user));
-    notebookEntry = new SimpleNotebookEntry();
+    notebookEntry = new NotebookEntry();
     notebookEntry.setLabel("ELN");
     notebookEntry.setUrl(
         "https://google.com");

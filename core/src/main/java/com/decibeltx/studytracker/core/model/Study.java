@@ -17,7 +17,6 @@
 package com.decibeltx.studytracker.core.model;
 
 import com.decibeltx.studytracker.core.keyword.Keyword;
-import com.decibeltx.studytracker.core.notebook.NotebookEntry;
 import com.decibeltx.studytracker.core.storage.StorageFolder;
 import java.net.URL;
 import java.util.ArrayList;

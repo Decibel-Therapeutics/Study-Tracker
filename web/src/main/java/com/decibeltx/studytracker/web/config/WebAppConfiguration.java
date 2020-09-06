@@ -16,16 +16,12 @@
 
 package com.decibeltx.studytracker.web.config;
 
-import com.decibeltx.studytracker.benchling.eln.entities.BenchlingNotebookEntry;
-import com.decibeltx.studytracker.core.notebook.NotebookEntry;
-import com.decibeltx.studytracker.core.notebook.SimpleNotebookEntry;
 import com.decibeltx.studytracker.core.storage.BasicStorageFile;
 import com.decibeltx.studytracker.core.storage.BasicStorageFolder;
 import com.decibeltx.studytracker.core.storage.StorageFile;
 import com.decibeltx.studytracker.core.storage.StorageFolder;
 import com.decibeltx.studytracker.egnyte.entity.EgnyteFile;
 import com.decibeltx.studytracker.egnyte.entity.EgnyteFolder;
-import com.decibeltx.studytracker.idbs.eln.entities.IdbsNotebookEntry;
 import com.decibeltx.studytracker.web.service.FileSystemStorageService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,22 +78,6 @@ public class WebAppConfiguration {
           .addAbstractTypeMapping(StorageFile.class, BasicStorageFile.class));
       objectMapper.registerModule(new SimpleModule()
           .addAbstractTypeMapping(StorageFolder.class, BasicStorageFolder.class));
-    }
-
-    // ELN
-    if (env.containsProperty("notebook.mode")
-        && env.getRequiredProperty("notebook.mode").equals("idbs")) {
-      objectMapper.registerModule(
-          new SimpleModule().addAbstractTypeMapping(NotebookEntry.class, IdbsNotebookEntry.class));
-    } else if (env.containsProperty("notebook.mode")
-        && env.getRequiredProperty("notebook.mode").equals("benchling")) {
-      objectMapper.registerModule(
-          new SimpleModule()
-              .addAbstractTypeMapping(NotebookEntry.class, BenchlingNotebookEntry.class));
-    } else {
-      objectMapper.registerModule(
-          new SimpleModule()
-              .addAbstractTypeMapping(NotebookEntry.class, SimpleNotebookEntry.class));
     }
 
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

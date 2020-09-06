@@ -17,7 +17,6 @@
 package com.decibeltx.studytracker.benchling.eln;
 
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingNotebookEntry;
-
 import java.util.List;
 
 public interface BenchlingElnOperations {

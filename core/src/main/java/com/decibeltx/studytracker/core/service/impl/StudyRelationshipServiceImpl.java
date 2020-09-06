@@ -16,7 +16,6 @@
 
 package com.decibeltx.studytracker.core.service.impl;
 
-import com.decibeltx.studytracker.core.events.StudyEventPublisher;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.StudyRelationship;
 import com.decibeltx.studytracker.core.model.StudyRelationship.Type;
@@ -32,9 +31,6 @@ public class StudyRelationshipServiceImpl implements StudyRelationshipService {
 
   @Autowired
   private StudyRepository studyRepository;
-
-  @Autowired
-  private StudyEventPublisher studyEventPublisher;
 
   @Override
   public List<StudyRelationship> getStudyRelationships(Study study) {
@@ -89,10 +85,6 @@ public class StudyRelationshipServiceImpl implements StudyRelationshipService {
     studyRepository.save(sourceStudy);
     studyRepository.save(targetStudy);
 
-    studyEventPublisher.publishNewRelationshipEvent(sourceStudy, sourceStudy.getLastModifiedBy(),
-        sourceRelationship);
-    studyEventPublisher.publishNewRelationshipEvent(targetStudy, targetStudy.getLastModifiedBy(),
-        targetRelationship);
   }
 
   @Override
@@ -112,10 +104,6 @@ public class StudyRelationshipServiceImpl implements StudyRelationshipService {
     studyRepository.save(sourceStudy);
     studyRepository.save(targetStudy);
 
-    studyEventPublisher
-        .publishDeletedRelationshipEvent(sourceStudy, sourceStudy.getLastModifiedBy());
-    studyEventPublisher
-        .publishDeletedRelationshipEvent(targetStudy, targetStudy.getLastModifiedBy());
   }
 
 }

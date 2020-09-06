@@ -16,29 +16,29 @@
 
 package com.decibeltx.studytracker.benchling.eln.entities;
 
-import com.decibeltx.studytracker.core.notebook.SimpleNotebookEntry;
+import com.decibeltx.studytracker.core.model.NotebookEntry;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
 import java.util.Map;
+import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BenchlingNotebookEntry extends SimpleNotebookEntry {
+public class BenchlingNotebookEntry extends NotebookEntry {
 
 
   private String folderId;
 
-
-
-
-
   private String entityId;
+
   private String visibileUniqueId;
+
   private String viewableInEntityId;
+
   private String entityTypeName;
+
   private String nodeDisplayText;
+
   private String entityName;
 
   @SuppressWarnings("PMD")

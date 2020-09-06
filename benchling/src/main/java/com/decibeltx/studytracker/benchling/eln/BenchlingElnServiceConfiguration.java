@@ -18,6 +18,7 @@ package com.decibeltx.studytracker.benchling.eln;
 
 import com.decibeltx.studytracker.benchling.exception.BenchlingExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -28,8 +29,6 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
-
-import java.net.URL;
 
 @Configuration
 @ConditionalOnProperty(name = "notebook.mode", havingValue = "benchling")

@@ -17,10 +17,12 @@
 package com.decibeltx.studytracker.web.controller.api;
 
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.StudyRelationship;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.service.StudyRelationshipService;
+import com.decibeltx.studytracker.core.service.util.StudyActivityUtils;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
 import java.util.List;
 import org.slf4j.Logger;
@@ -69,6 +71,17 @@ public class StudyRelationshipsController extends StudyController {
     targetStudy.setLastModifiedBy(user);
     studyRelationshipService
         .addStudyRelationship(sourceStudy, targetStudy, studyRelationship.getType());
+
+    // Publish events
+    Activity sourceActivity = StudyActivityUtils
+        .fromNewStudyRelationship(sourceStudy, user, studyRelationship);
+    getActivityService().create(sourceActivity);
+    getEventsService().dispatchEvent(sourceActivity);
+    Activity targetActivity = StudyActivityUtils
+        .fromNewStudyRelationship(targetStudy, user, studyRelationship);
+    getActivityService().create(targetActivity);
+    getEventsService().dispatchEvent(targetActivity);
+
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
@@ -84,6 +97,15 @@ public class StudyRelationshipsController extends StudyController {
     Study targetStudy = getStudyFromIdentifier(studyRelationship.getStudyId());
     targetStudy.setLastModifiedBy(user);
     studyRelationshipService.removeStudyRelationship(sourceStudy, targetStudy);
+
+    // Publish events
+    Activity sourceActivity = StudyActivityUtils.fromDeletedStudyRelationship(sourceStudy, user);
+    getActivityService().create(sourceActivity);
+    getEventsService().dispatchEvent(sourceActivity);
+    Activity targetActivity = StudyActivityUtils.fromDeletedStudyRelationship(targetStudy, user);
+    getActivityService().create(targetActivity);
+    getEventsService().dispatchEvent(targetActivity);
+
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
