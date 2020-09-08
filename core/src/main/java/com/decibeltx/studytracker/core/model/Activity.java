@@ -18,6 +18,7 @@ package com.decibeltx.studytracker.core.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
@@ -27,16 +28,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "activity")
 public class Activity {
 
+  @Id
+  private String id;
+
   private Reference reference;
 
   private String referenceId;
 
   private EventType eventType;
 
-  private Map<String, Object> data;
-
-  @Id
-  private String id;
+  private Map<String, Object> data = new HashMap<>();
 
   @Linked(model = User.class)
   @NotNull
@@ -44,6 +45,8 @@ public class Activity {
   private User user;
 
   private Date date;
+
+  /* Getters and Setters */
 
   public User getUser() {
     return user;
@@ -109,7 +112,8 @@ public class Activity {
   public enum Reference {
     STUDY,
     ASSAY,
-    PROGRAM
+    PROGRAM,
+    USER
   }
 
 }

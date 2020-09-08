@@ -30,7 +30,7 @@ public class EventBridgeService implements EventsService {
   public void dispatchEvent(Activity activity) {
     String json;
     try {
-      json = objectMapper.writeValueAsString(activity.getData());
+      json = objectMapper.writeValueAsString(activity);
     } catch (JsonProcessingException e) {
       throw new StudyTrackerException(e);
     }

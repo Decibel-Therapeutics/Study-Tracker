@@ -1,4 +1,4 @@
-package com.decibeltx.studytracker.core.service.util;
+package com.decibeltx.studytracker.core.events.util;
 
 import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.model.Activity.Reference;
@@ -19,8 +19,7 @@ public class ProgramActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("name", program.getName());
-    data.put("code", program.getCode());
+    data.put("program", program);
     activity.setData(data);
     return activity;
   }
@@ -33,8 +32,7 @@ public class ProgramActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("name", program.getName());
-    data.put("code", program.getCode());
+    data.put("program", program);
     activity.setData(data);
     return activity;
   }
@@ -47,8 +45,7 @@ public class ProgramActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("name", program.getName());
-    data.put("code", program.getCode());
+    data.put("program", program);
     activity.setData(data);
     return activity;
   }

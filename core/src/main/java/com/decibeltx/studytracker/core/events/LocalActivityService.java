@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.core.service.impl;
+package com.decibeltx.studytracker.core.events;
 
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.model.Activity;
@@ -33,10 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
-@Service
-public class ActivityServiceImpl implements ActivityService {
+public class LocalActivityService implements ActivityService {
 
   @Autowired
   private ActivityRepository activityRepository;

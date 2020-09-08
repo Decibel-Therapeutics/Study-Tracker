@@ -16,6 +16,7 @@
 
 package com.decibeltx.studytracker.web.controller.api;
 
+import com.decibeltx.studytracker.core.events.util.ProgramActivityUtils;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.model.Program;
@@ -24,7 +25,6 @@ import com.decibeltx.studytracker.core.service.ActivityService;
 import com.decibeltx.studytracker.core.service.EventsService;
 import com.decibeltx.studytracker.core.service.ProgramService;
 import com.decibeltx.studytracker.core.service.UserService;
-import com.decibeltx.studytracker.core.service.util.ProgramActivityUtils;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
 import java.util.List;
 import java.util.Optional;

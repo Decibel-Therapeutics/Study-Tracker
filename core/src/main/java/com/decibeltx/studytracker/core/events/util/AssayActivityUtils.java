@@ -1,4 +1,4 @@
-package com.decibeltx.studytracker.core.service.util;
+package com.decibeltx.studytracker.core.events.util;
 
 import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.model.Activity.Reference;
@@ -20,8 +20,7 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("name", assay.getName());
-    data.put("code", assay.getCode());
+    data.put("assay", assay);
     activity.setData(data);
     return activity;
   }
@@ -34,8 +33,7 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("name", assay.getName());
-    data.put("code", assay.getCode());
+    data.put("assay", assay);
     activity.setData(data);
     return activity;
   }
@@ -48,8 +46,7 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("name", assay.getName());
-    data.put("code", assay.getCode());
+    data.put("assay", assay);
     activity.setData(data);
     return activity;
   }
@@ -63,8 +60,7 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("code", assay.getCode());
-    data.put("name", assay.getName());
+    data.put("assay", assay);
     data.put("oldStatus", oldStatus);
     data.put("newStatus", newStatus);
     activity.setData(data);

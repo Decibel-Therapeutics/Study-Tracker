@@ -33,6 +33,9 @@ public enum EventType {
   //Program Events
   NEW_PROGRAM,
   UPDATED_PROGRAM,
-  DELETED_PROGRAM
+  DELETED_PROGRAM,
+
+  // Users
+  NEW_USER
 
 }
