@@ -16,17 +16,17 @@
 
 package com.decibeltx.studytracker.core.service.impl;
 
+import com.decibeltx.studytracker.core.eln.NotebookFolder;
+import com.decibeltx.studytracker.core.eln.StudyNotebookService;
 import com.decibeltx.studytracker.core.exception.DuplicateRecordException;
 import com.decibeltx.studytracker.core.exception.InvalidConstraintException;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.exception.StudyTrackerException;
 import com.decibeltx.studytracker.core.model.Collaborator;
-import com.decibeltx.studytracker.core.model.NotebookEntry;
 import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.repository.StudyRepository;
-import com.decibeltx.studytracker.core.service.NotebookService;
 import com.decibeltx.studytracker.core.service.ProgramService;
 import com.decibeltx.studytracker.core.service.StudyService;
 import com.decibeltx.studytracker.core.storage.StorageFolder;
@@ -58,7 +58,7 @@ public class StudyServiceImpl implements StudyService {
   private StudyStorageService studyStorageService;
 
   @Autowired(required = false)
-  private NotebookService notebookService;
+  private StudyNotebookService notebookService;
 
   @Autowired
   private Environment environment;
@@ -145,16 +145,16 @@ public class StudyServiceImpl implements StudyService {
     LOGGER.warn(String.format("Creating ELN entry for study: %s", study.getCode()));
     if (study.isLegacy()) {
       LOGGER.warn(String.format("Legacy Study : %s", study.getCode()));
-      NotebookEntry notebookEntry = study.getNotebookEntry();
-      notebookEntry.setLabel("Benchling");
-      study.setNotebookEntry(notebookEntry);
+      NotebookFolder notebookFolder = study.getNotebookFolder();
+      notebookFolder.setName("Benchling");
+      study.setNotebookFolder(notebookFolder);
       study.setUpdatedAt(new Date());
       studyRepository.save(study);
     } else {
       if (notebookService != null) {
         try {
-          NotebookEntry notebookEntry = notebookService.createStudyEntry(study);
-          study.setNotebookEntry(notebookEntry);
+          NotebookFolder notebookFolder = notebookService.createStudyFolder(study);
+          study.setNotebookFolder(notebookFolder);
           study.setUpdatedAt(new Date());
           studyRepository.save(study);
         } catch (Exception e) {

@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.core.service;
+package com.decibeltx.studytracker.core.eln;
 
-import com.decibeltx.studytracker.core.exception.NotebookException;
+
 import com.decibeltx.studytracker.core.model.Assay;
-import com.decibeltx.studytracker.core.model.NotebookEntry;
 import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.Study;
-import java.util.Optional;
 
-public interface NotebookService {
+public class NotebookUtils {
 
-  Optional<NotebookEntry> findProgramEntry(Program program);
+  public static String getProgramFolderName(Program program) {
+    return program.getName();
+  }
 
-  Optional<NotebookEntry> findStudyEntry(Study study);
+  public static String getStudyFolderName(Study study) {
+    return study.getName() + " (" + study.getCode() + ")";
+  }
 
-  Optional<NotebookEntry> findAssayEntry(Assay assay);
-
-  NotebookEntry createProgramEntry(Program program) throws NotebookException;
-
-  NotebookEntry createStudyEntry(Study study) throws NotebookException;
-
-  NotebookEntry createAssayEntry(Assay assay) throws NotebookException;
+  public static String getAssayFolderName(Assay assay) {
+    return assay.getName() + " (" + assay.getCode() + ")";
+  }
 
 }

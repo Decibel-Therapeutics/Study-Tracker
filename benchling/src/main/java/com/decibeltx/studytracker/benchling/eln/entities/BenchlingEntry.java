@@ -14,30 +14,36 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.core.model;
+package com.decibeltx.studytracker.benchling.eln.entities;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import lombok.Data;
 
 @Data
-public class NotebookEntry {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class BenchlingEntry {
 
-  private String url;
+  private BenchlingArchiveRecord archiveRecord;
 
-  private String label;
+  private List<BenchlingUser> authors = new ArrayList<>();
 
-  private String referenceId;
+  private Date createdAt;
 
-  private Map<String, Object> attributes = new HashMap<>();
+  private BenchlingUser creator;
 
-  public void setUrl(URL url) {
-    this.url = url.toString();
-  }
+  private String folderId;
 
-  public void setUrl(String string) {
-    this.url = url;
-  }
+  private String id;
+
+  private String name;
+
+  private Date modifiedAt;
+
+  private Object schema;
+
+  private String webURL;
 
 }

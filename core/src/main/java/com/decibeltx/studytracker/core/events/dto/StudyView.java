@@ -1,6 +1,9 @@
-package com.decibeltx.studytracker.core.model;
+package com.decibeltx.studytracker.core.events.dto;
 
 import com.decibeltx.studytracker.core.keyword.Keyword;
+import com.decibeltx.studytracker.core.model.Status;
+import com.decibeltx.studytracker.core.model.Study;
+import com.decibeltx.studytracker.core.model.User;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

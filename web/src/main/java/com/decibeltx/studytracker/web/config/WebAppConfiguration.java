@@ -16,16 +16,9 @@
 
 package com.decibeltx.studytracker.web.config;
 
-import com.decibeltx.studytracker.core.storage.BasicStorageFile;
-import com.decibeltx.studytracker.core.storage.BasicStorageFolder;
-import com.decibeltx.studytracker.core.storage.StorageFile;
-import com.decibeltx.studytracker.core.storage.StorageFolder;
-import com.decibeltx.studytracker.egnyte.entity.EgnyteFile;
-import com.decibeltx.studytracker.egnyte.entity.EgnyteFolder;
 import com.decibeltx.studytracker.web.service.FileSystemStorageService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.nio.file.Paths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -63,27 +56,9 @@ public class WebAppConfiguration {
   @Bean
   @Primary
   public ObjectMapper objectMapper() {
-
     ObjectMapper objectMapper = new ObjectMapper();
-
-    // Storage
-    if (env.containsProperty("storage.mode")
-        && env.getRequiredProperty("storage.mode").equals("egnyte")) {
-      objectMapper.registerModule(
-          new SimpleModule().addAbstractTypeMapping(StorageFile.class, EgnyteFile.class));
-      objectMapper.registerModule(
-          new SimpleModule().addAbstractTypeMapping(StorageFolder.class, EgnyteFolder.class));
-    } else {
-      objectMapper.registerModule(new SimpleModule()
-          .addAbstractTypeMapping(StorageFile.class, BasicStorageFile.class));
-      objectMapper.registerModule(new SimpleModule()
-          .addAbstractTypeMapping(StorageFolder.class, BasicStorageFolder.class));
-    }
-
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
     return objectMapper;
-
   }
 
 }

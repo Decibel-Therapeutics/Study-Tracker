@@ -90,8 +90,9 @@ public class BenchlingElnServiceConfiguration {
   }
 
   @Bean
-  public BenchlingRestElnClient BenchlingRestElnClient(BenchlingElnOptions options) throws Exception {
-    return new BenchlingRestElnClient(
+  public BenchlingElnRestClient BenchlingRestElnClient(BenchlingElnOptions options)
+      throws Exception {
+    return new BenchlingElnRestClient(
         BenchlingElnRestTemplate(),
         options.getRootUrl(),
         options.getApiToken()

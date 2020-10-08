@@ -16,120 +16,150 @@
 
 package com.decibeltx.studytracker.benchling.eln;
 
-import com.decibeltx.studytracker.benchling.eln.entities.BenchlingNotebookEntry;
+import com.decibeltx.studytracker.benchling.eln.entities.BenchlingFolder;
+import com.decibeltx.studytracker.benchling.exception.BenchlingException;
 import com.decibeltx.studytracker.benchling.exception.EntityNotFoundException;
+import com.decibeltx.studytracker.core.eln.NotebookFolder;
+import com.decibeltx.studytracker.core.eln.NotebookUtils;
+import com.decibeltx.studytracker.core.eln.StudyNotebookService;
 import com.decibeltx.studytracker.core.exception.NotebookException;
 import com.decibeltx.studytracker.core.model.Assay;
 import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.Study;
-import com.decibeltx.studytracker.core.service.NotebookService;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public final class BenchlingNotebookService implements NotebookService<BenchlingNotebookEntry> {
+public final class BenchlingNotebookService implements StudyNotebookService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BenchlingNotebookService.class);
-  private static final String ENTITY_PROPERTY = "benchlingELNEntity";
+
 
   @Autowired
-  private BenchlingRestElnClient client;
+  private BenchlingElnRestClient client;
 
   @Autowired
   private BenchlingElnOptions options;
 
-  private static String getProgramFolderName(Program program) {
-    return program.getName();
+  private String createFolderUrl(BenchlingFolder folder) {
+    return options.getRootFolderUrl() + "/" + folder.getId().replace("lib_", "") + "-"
+        + folder.getName().toLowerCase()
+        .replaceAll(" ", "-")
+        .replaceAll("[^A-Za-z0-9-_\\s()]+", "")
+        .replaceAll("[\\()]", "")
+        .trim();
   }
 
-  private static String getStudyFolderName(Study study) {
-    return study.getName() + " (" + study.getCode() + ")";
+  private NotebookFolder convertFolder(BenchlingFolder folder) {
+    NotebookFolder notebookFolder = new NotebookFolder();
+    notebookFolder.setName(folder.getName());
+    notebookFolder.setReferenceId(folder.getId());
+    notebookFolder.setUrl(this.createFolderUrl(folder));
+    notebookFolder.getAttributes().put("projectId", folder.getProjectId());
+    return notebookFolder;
   }
 
   @Override
-  public Optional<BenchlingNotebookEntry> findProgramEntry(Program program) {
+  public Optional<NotebookFolder> findProgramFolder(Program program) {
     LOGGER.info("Fetching benchling notebook entry for program: " + program.getName());
-    if (program.getAttributes().containsKey(ENTITY_PROPERTY)) {
-      return Optional
-          .of(client.findEntityById((String) program.getAttributes().get(ENTITY_PROPERTY)));
-    } else {
-      return client.findEntityChildren(options.getRootEntity()).stream()
-          .filter(e -> e.getEntityName().equals(getProgramFolderName(program)))
-          .findFirst();
+    NotebookFolder notebookFolder = null;
+    String folderName = NotebookUtils.getProgramFolderName(program);
+    Optional<BenchlingFolder> optional = client.findRootFolders().stream()
+        .filter(f -> f.getName().equals(folderName))
+        .findFirst();
+    if (optional.isPresent()) {
+      notebookFolder = this.convertFolder(optional.get());
     }
+    return Optional.ofNullable(notebookFolder);
   }
 
   @Override
-  public Optional<BenchlingNotebookEntry> findStudyEntry(Study study) {
+  public Optional<NotebookFolder> findStudyFolder(Study study) {
     LOGGER.info("Fetching notebook entry for study: " + study.getCode());
-    if (study.getAttributes().containsKey(ENTITY_PROPERTY)) {
-      return Optional
-          .of(client.findEntityById((String) study.getAttributes().get(ENTITY_PROPERTY)));
-    } else {
-      Optional<BenchlingNotebookEntry> programOptional = this.findProgramEntry(study.getProgram());
-      if (!programOptional.isPresent()) {
-        throw new EntityNotFoundException("Program notebook entry not found: "
-            + study.getProgram().getName());
-      }
-      BenchlingNotebookEntry programFolder = programOptional.get();
-      return client.findEntityChildren(programFolder.getEntityId()).stream()
-          .filter(e -> e.getEntityName().equals(getStudyFolderName(study)))
-          .findFirst();
+    Optional<NotebookFolder> programFolderOptional = this.findProgramFolder(study.getProgram());
+    if (!programFolderOptional.isPresent()) {
+      throw new EntityNotFoundException("Cannot find program folder for study: " + study.getCode());
     }
-  }
+    NotebookFolder programFolder = programFolderOptional.get();
+    NotebookFolder notebookFolder = null;
 
-  @Override
-  public Optional<BenchlingNotebookEntry> findAssayEntry(Assay assay) {
-    LOGGER.warn("Method not implemented.");
-    return Optional.empty();
-  }
-
-  @Override
-  public BenchlingNotebookEntry createProgramEntry(Program program) throws NotebookException {
-    LOGGER.warn("Method not implemented.");
-    return null;
-  }
-
-  @Override
-  public BenchlingNotebookEntry createStudyEntry(Study study) throws NotebookException {
-    LOGGER.info("Creating benchling notebook entry for study: " + study.getCode());
-
-    Program program = study.getProgram();
-    BenchlingNotebookEntry programFolder = new BenchlingNotebookEntry();
-    if (program.getAttributes().containsKey(ENTITY_PROPERTY)) {
-      programFolder.setEntityId((String) program.getAttributes().get(ENTITY_PROPERTY));
+    Optional<BenchlingFolder> optional = client.findFolderChildren(programFolder.getReferenceId())
+        .stream()
+        .filter(f -> f.getName().equals(NotebookUtils.getStudyFolderName(study)))
+        .findFirst();
+    if (optional.isPresent()) {
+      notebookFolder = this.convertFolder(optional.get());
+      notebookFolder.setParentFolder(programFolder);
     }
-    BenchlingNotebookEntry studyEntry = new BenchlingNotebookEntry();
-    String studyEntityId = client.createStudyFolder(getStudyFolderName(study), programFolder.getEntityId());
+    return Optional.ofNullable(notebookFolder);
+  }
 
-    studyEntry.setFolderId(studyEntityId);
-    LOGGER.info("Created study entity id: " + studyEntityId);
-    final String entityHead = "lib_";
-    final int entityHeadSize = entityHead.length();
-    String entityIdForURL = studyEntityId.substring(entityHeadSize);
+  @Override
+  public Optional<NotebookFolder> findAssayFolder(Assay assay) {
+    LOGGER.info("Fetching notebook entry for assay: " + assay.getCode());
+    Optional<NotebookFolder> studyFolderOptional = this.findStudyFolder(assay.getStudy());
+    if (!studyFolderOptional.isPresent()) {
+      throw new EntityNotFoundException("Cannot find study folder for assay: " + assay.getCode());
+    }
+    NotebookFolder studyFolder = studyFolderOptional.get();
+    NotebookFolder notebookFolder = null;
 
-    //lower case, replase spaces with - and remove ':'
-    String name = getStudyFolderName(study)
-            .toLowerCase()
-            .replaceAll(" ","-")
-            .replaceAll("[^A-Za-z0-9-_\\s()]+", "")
-            .replaceAll("[\\()]","")
-            .trim();
+    Optional<BenchlingFolder> optional = client.findFolderChildren(studyFolder.getReferenceId())
+        .stream()
+        .filter(f -> f.getName().equals(NotebookUtils.getAssayFolderName(assay)))
+        .findFirst();
+    if (optional.isPresent()) {
+      notebookFolder = this.convertFolder(optional.get());
+      notebookFolder.setParentFolder(studyFolder);
+    }
+    return Optional.ofNullable(notebookFolder);
+  }
 
-    String urlBase = options.getRootFolderUrl();
-    String transformedURL = urlBase+entityIdForURL+'-'+name;
-    studyEntry.setLabel("Benchling");
-    studyEntry.setUrl(transformedURL);
+  @Override
+  public NotebookFolder createProgramFolder(Program program) throws NotebookException {
+    LOGGER.info("Method not implemented.");
+    throw new BenchlingException(
+        "Benchling does not support creating project folders via the API.");
+  }
 
+  @Override
+  public NotebookFolder createStudyFolder(Study study) throws NotebookException {
+    LOGGER.info("Creating Benchling folder for study: " + study.getCode());
 
-    return studyEntry;
+    Optional<NotebookFolder> programFolderOptional = this.findProgramFolder(study.getProgram());
+    if (!programFolderOptional.isPresent()) {
+      throw new EntityNotFoundException(
+          "Could not find folder for program: " + study.getProgram().getName());
+    }
+    NotebookFolder programFolder = programFolderOptional.get();
+
+    BenchlingFolder benchlingFolder = client
+        .createFolder(NotebookUtils.getStudyFolderName(study), programFolder.getReferenceId());
+    NotebookFolder studyFolder = this.convertFolder(benchlingFolder);
+    studyFolder.setParentFolder(programFolder);
+    return studyFolder;
+
   }
 
 
   @Override
-  public BenchlingNotebookEntry createAssayEntry(Assay assay) throws NotebookException {
-    LOGGER.warn("Method not implemented.");
-    return null;
+  public NotebookFolder createAssayFolder(Assay assay) throws NotebookException {
+    LOGGER.info("Creating Benchling folder for assay: " + assay.getCode());
+
+    Optional<NotebookFolder> studyFolderOptional = this.findStudyFolder(assay.getStudy());
+    if (!studyFolderOptional.isPresent()) {
+      throw new EntityNotFoundException(
+          "Could not find folder for study: " + assay.getStudy().getCode());
+    }
+    NotebookFolder studyFolder = studyFolderOptional.get();
+
+    BenchlingFolder benchlingFolder = client
+        .createFolder(NotebookUtils.getAssayFolderName(assay), studyFolder.getReferenceId());
+    NotebookFolder assayFolder = this.convertFolder(benchlingFolder);
+    assayFolder.setParentFolder(studyFolder);
+
+    return assayFolder;
+
   }
 }

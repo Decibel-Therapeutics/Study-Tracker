@@ -22,31 +22,25 @@
 
     <dependency>
       <groupId>com.decibeltx</groupId>
-      <artifactId>study-tracker-teams</artifactId>
-      <version>${parent.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.decibeltx</groupId>
       <artifactId>study-tracker-egnyte</artifactId>
       <version>${parent.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.decibeltx</groupId>
-      <artifactId>study-tracker-idbs</artifactId>
+      <artifactId>study-tracker-benchling</artifactId>
       <version>${parent.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.decibeltx</groupId>
-      <artifactId>study-tracker-ldap</artifactId>
+      <artifactId>study-tracker-aws</artifactId>
       <version>${parent.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.decibeltx</groupId>
-      <artifactId>study-tracker-doc-writer</artifactId>
+      <artifactId>study-tracker-elasticsearch</artifactId>
       <version>${parent.version}</version>
     </dependency>
 

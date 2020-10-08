@@ -16,6 +16,7 @@
 
 package com.decibeltx.studytracker.core.model;
 
+import com.decibeltx.studytracker.core.eln.NotebookFolder;
 import com.decibeltx.studytracker.core.storage.StorageFolder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
@@ -82,8 +83,12 @@ public class Assay implements Persistable<String> {
 
   private Date endDate;
 
-  private List<NotebookEntry> notebookEntries = new ArrayList<>();
+  @DBRef
+  @Linked(model = NotebookFolder.class)
+  private NotebookFolder notebookFolder;
 
+  @DBRef
+  @Linked(model = StorageFolder.class)
   private StorageFolder storageFolder;
 
   private boolean active;

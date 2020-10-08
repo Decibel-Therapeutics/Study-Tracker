@@ -14,54 +14,30 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.core.storage;
+package com.decibeltx.studytracker.core.eln;
 
 import java.net.URL;
-import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.Data;
 
-public class BasicStorageFile implements StorageFile {
+@Data
+public class NotebookEntry {
 
   private String url;
-  private String path;
+
   private String name;
 
-  @Override
-  public String getUrl() {
-    return url;
-  }
+  private String referenceId;
 
-  @Override
-  public void setUrl(String url) {
-    this.url = url;
-  }
+  private Map<String, Object> attributes = new HashMap<>();
 
-  @Override
-  public String getPath() {
-    return path;
-  }
-
-  @Override
-  public void setPath(String path) {
-    this.path = path;
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  @Override
   public void setUrl(URL url) {
     this.url = url.toString();
   }
 
-  @Override
-  public void setPath(Path path) {
-    this.path = path.toString();
+  public void setUrl(String string) {
+    this.url = url;
   }
+
 }
