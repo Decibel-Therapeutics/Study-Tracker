@@ -73,7 +73,9 @@ public final class StudyView {
         .map(User::getDisplayName)
         .collect(Collectors.toList()));
     view.setAttributes(study.getAttributes());
-    view.setCollaborator(study.getCollaborator().getLabel());
+    if (study.getCollaborator() != null) {
+      view.setCollaborator(study.getCollaborator().getLabel());
+    }
     return view;
   }
 

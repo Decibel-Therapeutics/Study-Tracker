@@ -21,6 +21,7 @@ import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.StudyRelationship;
+import com.decibeltx.studytracker.core.model.StudyRelationship.Type;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.service.StudyRelationshipService;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
@@ -58,6 +59,7 @@ public class StudyRelationshipsController extends StudyController {
   @PostMapping("")
   public HttpEntity<?> createStudyRelationship(@PathVariable("id") String sourceStudyId,
       @RequestBody StudyRelationship studyRelationship) {
+
     LOGGER
         .info(String.format("Creating new study relationship for study %s: type=%s targetStudy=%s",
             sourceStudyId, studyRelationship.getType(), studyRelationship.getStudyId()));
@@ -65,36 +67,45 @@ public class StudyRelationshipsController extends StudyController {
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
-    Study sourceStudy = getStudyFromIdentifier(sourceStudyId);
+
+    Study sourceStudy = this.getStudyFromIdentifier(sourceStudyId);
     sourceStudy.setLastModifiedBy(user);
-    Study targetStudy = getStudyFromIdentifier(studyRelationship.getStudyId());
+    Study targetStudy = this.getStudyFromIdentifier(studyRelationship.getStudyId());
+    studyRelationship.setStudy(targetStudy);
     targetStudy.setLastModifiedBy(user);
     studyRelationshipService
         .addStudyRelationship(sourceStudy, targetStudy, studyRelationship.getType());
 
     // Publish events
     Activity sourceActivity = StudyActivityUtils
-        .fromNewStudyRelationship(sourceStudy, user, studyRelationship);
-    getActivityService().create(sourceActivity);
-    getEventsService().dispatchEvent(sourceActivity);
+        .fromNewStudyRelationship(sourceStudy, targetStudy, user, studyRelationship);
+    this.getActivityService().create(sourceActivity);
+    this.getEventsService().dispatchEvent(sourceActivity);
+
+    StudyRelationship inverseRelationship
+        = new StudyRelationship(Type.getInverse(studyRelationship.getType()), targetStudy);
     Activity targetActivity = StudyActivityUtils
-        .fromNewStudyRelationship(targetStudy, user, studyRelationship);
-    getActivityService().create(targetActivity);
-    getEventsService().dispatchEvent(targetActivity);
+        .fromNewStudyRelationship(targetStudy, sourceStudy, user, inverseRelationship);
+    this.getActivityService().create(targetActivity);
+    this.getEventsService().dispatchEvent(targetActivity);
 
     return new ResponseEntity<>(HttpStatus.CREATED);
+
   }
 
   @DeleteMapping("")
   public HttpEntity<?> deleteStudyRelationship(@PathVariable("id") String sourceStudyId,
       @RequestBody StudyRelationship studyRelationship) {
+
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
+
     Study sourceStudy = getStudyFromIdentifier(sourceStudyId);
     sourceStudy.setLastModifiedBy(user);
-    Study targetStudy = getStudyFromIdentifier(studyRelationship.getStudyId());
+
+    Study targetStudy = getStudyFromIdentifier(studyRelationship.getStudy().getId());
     targetStudy.setLastModifiedBy(user);
     studyRelationshipService.removeStudyRelationship(sourceStudy, targetStudy);
 

@@ -83,12 +83,8 @@ public class Assay implements Persistable<String> {
 
   private Date endDate;
 
-  @DBRef
-  @Linked(model = NotebookFolder.class)
   private NotebookFolder notebookFolder;
 
-  @DBRef
-  @Linked(model = StorageFolder.class)
   private StorageFolder storageFolder;
 
   private boolean active;

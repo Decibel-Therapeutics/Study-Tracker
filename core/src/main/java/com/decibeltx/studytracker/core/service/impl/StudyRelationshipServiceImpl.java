@@ -40,44 +40,19 @@ public class StudyRelationshipServiceImpl implements StudyRelationshipService {
   @Override
   public void addStudyRelationship(Study sourceStudy, Study targetStudy, Type type) {
     StudyRelationship sourceRelationship = new StudyRelationship(type, targetStudy);
-    Type targetType;
-    switch (type) {
-      case IS_RELATED_TO:
-        targetType = Type.IS_RELATED_TO;
-        break;
-      case IS_PARENT_OF:
-        targetType = Type.IS_CHILD_OF;
-        break;
-      case IS_CHILD_OF:
-        targetType = Type.IS_PARENT_OF;
-        break;
-      case IS_BLOCKING:
-        targetType = Type.IS_BLOCKED_BY;
-        break;
-      case IS_BLOCKED_BY:
-        targetType = Type.IS_BLOCKING;
-        break;
-      case IS_PRECEDED_BY:
-        targetType = Type.IS_SUCCEEDED_BY;
-        break;
-      case IS_SUCCEEDED_BY:
-        targetType = Type.IS_PRECEDED_BY;
-        break;
-      default:
-        targetType = Type.IS_RELATED_TO;
-    }
+    Type targetType = Type.getInverse(type);
     StudyRelationship targetRelationship = new StudyRelationship(targetType, sourceStudy);
 
     List<StudyRelationship> sourceRelationships = sourceStudy.getStudyRelationships()
         .stream()
-        .filter(r -> r.getStudyId().equals(targetStudy.getId()))
+        .filter(r -> r.getStudy().getId().equals(targetStudy.getId()))
         .collect(Collectors.toList());
     sourceRelationships.add(sourceRelationship);
     sourceStudy.setStudyRelationships(sourceRelationships);
 
     List<StudyRelationship> targetRelationships = targetStudy.getStudyRelationships()
         .stream()
-        .filter(r -> r.getStudyId().equals(sourceStudy.getId()))
+        .filter(r -> r.getStudy().getId().equals(sourceStudy.getId()))
         .collect(Collectors.toList());
     targetRelationships.add(targetRelationship);
     targetStudy.setStudyRelationships(targetRelationships);
@@ -91,13 +66,13 @@ public class StudyRelationshipServiceImpl implements StudyRelationshipService {
   public void removeStudyRelationship(Study sourceStudy, Study targetStudy) {
     List<StudyRelationship> sourceRelationships = sourceStudy.getStudyRelationships()
         .stream()
-        .filter(r -> r.getStudyId().equals(targetStudy.getId()))
+        .filter(r -> r.getStudy().getId().equals(targetStudy.getId()))
         .collect(Collectors.toList());
     sourceStudy.setStudyRelationships(sourceRelationships);
 
     List<StudyRelationship> targetRelationships = targetStudy.getStudyRelationships()
         .stream()
-        .filter(r -> r.getStudyId().equals(sourceStudy.getId()))
+        .filter(r -> r.getStudy().getId().equals(sourceStudy.getId()))
         .collect(Collectors.toList());
     targetStudy.setStudyRelationships(targetRelationships);
 

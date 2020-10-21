@@ -290,6 +290,7 @@ public class LocalFileSystemStudyStorageService implements StudyStorageService {
     StorageFile studyFile = new StorageFile();
     studyFile.setPath(newFilePath);
     studyFile.setUrl(getObjectUrl(newFilePath));
+    studyFile.setName(newFile.getName());
     return studyFile;
   }
 
@@ -309,6 +310,7 @@ public class LocalFileSystemStudyStorageService implements StudyStorageService {
     StorageFile assayFile = new StorageFile();
     assayFile.setPath(newFilePath);
     assayFile.setUrl(getObjectUrl(newFilePath));
+    assayFile.setName(newFile.getName());
     return assayFile;
   }
 
