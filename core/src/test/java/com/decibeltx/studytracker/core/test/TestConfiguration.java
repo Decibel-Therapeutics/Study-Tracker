@@ -17,7 +17,6 @@
 package com.decibeltx.studytracker.core.test;
 
 import com.decibeltx.studytracker.core.config.ExampleDataConfiguration;
-import com.decibeltx.studytracker.core.config.LocalActivityConfiguration;
 import com.decibeltx.studytracker.core.config.LocalEventsConfiguration;
 import com.decibeltx.studytracker.core.config.LocalStudyStorageServiceConfiguration;
 import com.decibeltx.studytracker.core.config.MongoDataSourceConfiguration;
@@ -34,8 +33,7 @@ import org.springframework.context.annotation.PropertySource;
     MongoDataSourceConfiguration.class,
     ExampleDataConfiguration.class,
     LocalStudyStorageServiceConfiguration.class,
-    LocalEventsConfiguration.class,
-    LocalActivityConfiguration.class
+    LocalEventsConfiguration.class
 })
 @PropertySource("classpath:test.properties")
 public class TestConfiguration {

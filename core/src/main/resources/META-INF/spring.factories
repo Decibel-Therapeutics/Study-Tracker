@@ -4,5 +4,4 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.decibeltx.studytracker.core.config.ServiceConfiguration,\
   com.decibeltx.studytracker.core.config.LocalStudyStorageServiceConfiguration,\
   com.decibeltx.studytracker.core.config.ExampleDataConfiguration,\
-  com.decibeltx.studytracker.core.config.LocalEventsConfiguration,\
-  com.decibeltx.studytracker.core.config.LocalActivityConfiguration
+  com.decibeltx.studytracker.core.config.LocalEventsConfiguration
