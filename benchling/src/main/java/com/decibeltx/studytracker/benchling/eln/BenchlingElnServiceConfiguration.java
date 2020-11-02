@@ -16,6 +16,7 @@
 
 package com.decibeltx.studytracker.benchling.eln;
 
+import com.decibeltx.studytracker.benchling.exception.BenchlingException;
 import com.decibeltx.studytracker.benchling.exception.BenchlingExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URL;
@@ -65,13 +66,17 @@ public class BenchlingElnServiceConfiguration {
       Assert.notNull(env.getRequiredProperty("benchling.eln.api.token"),
           "API token must not be null. Eg. benchling.eln.api.token=xxx");
       options.setApiToken(env.getRequiredProperty("benchling.eln.api.token"));
-    } else {
+    } else if (env.containsProperty("benchling.eln.api.username") && env
+        .containsProperty("benchling.eln.api.password")) {
       Assert.notNull(env.getRequiredProperty("benchling.eln.api.username"),
           "API username must not be null. Eg. benchling.eln.api.username=xxx");
       Assert.notNull(env.getRequiredProperty("benchling.eln.api.password"),
           "API password must not be null. Eg. benchling.eln.api.password=xxx");
       options.setUsername(env.getRequiredProperty("benchling.eln.api.username"));
       options.setPassword(env.getRequiredProperty("benchling.eln.api.password"));
+    } else {
+      throw new BenchlingException(
+          "Missing configuration properties. Authentication requires the 'benchling.eln.api.username' and 'benchling.eln.api.password' properties or the 'benchling.eln.api.token' property.");
     }
 
     Assert.notNull(env.getProperty("benchling.eln.api.root-url"),

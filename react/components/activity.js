@@ -187,7 +187,8 @@ const ActivityMessage = ({activity}) => {
               <div dangerouslySetInnerHTML={createMarkup(
                   activity.data.study.description)}/>
               <p>
-                <KeywordBadgeList keywords={activity.data.study.keywords}/>
+                <KeywordBadgeList
+                    keywords={activity.data.study.keywords || []}/>
               </p>
             </div>
           </React.Fragment>
