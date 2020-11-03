@@ -66,42 +66,20 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     LOGGER.info("Fetching benchling notebook entry for program: " + program.getName());
     NotebookFolder notebookFolder = null;
 
-    // Does the program entity havethe folder set?
     if (program.getNotebookFolder() != null) {
-
-      NotebookFolder programFolder = program.getNotebookFolder();
-
-      // Is the folder ID set?
-      if (programFolder.getReferenceId() != null) {
-        Optional<BenchlingFolder> optional = client
-            .findFolderById(program.getNotebookFolder().getReferenceId());
-        if (optional.isPresent()) {
-          return Optional.of(this.convertFolder(optional.get()));
-        }
+      Optional<BenchlingFolder> optional = client
+          .findFolderById(program.getNotebookFolder().getReferenceId());
+      if (optional.isPresent()) {
+        return Optional.of(this.convertFolder(optional.get()));
+      } else {
+        return Optional.empty();
       }
-
-      // Is the name set?
-      else if (programFolder.getName() != null) {
-        Optional<BenchlingFolder> optional = client.findRootFolders().stream()
-            .filter(f -> f.getName().equals(programFolder.getName()))
-            .findFirst();
-        if (optional.isPresent()) {
-          notebookFolder = this.convertFolder(optional.get());
-          return Optional.of(notebookFolder);
-        }
-      }
+    } else {
+      LOGGER.warn(
+          String.format("Program %s does not have a notebook folder set.", program.getName()));
+      return Optional.empty();
     }
 
-    // If not, try to find the folder by name
-    String folderName = NotebookUtils.getProgramFolderName(program);
-    Optional<BenchlingFolder> optional = client.findRootFolders().stream()
-        .filter(f -> f.getName().equals(folderName))
-        .findFirst();
-    if (optional.isPresent()) {
-      notebookFolder = this.convertFolder(optional.get());
-    }
-
-    return Optional.ofNullable(notebookFolder);
   }
 
   @Override
@@ -110,31 +88,19 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     LOGGER.info("Fetching notebook entry for study: " + study.getCode());
 
     // Does the study have the folder object set?
-    if (study.getNotebookFolder() != null && study.getNotebookFolder().getReferenceId() != null) {
+    if (study.getNotebookFolder() != null) {
       NotebookFolder studyFolder = study.getNotebookFolder();
       Optional<BenchlingFolder> optional = client.findFolderById(studyFolder.getReferenceId());
       if (optional.isPresent()) {
         return Optional.of(this.convertFolder(optional.get()));
+      } else {
+        return Optional.empty();
       }
+    } else {
+      LOGGER.warn(String.format("Study %s does not have a notebook folder set.", study.getName()));
+      return Optional.empty();
     }
 
-    // Otherwise, get the folder by name
-    Optional<NotebookFolder> programFolderOptional = this.findProgramFolder(study.getProgram());
-    if (!programFolderOptional.isPresent()) {
-      throw new EntityNotFoundException("Cannot find program folder for study: " + study.getCode());
-    }
-    NotebookFolder programFolder = programFolderOptional.get();
-    NotebookFolder notebookFolder = null;
-
-    Optional<BenchlingFolder> optional = client.findFolderChildren(programFolder.getReferenceId())
-        .stream()
-        .filter(f -> f.getName().equals(NotebookUtils.getStudyFolderName(study)))
-        .findFirst();
-    if (optional.isPresent()) {
-      notebookFolder = this.convertFolder(optional.get());
-      notebookFolder.setParentFolder(programFolder);
-    }
-    return Optional.ofNullable(notebookFolder);
   }
 
   @Override
@@ -142,31 +108,19 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
     LOGGER.info("Fetching notebook entry for assay: " + assay.getCode());
 
-    // Does the assay have the folder object set?
-    if (assay.getNotebookFolder() != null && assay.getNotebookFolder().getReferenceId() != null) {
+    if (assay.getNotebookFolder() != null) {
       NotebookFolder assayFolder = assay.getNotebookFolder();
       Optional<BenchlingFolder> optional = client.findFolderById(assayFolder.getReferenceId());
       if (optional.isPresent()) {
         return Optional.of(this.convertFolder(optional.get()));
+      } else {
+        return Optional.empty();
       }
+    } else {
+      LOGGER.warn(String.format("Assay %s does not have a notebook folder set.", assay.getName()));
+      return Optional.empty();
     }
 
-    Optional<NotebookFolder> studyFolderOptional = this.findStudyFolder(assay.getStudy());
-    if (!studyFolderOptional.isPresent()) {
-      throw new EntityNotFoundException("Cannot find study folder for assay: " + assay.getCode());
-    }
-    NotebookFolder studyFolder = studyFolderOptional.get();
-    NotebookFolder notebookFolder = null;
-
-    Optional<BenchlingFolder> optional = client.findFolderChildren(studyFolder.getReferenceId())
-        .stream()
-        .filter(f -> f.getName().equals(NotebookUtils.getAssayFolderName(assay)))
-        .findFirst();
-    if (optional.isPresent()) {
-      notebookFolder = this.convertFolder(optional.get());
-      notebookFolder.setParentFolder(studyFolder);
-    }
-    return Optional.ofNullable(notebookFolder);
   }
 
   @Override
