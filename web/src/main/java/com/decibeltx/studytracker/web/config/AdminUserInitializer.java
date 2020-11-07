@@ -1,7 +1,8 @@
-package com.decibeltx.studytracker.cli.config;
+package com.decibeltx.studytracker.web.config;
 
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.service.UserService;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,17 @@ public class AdminUserInitializer {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
+  @Autowired
+  private UserPasswordGenerator passwordGenerator;
+
+  @PostConstruct
   public void initializeAdminUser() {
+    if (userService.count() > 0) {
+      return;
+    }
     LOGGER.info("No users present in the Study Tracker database. Initializing admin user...");
     String username = "admin";
-    String password = "password";
+    String password = passwordGenerator.generatePassword();
     User user = new User();
     user.setActive(true);
     user.setDisplayName("Study Tracker Admin");
