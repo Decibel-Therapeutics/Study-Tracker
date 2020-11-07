@@ -129,9 +129,12 @@ public class EgnyteStudyStorageServiceTests {
     } catch (Exception e) {
       exception = e;
     }
+    System.out.println(file.toString());
     Assert.assertNull(exception);
     Assert.assertNotNull(file);
     Assert.assertTrue(file.getPath().endsWith("test.txt"));
+    Assert.assertEquals(TEST_FILE.getFilename(), file.getName());
+    Assert.assertNotNull(file.getUrl());
 
   }
 
@@ -251,6 +254,5 @@ public class EgnyteStudyStorageServiceTests {
     Assert.assertTrue(exception.getCause() instanceof ObjectNotFoundException);
     Assert.assertNull(folder);
   }
-
 
 }

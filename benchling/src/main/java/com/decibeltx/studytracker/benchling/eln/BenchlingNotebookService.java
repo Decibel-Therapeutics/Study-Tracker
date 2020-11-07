@@ -17,7 +17,6 @@
 package com.decibeltx.studytracker.benchling.eln;
 
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingFolder;
-import com.decibeltx.studytracker.benchling.exception.BenchlingException;
 import com.decibeltx.studytracker.benchling.exception.EntityNotFoundException;
 import com.decibeltx.studytracker.core.eln.NotebookFolder;
 import com.decibeltx.studytracker.core.eln.NotebookUtils;
@@ -34,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public final class BenchlingNotebookService implements StudyNotebookService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BenchlingNotebookService.class);
-
 
   @Autowired
   private BenchlingElnRestClient client;
@@ -64,7 +62,6 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   public Optional<NotebookFolder> findProgramFolder(Program program) {
 
     LOGGER.info("Fetching benchling notebook entry for program: " + program.getName());
-    NotebookFolder notebookFolder = null;
 
     if (program.getNotebookFolder() != null) {
       Optional<BenchlingFolder> optional = client
@@ -125,9 +122,16 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
   @Override
   public NotebookFolder createProgramFolder(Program program) throws NotebookException {
-    LOGGER.info("Method not implemented.");
-    throw new BenchlingException(
-        "Benchling does not support creating project folders via the API.");
+    LOGGER.info(
+        "Registering new program folder. NOTE: Benchling does not support project creation, so a valid folderId must be provided when registering new programs.");
+    try {
+      BenchlingFolder folder = client.findFolderById(program.getNotebookFolder().getReferenceId())
+          .get();
+      return this.convertFolder(folder);
+    } catch (Exception e) {
+      LOGGER.error("Failed to register new program: " + program.getName());
+      throw new NotebookException(e);
+    }
   }
 
   @Override

@@ -66,4 +66,13 @@ public class StorageFile implements StorageObject {
   public void setName(String name) {
     this.name = name;
   }
+
+  @Override
+  public String toString() {
+    return "StorageFile{" +
+        "url='" + url + '\'' +
+        ", path='" + path + '\'' +
+        ", name='" + name + '\'' +
+        '}';
+  }
 }

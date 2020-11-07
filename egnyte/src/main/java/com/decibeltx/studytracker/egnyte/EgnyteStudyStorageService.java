@@ -35,6 +35,7 @@ import com.decibeltx.studytracker.egnyte.exception.EgnyteException;
 import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.util.UriUtils;
 
 public class EgnyteStudyStorageService implements StudyStorageService {
 
@@ -93,10 +94,33 @@ public class EgnyteStudyStorageService implements StudyStorageService {
   }
 
   private StorageFile convertEgnyteFile(EgnyteFile egnyteFile) {
+
     StorageFile storageFile = new StorageFile();
-    storageFile.setName(egnyteFile.getName());
     storageFile.setPath(egnyteFile.getPath());
-    storageFile.setUrl(egnyteFile.getUrl());
+
+    if (egnyteFile.getName() == null) {
+      storageFile.setName(new File(egnyteFile.getPath()).getName());
+    } else {
+      storageFile.setName(egnyteFile.getName());
+    }
+
+    if (egnyteFile.getUrl() == null) {
+      try {
+        String path = egnyteFile.getPath().replace("/" + storageFile.getName(), "");
+        path = UriUtils.encodePath(path, "UTF-8").replace("&", "%26");
+        String url = options.getRootUrl().toString();
+        if (url.endsWith("/")) {
+          url = url.substring(0, url.length() - 1);
+        }
+        url = url + "/app/index.do#storage/files/1" + path;
+        storageFile.setUrl(url);
+      } catch (Exception e) {
+        throw new StudyTrackerException(e);
+      }
+    } else {
+      storageFile.setUrl(egnyteFile.getUrl());
+    }
+
     return storageFile;
   }
 

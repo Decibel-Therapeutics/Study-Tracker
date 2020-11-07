@@ -16,10 +16,17 @@
 
 package com.decibeltx.studytracker.core.service.impl;
 
+import com.decibeltx.studytracker.core.eln.NotebookFolder;
+import com.decibeltx.studytracker.core.eln.StudyNotebookService;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.core.exception.StudyTrackerException;
 import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.repository.ProgramRepository;
 import com.decibeltx.studytracker.core.service.ProgramService;
+import com.decibeltx.studytracker.core.storage.StorageFolder;
+import com.decibeltx.studytracker.core.storage.StudyStorageService;
+import com.decibeltx.studytracker.core.storage.exception.StudyStorageException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -34,6 +41,12 @@ public class ProgramServiceImpl implements ProgramService {
 
   @Autowired
   private ProgramRepository programRepository;
+
+  @Autowired
+  private StudyStorageService studyStorageService;
+
+  @Autowired(required = false)
+  private StudyNotebookService studyNotebookService;
 
   @Override
   public Optional<Program> findById(String id) {
@@ -58,6 +71,28 @@ public class ProgramServiceImpl implements ProgramService {
   @Override
   public void create(Program program) {
     LOGGER.info("Creating new program with name: " + program.getName());
+
+    program.setCreatedAt(new Date());
+    program.setUpdatedAt(new Date());
+
+    // Create the storage folder
+    try {
+      StorageFolder storageFolder = studyStorageService.createProgramFolder(program);
+      program.setStorageFolder(storageFolder);
+    } catch (StudyStorageException e) {
+      throw new StudyTrackerException(e);
+    }
+
+    // Create the notebook folder
+    if (studyNotebookService != null) {
+      try {
+        NotebookFolder notebookFolder = studyNotebookService.createProgramFolder(program);
+        program.setNotebookFolder(notebookFolder);
+      } catch (Exception e) {
+        throw new StudyTrackerException(e);
+      }
+    }
+
     programRepository.insert(program);
   }
 
