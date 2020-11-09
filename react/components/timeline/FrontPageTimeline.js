@@ -3,22 +3,22 @@ import {Button, Card, CardBody, Col, Container, Row} from "reactstrap";
 import {Timeline} from "../activity";
 import {
   ActiveUsers,
-  CompletedStudiesThisMonth,
-  NewStudiesThisWeek,
-  StudyUpdatesToday,
+  CompletedStudies,
+  NewStudies,
+  StudyUpdates,
   TotalStudies
 } from './timelineWidgets';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import {ArrowLeft, ArrowRight} from "react-feather";
 
-const FrontPageTimeline = ({activity, user, pageNumber, pageSize, hasNextPage, hasPreviousPage}) => {
+const FrontPageTimeline = ({activity, stats, user, pageNumber, pageSize, hasNextPage, hasPreviousPage}) => {
 
-  let activityCount = 0;
-  let activeUsers = 0;
-  let newStudies = 0;
-  let completedStudies = 0;
-  let totalStudies = 0;
+  let activityCount = stats.activityCount || 0;
+  let activeUsers = stats.activeUserCount || 0;
+  let newStudies = stats.newStudyCount || 0;
+  let completedStudies = stats.completedStudyCount || 0;
+  let totalStudies = stats.studyCount || 0;
 
   return (
 
@@ -49,7 +49,8 @@ const FrontPageTimeline = ({activity, user, pageNumber, pageSize, hasNextPage, h
             <Row className="study-statistics">
 
               <Col xs={6} md={4} lg={12}>
-                <StudyUpdatesToday count={activityCount}/>
+                <StudyUpdates count={activityCount}
+                              label={"Updates This Week"}/>
               </Col>
 
               <Col xs={6} sm={4} md={3} lg={12}>
@@ -57,11 +58,12 @@ const FrontPageTimeline = ({activity, user, pageNumber, pageSize, hasNextPage, h
               </Col>
 
               <Col xs={6} sm={4} md={3} lg={12}>
-                <NewStudiesThisWeek count={newStudies}/>
+                <NewStudies count={newStudies} label={"New Studies This Week"}/>
               </Col>
 
               <Col xs={6} sm={4} md={3} lg={12}>
-                <CompletedStudiesThisMonth count={completedStudies}/>
+                <CompletedStudies count={completedStudies}
+                                  label={"Completed Studies This Month"}/>
               </Col>
 
               <Col xs={6} sm={4} md={3} lg={12}>

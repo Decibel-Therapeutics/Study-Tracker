@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, CardBody, Media} from "reactstrap";
 import {Activity, Clipboard, Star, ThumbsUp, Users} from "react-feather";
 
-export const StudyUpdatesToday = ({count}) => {
+export const StudyUpdates = ({count, label}) => {
   return (
       <Card className="flex-fill">
         <CardBody className="py-4">
@@ -12,7 +12,7 @@ export const StudyUpdatesToday = ({count}) => {
             </div>
             <Media body>
               <h3 className="mb-2">{count}</h3>
-              <div className="mb-0">Study Updates Today</div>
+              <div className="mb-0">{label}</div>
             </Media>
           </Media>
         </CardBody>
@@ -38,7 +38,7 @@ export const ActiveUsers = ({count}) => {
   )
 }
 
-export const NewStudiesThisWeek = ({count}) => {
+export const NewStudies = ({count, label}) => {
   return (
       <Card className="flex-fill">
         <CardBody className="py-4">
@@ -48,7 +48,7 @@ export const NewStudiesThisWeek = ({count}) => {
             </div>
             <Media body>
               <h3 className="mb-2">{count}</h3>
-              <div className="mb-0">New Studies This Week</div>
+              <div className="mb-0">{label}</div>
             </Media>
           </Media>
         </CardBody>
@@ -56,7 +56,7 @@ export const NewStudiesThisWeek = ({count}) => {
   )
 }
 
-export const CompletedStudiesThisMonth = ({count}) => {
+export const CompletedStudies = ({count, label}) => {
   return (
       <Card className="flex-fill">
         <CardBody className="py-4">
@@ -66,7 +66,7 @@ export const CompletedStudiesThisMonth = ({count}) => {
             </div>
             <Media body>
               <h3 className="mb-2">{count}</h3>
-              <div className="mb-0">Studies Completed This Month</div>
+              <div className="mb-0">{label}</div>
             </Media>
           </Media>
         </CardBody>

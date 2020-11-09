@@ -53,17 +53,22 @@ class FrontPageView extends React.Component {
 
     fetch("/api/activity?sort=" + sort + "&page=" + page + "&size=" + size)
     .then(response => response.json())
-    .then(json => {
-      this.setState({
-        activity: json.content,
-        isLoaded: true,
-        pageNumber: page,
-        pageSize: size,
-        pageSort: sort,
-        totalItems: json.numberOfElements,
-        totalPages: json.totalPages,
-        hasNextPage: !json.last,
-        hasPreviousPage: page > 0
+    .then(activityPage => {
+      fetch("/api/stats/frontpage")
+      .then(response => response.json())
+      .then(stats => {
+        this.setState({
+          stats: stats,
+          activity: activityPage.content,
+          isLoaded: true,
+          pageNumber: page,
+          pageSize: size,
+          pageSort: sort,
+          totalItems: activityPage.numberOfElements,
+          totalPages: activityPage.totalPages,
+          hasNextPage: !activityPage.last,
+          hasPreviousPage: page > 0
+        })
       })
     })
     .catch(error => {
@@ -90,6 +95,7 @@ class FrontPageView extends React.Component {
 
         content = <FrontPageTimeline
             activity={this.state.activity}
+            stats={this.state.stats}
             user={this.props.user}
             pageNumber={this.state.pageNumber}
             pageSize={this.state.pageSize}
