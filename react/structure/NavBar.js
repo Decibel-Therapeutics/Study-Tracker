@@ -142,17 +142,23 @@ class NavBarComponent extends React.Component {
 
                           <DropdownMenu right>
                             <DropdownItem>
-                              <a href={"/user/" + this.state.user.accountName}>
+                              <a href={"/user/" + this.state.user.username}>
                                 <User size={18} className="align-middle mr-2"/>
                                 Profile
                               </a>
                             </DropdownItem>
-                            <DropdownItem>
-                              <a href="#">
-                                <Settings size={18} className="align-middle mr-2"/>
-                                Settings
-                              </a>
-                            </DropdownItem>
+                            {
+                              !!this.state.user.admin
+                                  ? (
+                                      <DropdownItem>
+                                        <a href="/admin">
+                                          <Settings size={18}
+                                                    className="align-middle mr-2"/>
+                                          Admin Settings
+                                        </a>
+                                      </DropdownItem>
+                                  ) : ''
+                            }
                             <DropdownItem>
                               <a href="#">
                                 <HelpCircle size={18}
@@ -162,7 +168,8 @@ class NavBarComponent extends React.Component {
                             </DropdownItem>
                             <DropdownItem>
                               <a href="/logout">
-                                <LogOut size={18} className="align-middle mr-2"/>
+                                <LogOut size={18}
+                                        className="align-middle mr-2"/>
                                 Sign out
                               </a>
                             </DropdownItem>
