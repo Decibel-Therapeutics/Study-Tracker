@@ -72,13 +72,13 @@ public class StudyRelationshipServiceTests {
     Assert.assertEquals(1, updatedSource.getStudyRelationships().size());
     Assert.assertEquals(1, updatedTarget.getStudyRelationships().size());
     Assert.assertEquals(updatedTarget.getCode(),
-        updatedSource.getStudyRelationships().get(0).getStudy().getId());
+        updatedSource.getStudyRelationships().get(0).getStudy().getCode());
     Assert.assertEquals(Type.IS_BLOCKING, updatedSource.getStudyRelationships().get(0).getType());
     Assert.assertEquals(updatedSource.getCode(),
-        updatedTarget.getStudyRelationships().get(0).getStudy().getId());
+        updatedTarget.getStudyRelationships().get(0).getStudy().getCode());
     Assert.assertEquals(Type.IS_BLOCKED_BY, updatedTarget.getStudyRelationships().get(0).getType());
 
-    studyRelationshipService.addStudyRelationship(sourceStudy, targetStudy, Type.IS_RELATED_TO);
+    studyRelationshipService.addStudyRelationship(updatedSource, updatedTarget, Type.IS_RELATED_TO);
 
     updatedSource = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
     updatedTarget = studyService.findByCode("PPB-10001").orElseThrow(RecordNotFoundException::new);
@@ -86,10 +86,10 @@ public class StudyRelationshipServiceTests {
     Assert.assertEquals(1, updatedSource.getStudyRelationships().size());
     Assert.assertEquals(1, updatedTarget.getStudyRelationships().size());
     Assert.assertEquals(updatedTarget.getCode(),
-        updatedSource.getStudyRelationships().get(0).getStudy().getId());
+        updatedSource.getStudyRelationships().get(0).getStudy().getCode());
     Assert.assertEquals(Type.IS_RELATED_TO, updatedSource.getStudyRelationships().get(0).getType());
     Assert.assertEquals(updatedSource.getCode(),
-        updatedTarget.getStudyRelationships().get(0).getStudy().getId());
+        updatedTarget.getStudyRelationships().get(0).getStudy().getCode());
     Assert.assertEquals(Type.IS_RELATED_TO, updatedTarget.getStudyRelationships().get(0).getType());
 
   }

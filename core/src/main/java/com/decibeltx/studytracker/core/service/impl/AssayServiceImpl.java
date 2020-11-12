@@ -16,8 +16,11 @@
 
 package com.decibeltx.studytracker.core.service.impl;
 
+import com.decibeltx.studytracker.core.exception.InvalidConstraintException;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.model.Assay;
+import com.decibeltx.studytracker.core.model.AssayTypeField;
+import com.decibeltx.studytracker.core.model.AssayTypeField.AssayFieldType;
 import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.repository.AssayRepository;
@@ -62,11 +65,55 @@ public class AssayServiceImpl implements AssayService {
     return assayRepository.findAll();
   }
 
+  private boolean isValidFieldType(Object value, AssayFieldType type) {
+    Class<?> clazz = value.getClass();
+    switch (type) {
+      case STRING:
+        return String.class.isAssignableFrom(clazz);
+      case TEXT:
+        return String.class.isAssignableFrom(clazz);
+      case DATE:
+        return Date.class.isAssignableFrom(clazz);
+      case INTEGER:
+        return Integer.class.isAssignableFrom(clazz);
+      case FLOAT:
+        return Float.class.isAssignableFrom(clazz);
+      case BOOLEAN:
+        return Boolean.class.isAssignableFrom(clazz);
+      default:
+        return false;
+    }
+  }
+
+  private void validateAssayFields(Assay assay) {
+    for (AssayTypeField assayTypeField : assay.getAssayType().getFields()) {
+      if (!assay.getFields().containsKey(assayTypeField.getFieldName())) {
+        throw new InvalidConstraintException(
+            String.format("Assay %s does not have field %s defined in fields attribute.",
+                assay.getName(), assayTypeField.getFieldName()));
+      }
+      Object value = assay.getFields().get(assayTypeField.getFieldName());
+      if (assayTypeField.isRequired() && value == null) {
+        throw new InvalidConstraintException(
+            String.format("Assay %s does not have required field %s set in fields attribute.",
+                assay.getName(), assayTypeField.getFieldName()));
+      }
+      if (!isValidFieldType(value, assayTypeField.getType())) {
+        throw new InvalidConstraintException(
+            String.format(
+                "Assay %s field %s does not have the appropriate value set for it's required type %s.",
+                assay.getName(), assayTypeField.getFieldName(),
+                assayTypeField.getType().toString()));
+      }
+    }
+  }
+
   @Override
   public void create(Assay assay) {
     LOGGER.info("Creating new assay record with name: " + assay.getName());
     Study study = studyRepository.findById(assay.getStudy().getId())
         .orElseThrow(RecordNotFoundException::new);
+    validateAssayFields(assay);
     assay.setCode(generateAssayCode(assay));
     assay.setActive(true);
     assayRepository.insert(assay);

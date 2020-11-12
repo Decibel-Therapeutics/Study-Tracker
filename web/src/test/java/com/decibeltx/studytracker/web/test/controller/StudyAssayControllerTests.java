@@ -36,6 +36,7 @@ import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.repository.AssayRepository;
+import com.decibeltx.studytracker.core.repository.AssayTypeRepository;
 import com.decibeltx.studytracker.core.repository.StudyRepository;
 import com.decibeltx.studytracker.web.test.TestApplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,12 +62,19 @@ public class StudyAssayControllerTests {
 
   @Autowired
   private MockMvc mockMvc;
+
   @Autowired
   private ExampleDataGenerator exampleDataGenerator;
+
   @Autowired
   private StudyRepository studyRepository;
+
   @Autowired
   private AssayRepository assayRepository;
+
+  @Autowired
+  private AssayTypeRepository assayTypeRepository;
+
   @Autowired
   private ObjectMapper objectMapper;
 
@@ -113,6 +121,8 @@ public class StudyAssayControllerTests {
 
     Study study = studyRepository.findByCode("CPA-10001")
         .orElseThrow(RecordNotFoundException::new);
+    AssayType assayType = assayTypeRepository.findByName("Generic")
+        .orElseThrow(RecordNotFoundException::new);
     User user = study.getOwner();
     Assay assay = new Assay();
     assay.setStudy(study);
@@ -121,7 +131,7 @@ public class StudyAssayControllerTests {
     assay.setDescription("This is a test");
     assay.setStatus(Status.ACTIVE);
     assay.setStartDate(new Date());
-    assay.setAssayType(AssayType.GENERIC);
+    assay.setAssayType(assayType);
     assay.setOwner(user);
     assay.setCreatedBy(user);
     assay.setUsers(Collections.singletonList(user));

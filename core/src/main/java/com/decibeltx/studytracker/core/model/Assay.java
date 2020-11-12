@@ -46,7 +46,8 @@ public class Assay implements Persistable<String> {
   @NotNull
   private Status status;
 
-  @NotNull
+  @DBRef
+  @Linked(model = AssayType.class)
   private AssayType assayType;
 
   @Linked(model = Study.class)
@@ -99,7 +100,9 @@ public class Assay implements Persistable<String> {
   @DBRef
   private List<User> users = new ArrayList<>();
 
-  private Map<String, Object> attributes = new LinkedHashMap<>();
+  private Map<String, Object> fields = new LinkedHashMap<>();
+
+  private Map<String, String> attributes = new LinkedHashMap<>();
 
   private List<Task> tasks = new ArrayList<>();
 

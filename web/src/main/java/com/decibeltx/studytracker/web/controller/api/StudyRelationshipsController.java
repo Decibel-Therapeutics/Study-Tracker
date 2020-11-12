@@ -105,7 +105,7 @@ public class StudyRelationshipsController extends StudyController {
     Study sourceStudy = getStudyFromIdentifier(sourceStudyId);
     sourceStudy.setLastModifiedBy(user);
 
-    Study targetStudy = getStudyFromIdentifier(studyRelationship.getStudy().getId());
+    Study targetStudy = getStudyFromIdentifier(studyRelationship.getStudyId());
     targetStudy.setLastModifiedBy(user);
     studyRelationshipService.removeStudyRelationship(sourceStudy, targetStudy);
 
