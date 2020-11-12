@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+  Breadcrumb,
+  BreadcrumbItem,
   Card,
   CardHeader,
   CardTitle,
@@ -38,6 +40,17 @@ class AdminDashboard extends React.Component {
 
     return (
         <Container fluid className="animated fadeIn">
+
+          <Row>
+            <Col>
+              <Breadcrumb>
+                <BreadcrumbItem>
+                  <a href={"/"}>Home</a>
+                </BreadcrumbItem>
+                <BreadcrumbItem active>Admin Dashboard</BreadcrumbItem>
+              </Breadcrumb>
+            </Col>
+          </Row>
 
           <Row className="justify-content-between align-items-center">
             <Col>

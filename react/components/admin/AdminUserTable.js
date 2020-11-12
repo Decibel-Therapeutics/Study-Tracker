@@ -10,7 +10,7 @@ const columns = [
     dataField: "username",
     text: "Username",
     sort: true,
-    // headerStyle: {width: '20%%'},
+    headerStyle: {width: '20%%'},
     formatter: (c, d, i, x) => {
       return (
           <a href={"#"}>{d.username}</a>
@@ -30,7 +30,7 @@ const columns = [
     dataField: "displayName",
     text: "Display Name",
     sort: true,
-    // headerStyle: {width: '20%%'},
+    headerStyle: {width: '30%%'},
     formatter: (c, d, i, x) => {
       return (
           <a href={"#"}>{d.displayName}</a>
@@ -50,14 +50,14 @@ const columns = [
     dataField: "email",
     text: "Email",
     sort: true,
-    // headerStyle: {width: '20%'},
+    headerStyle: {width: '30%'},
     formatter: (cell, d, index, x) => d.email
   },
   {
-    dataField: "admin",
-    text: "Admin",
+    dataField: "type",
+    text: "Type",
     sort: true,
-    // headerStyle: {width: '10%'},
+    headerStyle: {width: '10%'},
     formatter: (c, d, i, x) => {
       if (d.admin) {
         return (
@@ -65,16 +65,28 @@ const columns = [
               Admin
             </div>
         )
+      } else {
+        return (
+            <div className="badge badge-info">
+              User
+            </div>
+        )
       }
     }
   },
   {
-    dataField: "active",
-    text: "Active",
+    dataField: "status",
+    text: "Status",
     sort: true,
-    // headerStyle: {width: '10%'},
+    headerStyle: {width: '10%'},
     formatter: (c, d, i, x) => {
-      if (d.active) {
+      if (d.locked) {
+        return (
+            <div className="badge badge-warning">
+              Locked
+            </div>
+        )
+      } else if (d.active) {
         return (
             <div className="badge badge-success">
               Active
@@ -82,7 +94,7 @@ const columns = [
         )
       } else {
         return (
-            <div className="badge badge-warning">
+            <div className="badge badge-danger">
               Inactive
             </div>
         )

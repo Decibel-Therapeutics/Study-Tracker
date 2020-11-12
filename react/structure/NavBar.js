@@ -141,12 +141,7 @@ class NavBarComponent extends React.Component {
                       </span>
 
                           <DropdownMenu right>
-                            <DropdownItem>
-                              <a href={"/user/" + this.state.user.username}>
-                                <User size={18} className="align-middle mr-2"/>
-                                Profile
-                              </a>
-                            </DropdownItem>
+
                             {
                               !!this.state.user.admin
                                   ? (
@@ -154,11 +149,19 @@ class NavBarComponent extends React.Component {
                                         <a href="/admin">
                                           <Settings size={18}
                                                     className="align-middle mr-2"/>
-                                          Admin Settings
+                                          Admin Dashboard
                                         </a>
                                       </DropdownItem>
                                   ) : ''
                             }
+
+                            <DropdownItem>
+                              <a href={"/user/" + this.state.user.username}>
+                                <User size={18} className="align-middle mr-2"/>
+                                Profile
+                              </a>
+                            </DropdownItem>
+
                             <DropdownItem>
                               <a href="#">
                                 <HelpCircle size={18}
@@ -166,6 +169,7 @@ class NavBarComponent extends React.Component {
                                 Help
                               </a>
                             </DropdownItem>
+
                             <DropdownItem>
                               <a href="/logout">
                                 <LogOut size={18}
@@ -173,6 +177,7 @@ class NavBarComponent extends React.Component {
                                 Sign out
                               </a>
                             </DropdownItem>
+
                           </DropdownMenu>
                         </UncontrolledDropdown>
                     ) : (
