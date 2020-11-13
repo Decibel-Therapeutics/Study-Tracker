@@ -16,6 +16,8 @@
 
 package com.decibeltx.studytracker.core.service.impl;
 
+import com.decibeltx.studytracker.core.eln.NotebookFolder;
+import com.decibeltx.studytracker.core.eln.StudyNotebookService;
 import com.decibeltx.studytracker.core.exception.InvalidConstraintException;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.model.Assay;
@@ -26,6 +28,8 @@ import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.repository.AssayRepository;
 import com.decibeltx.studytracker.core.repository.StudyRepository;
 import com.decibeltx.studytracker.core.service.AssayService;
+import com.decibeltx.studytracker.core.storage.StorageFolder;
+import com.decibeltx.studytracker.core.storage.StudyStorageService;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +48,12 @@ public class AssayServiceImpl implements AssayService {
 
   @Autowired
   private StudyRepository studyRepository;
+
+  @Autowired
+  private StudyStorageService storageService;
+
+  @Autowired(required = false)
+  private StudyNotebookService notebookService;
 
   @Override
   public Optional<Assay> findById(String id) {
@@ -124,15 +134,45 @@ public class AssayServiceImpl implements AssayService {
 
   @Override
   public void create(Assay assay) {
+
     LOGGER.info("Creating new assay record with name: " + assay.getName());
     Study study = studyRepository.findById(assay.getStudy().getId())
         .orElseThrow(RecordNotFoundException::new);
+
     validateAssayFields(assay);
     assay.setCode(generateAssayCode(assay));
     assay.setActive(true);
+
     assayRepository.insert(assay);
+
     study.getAssays().add(assay);
     studyRepository.save(study);
+
+    // Create the storage folder
+    try {
+      storageService.createAssayFolder(assay);
+      StorageFolder folder = storageService.getAssayFolder(assay);
+      assay.setStorageFolder(folder);
+      assay.setUpdatedAt(new Date());
+      assayRepository.save(assay);
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOGGER.error("Failed to create storage folder for assay: " + assay.getCode());
+    }
+
+    // Create the ELN folder
+    if (notebookService != null) {
+      try {
+        NotebookFolder notebookFolder = notebookService.createAssayFolder(assay);
+        assay.setNotebookFolder(notebookFolder);
+        assay.setUpdatedAt(new Date());
+        assayRepository.save(assay);
+      } catch (Exception e) {
+        e.printStackTrace();
+        LOGGER.error("Failed to create notebook entry for assay: " + assay.getCode());
+      }
+    }
+
   }
 
   @Override
