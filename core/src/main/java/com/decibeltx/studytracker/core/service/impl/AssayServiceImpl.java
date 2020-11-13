@@ -73,11 +73,20 @@ public class AssayServiceImpl implements AssayService {
       case TEXT:
         return String.class.isAssignableFrom(clazz);
       case DATE:
-        return Date.class.isAssignableFrom(clazz);
+        if (Date.class.isAssignableFrom(clazz)) {
+          return true;
+        } else {
+          try {
+            Date date = new Date((long) value);
+            return true;
+          } catch (Exception e) {
+            return false;
+          }
+        }
       case INTEGER:
         return Integer.class.isAssignableFrom(clazz);
       case FLOAT:
-        return Float.class.isAssignableFrom(clazz);
+        return Double.class.isAssignableFrom(clazz);
       case BOOLEAN:
         return Boolean.class.isAssignableFrom(clazz);
       default:
@@ -101,9 +110,14 @@ public class AssayServiceImpl implements AssayService {
       if (!isValidFieldType(value, assayTypeField.getType())) {
         throw new InvalidConstraintException(
             String.format(
-                "Assay %s field %s does not have the appropriate value set for it's required type %s.",
-                assay.getName(), assayTypeField.getFieldName(),
-                assayTypeField.getType().toString()));
+                "Assay %s field %s does not have the appropriate value set for it's required type "
+                    + "%s. Received %s, expected %s",
+                assay.getName(),
+                assayTypeField.getFieldName(),
+                assayTypeField.getType().toString(),
+                value.getClass().getName(),
+                assayTypeField.getType().toString()
+            ));
       }
     }
   }

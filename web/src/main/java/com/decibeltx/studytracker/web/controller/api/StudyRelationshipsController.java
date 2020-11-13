@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/study/{id}/relationships")
 @RestController
-public class StudyRelationshipsController extends StudyController {
+public class StudyRelationshipsController extends AbstractStudyController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(StudyRelationshipsController.class);
 

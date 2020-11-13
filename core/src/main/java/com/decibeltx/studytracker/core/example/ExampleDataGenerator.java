@@ -64,6 +64,8 @@ public class ExampleDataGenerator {
 
   public static final int ASSAY_TYPE_COUNT = 2;
 
+  public static final int ASSAY_COUNT = 2;
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ExampleDataGenerator.class);
 
   @Autowired

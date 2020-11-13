@@ -56,6 +56,7 @@ public class StudyRelationshipServiceTests {
 
     Study sourceStudy = studyService.findByCode("CPA-10001")
         .orElseThrow(RecordNotFoundException::new);
+
     Study targetStudy = studyService.findByCode("PPB-10001")
         .orElseThrow(RecordNotFoundException::new);
 
