@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.decibeltx.studytracker.core.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.web.test.TestApplication;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,9 +49,6 @@ public class AssayControllerTests {
 
   @Autowired
   private ExampleDataGenerator exampleDataGenerator;
-
-  @Autowired
-  private ObjectMapper objectMapper;
 
   @Before
   public void doBefore() {

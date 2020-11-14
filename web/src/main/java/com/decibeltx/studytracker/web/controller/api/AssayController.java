@@ -59,7 +59,7 @@ public class AssayController extends AbstractAssayController {
   @PutMapping("/{id}")
   public HttpEntity<Assay> update(@PathVariable("id") String id, @RequestBody Assay assay) {
 
-    LOGGER.info("Updating assay");
+    LOGGER.info("Updating assay with id: " + id);
     LOGGER.info(assay.toString());
 
     // Get authenticated user
@@ -68,9 +68,9 @@ public class AssayController extends AbstractAssayController {
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
 
-    assay = updateAssay(assay, user);
+    Assay updated = updateAssay(assay, user);
 
-    return new ResponseEntity<>(assay, HttpStatus.CREATED);
+    return new ResponseEntity<>(updated, HttpStatus.CREATED);
 
   }
 

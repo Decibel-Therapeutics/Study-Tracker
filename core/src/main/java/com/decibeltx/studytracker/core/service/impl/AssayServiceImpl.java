@@ -87,7 +87,7 @@ public class AssayServiceImpl implements AssayService {
           return true;
         } else {
           try {
-            Date date = new Date((long) value);
+            new Date((long) value);
             return true;
           } catch (Exception e) {
             return false;

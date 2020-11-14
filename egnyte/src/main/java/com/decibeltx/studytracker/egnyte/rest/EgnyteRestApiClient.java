@@ -141,7 +141,7 @@ public class EgnyteRestApiClient implements EgnyteClientOperations {
     EgnyteObject object = response.getBody();
     if (object.isFolder()) {
       EgnyteFolder folder = (EgnyteFolder) object;
-      if (depth < options.getMaxReadDepth()) {
+      if (depth >= 0 && depth < options.getMaxReadDepth()) {
         List<EgnyteFolder> subFolders = new ArrayList<>();
         for (int i = 0; i < folder.getSubFolders().size(); i++) {
           EgnyteFolder subFolder = folder.getSubFolders().get(i);

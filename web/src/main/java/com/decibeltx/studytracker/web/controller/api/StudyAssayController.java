@@ -67,8 +67,8 @@ public class StudyAssayController extends AbstractAssayController {
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
-    assay = this.createAssay(assay, study, user);
-    return new ResponseEntity<>(assay, HttpStatus.CREATED);
+    Assay created = this.createAssay(assay, study, user);
+    return new ResponseEntity<>(created, HttpStatus.CREATED);
   }
 
   @PutMapping("/{assayId}")

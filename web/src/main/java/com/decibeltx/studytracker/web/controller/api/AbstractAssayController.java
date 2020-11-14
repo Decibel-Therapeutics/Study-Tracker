@@ -16,14 +16,10 @@ import com.decibeltx.studytracker.core.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 public abstract class AbstractAssayController {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAssayController.class);
 
   private AssayService assayService;
 
