@@ -16,6 +16,7 @@
 
 package com.decibeltx.studytracker.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,9 @@ public class AssayType implements Persistable<String> {
   @Indexed(unique = true)
   private String name;
 
+  @NotNull
+  private String description;
+
   private boolean active;
 
   private List<AssayTypeField> fields = new ArrayList<>();
@@ -47,6 +51,7 @@ public class AssayType implements Persistable<String> {
   private Map<String, String> attributes = new HashMap<>();
 
   @Override
+  @JsonIgnore
   public boolean isNew() {
     return id == null;
   }
