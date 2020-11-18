@@ -39,7 +39,7 @@ import {history} from '../../App';
 import {LoadingOverlay} from "../loading";
 import Select from "react-select";
 import Attributes from "./attributes";
-import {AssayTypeFields} from "./assayTypeFields";
+import {AssayTypeFieldInputs} from "./assayTypeFields";
 import {TaskInputs} from "./tasks";
 
 export default class AssayTypeForm extends React.Component {
@@ -365,11 +365,14 @@ export default class AssayTypeForm extends React.Component {
                         <br/>
                       </Col>
 
-                      <Col md="12">
-                        <AssayTypeFields fields={this.state.assayType.fields}/>
-                      </Col>
-
                     </Row>
+
+                    <AssayTypeFieldInputs
+                        fields={this.state.assayType.fields}
+                        handleUpdate={(fields) => {
+                          this.handleFormUpdate({fields: fields})
+                        }}
+                    />
 
                     <Row form>
                       <Col>

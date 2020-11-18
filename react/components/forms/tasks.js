@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardBody,
+  CardHeader,
   Col,
   FormGroup,
   Input,
@@ -11,7 +12,7 @@ import {
 } from "reactstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
-import {Trash} from "react-feather";
+import {XCircle} from "react-feather";
 import dragula from 'react-dragula';
 
 class TaskInputList extends React.Component {
@@ -42,12 +43,22 @@ class TaskInputList extends React.Component {
 const TaskInputCard = ({task, index, handleTaskUpdate, handleRemoveTaskClick}) => {
   return (
       <Card className="mb-3 bg-light cursor-grab border">
-        <CardBody className="p-3">
+
+        <CardHeader className="bg-light pt-0 pb-0">
+          <div className="card-actions float-right">
+            <a className="text-danger" title={"Remove field"}
+               onClick={() => handleRemoveTaskClick(index)}>
+              <XCircle className="align-middle mt-3" size={12}/>
+            </a>
+          </div>
+        </CardHeader>
+
+        <CardBody className="pb-3 pr-3 pl-3 pt-0">
           <Row>
 
-            <Col xs={5}>
+            <Col sm={12} md={6}>
               <FormGroup>
-                <Label></Label>
+                <Label>Label</Label>
                 <Input
                     type="text"
                     value={task.label}
@@ -57,9 +68,9 @@ const TaskInputCard = ({task, index, handleTaskUpdate, handleRemoveTaskClick}) =
               </FormGroup>
             </Col>
 
-            <Col xs={5}>
+            <Col sm={12} md={6}>
               <FormGroup>
-                <Label></Label>
+                <Label>Status</Label>
                 <Input
                     type="select"
                     value={task.status}
@@ -72,13 +83,6 @@ const TaskInputCard = ({task, index, handleTaskUpdate, handleRemoveTaskClick}) =
                   <option value="INCOMPLETE">Incomplete</option>
                 </Input>
               </FormGroup>
-            </Col>
-
-            <Col xs={2}>
-              <a className="text-danger" title={"Remove task"}
-                 onClick={() => handleRemoveTaskClick(index)}>
-                <Trash className="align-middle mt-3" size={18}/>
-              </a>
             </Col>
 
           </Row>
@@ -156,7 +160,7 @@ export class TaskInputs extends React.Component {
     const cards = this.props.tasks.map((task, index) => {
       return (
           <Row form key={'task-inputs-' + index} data-index={index}>
-            <Col xs={12}>
+            <Col md={12} lg={8} xl={6}>
               <TaskInputCard
                   task={task}
                   index={index}
@@ -170,24 +174,6 @@ export class TaskInputs extends React.Component {
 
     return (
         <React.Fragment>
-
-          <Row form>
-
-            <Col xs={5}>
-              <FormGroup>
-                <Label>Label</Label>
-              </FormGroup>
-            </Col>
-
-            <Col xs={5}>
-              <FormGroup>
-                <Label>Status</Label>
-              </FormGroup>
-            </Col>
-
-            <Col xs={2}></Col>
-
-          </Row>
 
           <TaskInputList onContainerLoaded={this.onContainerReady}>
             {cards}

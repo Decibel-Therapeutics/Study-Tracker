@@ -1,11 +1,9 @@
 import React from 'react';
-import {Button} from "reactstrap";
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import {history} from "../../App";
+import {Edit, Trash} from "react-feather";
 
 const columns = [
   {
@@ -110,14 +108,19 @@ const columns = [
     headerStyle: {width: '10%'},
     formatter: (c, d, i, x) => {
       return (
-          <Button
-              color="warning"
-              onClick={() => history.push("/users/" + d.id + "/edit")}
-              title={"Edit user"}
-              className="mr-1 mb-1"
-          >
-            <FontAwesomeIcon icon={faEdit} className="align-middle"/>
-          </Button>
+          <React.Fragment>
+
+            <a className="text-warning" title={"Edit user"}
+               onClick={() => history.push("/users/" + d.id + "/edit")}>
+              <Edit className="align-middle mr-1" size={18}/>
+            </a>
+
+            <a className="text-danger" title={"Disable user"}
+               onClick={() => console.log("click")}>
+              <Trash className="align-middle mr-1" size={18}/>
+            </a>
+
+          </React.Fragment>
       )
     }
   }
