@@ -95,16 +95,7 @@ export class TaskInputs extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      tasks: props.tasks.sort((a, b) => {
-        if (a.order > b.order) {
-          return 1;
-        } else if (b.order > a.order) {
-          return -1;
-        }
-        return 0;
-      }) || []
-    }
+    this.state = {};
 
     this.containers = [];
 
@@ -124,40 +115,40 @@ export class TaskInputs extends React.Component {
   };
 
   handleTaskUpdate(data, index) {
-    let tasks = this.state.tasks;
+    let tasks = this.props.tasks;
     tasks[index] = {
       ...tasks[index],
       ...data
     };
-    this.setState({
-      tasks: tasks
-    });
     this.props.handleUpdate(tasks);
   }
 
   handleAddTaskClick() {
     const newTasks = [
-      ...this.state.tasks,
+      ...this.props.tasks,
       {label: "", status: "TODO"}
     ];
-    this.setState({
-      tasks: newTasks
-    });
     this.props.handleUpdate(newTasks);
   }
 
   handleRemoveTaskClick(index) {
-    let updated = this.state.tasks;
+    let updated = this.state.props;
     updated.splice(index, 1);
-    this.setState({
-      tasks: updated
-    });
     this.props.handleUpdate(updated);
   }
 
   render() {
 
-    const cards = this.props.tasks.map((task, index) => {
+    const cards = this.props.tasks
+    .sort((a, b) => {
+      if (a.order > b.order) {
+        return 1;
+      } else if (b.order > a.order) {
+        return -1;
+      }
+      return 0;
+    })
+    .map((task, index) => {
       return (
           <Row form key={'task-inputs-' + index} data-index={index}>
             <Col md={12} lg={8} xl={6}>

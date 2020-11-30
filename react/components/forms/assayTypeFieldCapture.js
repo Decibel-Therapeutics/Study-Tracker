@@ -97,7 +97,7 @@ export const AssayTypeFieldCaptureInputList = ({assayType, assayFields, handleUp
 const StringFieldInput = ({field, value, handleUpdate, isValid, error}) => {
   return (
       <FormGroup>
-        <Label>{field.displayName}{field.required ? "*" : ""}</Label>
+        <Label>{field.displayName}{field.required ? " *" : ""}</Label>
         <Input
             type="text"
             defaultValue={value || ''}
@@ -117,10 +117,10 @@ const StringFieldInput = ({field, value, handleUpdate, isValid, error}) => {
 const TextFieldInput = ({field, value, handleUpdate, isValid, error}) => {
   return (
       <FormGroup>
-        <Label>{field.displayName}{field.required ? "*" : ""}</Label>
+        <Label>{field.displayName}{field.required ? " *" : ""}</Label>
         <Input
             type="textarea"
-            size={3}
+            size="3"
             defaultValue={value || ''}
             onChange={e => handleUpdate(
                 {
@@ -138,15 +138,19 @@ const TextFieldInput = ({field, value, handleUpdate, isValid, error}) => {
 const NumberFieldInput = ({field, value, handleUpdate, isValid, error}) => {
   return (
       <FormGroup>
-        <Label>{field.displayName}{field.required ? "*" : ""}</Label>
+        <Label>{field.displayName}{field.required ? " *" : ""}</Label>
         <Input
             type="number"
             defaultValue={value || null}
-            onChange={e => handleUpdate(
-                {
-                  [field.fieldName]: e.target.value
-                }
-            )}
+            onChange={e => {
+              let value = e.target.value;
+              if (field.type === "INTEGER") {
+                value = parseInt(value);
+              } else if (field.type === "FLOAT") {
+                value = parseFloat(value);
+              }
+              handleUpdate({[field.fieldName]: value})
+            }}
             invalid={!isValid}
         />
         <FormText>{field.description}</FormText>
@@ -177,7 +181,7 @@ const BooleanFieldInput = ({field, value, handleUpdate}) => {
 const DateFieldInput = ({field, value, handleUpdate, isValid, error}) => {
   return (
       <FormGroup>
-        <Label>Start Date *</Label>
+        <Label>{field.displayName}{field.required ? " *" : ""}</Label>
         <DatePicker
             maxlength="2"
             className="form-control"

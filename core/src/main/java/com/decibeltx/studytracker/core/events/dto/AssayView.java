@@ -17,7 +17,7 @@ public class AssayView {
 
   private Status status;
 
-  private String assayType;
+  private AssayTypeView assayType;
 
   private String study;
 
@@ -76,6 +76,7 @@ public class AssayView {
     view.setFields(assay.getFields());
     view.setTasks(assay.getTasks());
     view.setAttributes(assay.getAttributes());
+    view.setAssayType(AssayTypeView.from(assay.getAssayType()));
     return view;
   }
 
@@ -96,11 +97,11 @@ public class AssayView {
     this.status = status;
   }
 
-  public String getAssayType() {
+  public AssayTypeView getAssayType() {
     return assayType;
   }
 
-  public void setAssayType(String assayType) {
+  public void setAssayType(AssayTypeView assayType) {
     this.assayType = assayType;
   }
 

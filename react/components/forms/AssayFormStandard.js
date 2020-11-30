@@ -44,6 +44,7 @@ import {AssayTypeDropdown} from "./assayTypes";
 import {AssayTypeFieldCaptureInputList} from "./assayTypeFieldCapture";
 import Attributes from "./attributes";
 import {TaskInputs} from "./tasks";
+import {LoadingOverlay} from "../loading";
 
 export default class AssayForm extends React.Component {
 
@@ -71,7 +72,8 @@ export default class AssayForm extends React.Component {
         startDateIsValid: true,
         usersIsValid: true,
         ownerIsValid: true
-      }
+      },
+      showLoadingOverlay: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -158,7 +160,9 @@ export default class AssayForm extends React.Component {
 
   handleSubmit() {
 
-    let isError = this.validateForm(this.state.assay);
+    let assay = this.state.assay;
+
+    let isError = this.validateForm(assay);
     console.log(this.state);
 
     if (isError) {
@@ -170,19 +174,31 @@ export default class AssayForm extends React.Component {
 
     } else {
 
-      const isUpdate = !!this.state.assay.id;
+      // Sort the tasks
+      if (!!assay.tasks && assay.tasks.length > 0) {
+        const tasks = document.getElementById("task-input-container").children;
+        if (tasks.length > 0) {
+          for (let i = 0; i < tasks.length; i++) {
+            let idx = parseInt(tasks[i].dataset.index);
+            assay.tasks[idx].order = i;
+          }
+        }
+      }
+
+      const isUpdate = !!assay.id;
 
       const url = isUpdate
           ? "/api/study/" + this.props.study.code + "/assay/"
           + this.state.assay.id
           : "/api/study/" + this.props.study.code + "/assays/";
+      this.setState({showLoadingOverlay: true});
 
       fetch(url, {
         method: isUpdate ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(this.state.assay)
+        body: JSON.stringify(assay)
       })
       .then(async response => {
 
@@ -192,6 +208,7 @@ export default class AssayForm extends React.Component {
           history.push(
               "/study/" + this.props.study.code + "/assay/" + json.code);
         } else {
+          this.setState({showLoadingOverlay: false})
           swal("Something went wrong",
               !!json.message
                   ? "Error: " + json.message :
@@ -201,6 +218,7 @@ export default class AssayForm extends React.Component {
         }
 
       }).catch(e => {
+        this.setState({showLoadingOverlay: false})
         swal(
             "Something went wrong",
             "The request failed. Please check your inputs and try again. If this error persists, please contact Study Tracker support."
@@ -228,6 +246,11 @@ export default class AssayForm extends React.Component {
 
     return (
         <Container fluid className="animated fadeIn max-width-1200">
+
+          <LoadingOverlay
+              isVisible={this.state.showLoadingOverlay}
+              message={"Creating your assay..."}
+          />
 
           <Row>
             <Col>
