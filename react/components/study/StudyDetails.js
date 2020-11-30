@@ -54,7 +54,9 @@ const StudyDetailHeader = ({study, user}) => {
   return (
       <Row className="justify-content-between align-items-center">
         <Col>
-          <h1>Study {study.code}</h1>
+          <h5 className="text-muted">{study.program.name} Study</h5>
+          <h1>{study.name}</h1>
+          <h4>{study.code}</h4>
         </Col>
         <Col className="col-auto">
           {
@@ -175,17 +177,16 @@ class StudyDetails extends React.Component {
                       </DropdownMenu>
                     </UncontrolledDropdown>
                   </div>
+
                   <CardTitle tag="h5" className="mb-0 text-muted">
-                    {study.program.name}
+                    Summary
                   </CardTitle>
+
                 </CardHeader>
 
                 <CardBody>
                   <Row>
                     <Col xs={12}>
-
-                      {/*<h5 className="text-muted">{study.program.name}</h5>*/}
-                      <h3>{study.name}</h3>
 
                       <h6 className="details-label">Description</h6>
                       <div dangerouslySetInnerHTML={createMarkup(

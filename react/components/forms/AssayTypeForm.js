@@ -39,7 +39,7 @@ import {history} from '../../App';
 import {LoadingOverlay} from "../loading";
 import Select from "react-select";
 import Attributes from "./attributes";
-import {AssayTypeFieldInputs} from "./assayTypeFields";
+import {AssayTypeFieldInputs} from "./assayTypeFieldCreation";
 import {TaskInputs} from "./tasks";
 
 export default class AssayTypeForm extends React.Component {

@@ -24,7 +24,7 @@ import store from "./redux/store";
 import {Provider} from "react-redux";
 import ReduxToastr from "react-redux-toastr";
 import {Switch} from "react-router-dom";
-import AssayFormView from './views/AssayForm'
+import AssayFormView from './views/AssayFormView'
 import AssayDetailsView from "./views/AssayDetailsView";
 import Error, {ErrorBoundary} from "./views/Error";
 import ScrollToTop from "./structure/ScrollToTop";

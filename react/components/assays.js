@@ -23,7 +23,6 @@ import {history} from '../App';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSignInAlt} from "@fortawesome/free-solid-svg-icons";
 import {StudyTeam} from "./studyMetadata";
-import {assayTypes} from "../config/assayTypeConstants";
 
 const AssaySummaryCard = ({studyCode, assay}) => {
   return (
@@ -38,7 +37,7 @@ const AssaySummaryCard = ({studyCode, assay}) => {
 
               <span className="float-right">
                 <h5>
-                  {assayTypes[assay.assayType].label}
+                  {assay.assayType.name}
                 </h5>
               </span>
 
@@ -134,7 +133,6 @@ export class AssaySummaryCards extends React.Component {
         assays: assays,
         isLoaded: true
       });
-      console.log(assays);
     })
     .catch(error => {
       this.setState({

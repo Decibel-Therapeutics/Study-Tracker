@@ -34,7 +34,7 @@ const StudyAssaysTab = ({study, user}) => {
               !!user
                   ? (
                       <Button color="info" onClick={() => history.push(
-                          "/study/" + study.id + "/assays/new")}>
+                          "/study/" + study.code + "/assays/new")}>
                         New Assay
                         &nbsp;
                         <FontAwesomeIcon icon={faPlusCircle}/>
