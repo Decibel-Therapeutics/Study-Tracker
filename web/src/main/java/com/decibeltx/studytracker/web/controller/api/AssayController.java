@@ -18,6 +18,7 @@ package com.decibeltx.studytracker.web.controller.api;
 
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.exception.StudyTrackerException;
+import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.model.Assay;
 import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.User;
@@ -113,6 +114,12 @@ public class AssayController extends AbstractAssayController {
 
     return new ResponseEntity<>(HttpStatus.OK);
 
+  }
+
+  @GetMapping("/{assayId}/activity")
+  public List<Activity> getAssayActivity(@PathVariable("assayId") String assayId) {
+    Assay assay = this.getAssayFromIdentifier(assayId);
+    return getActivityService().findByAssay(assay);
   }
 
 }

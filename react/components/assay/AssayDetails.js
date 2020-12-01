@@ -1,19 +1,4 @@
-/*
- * Copyright 2020 the original author or authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+import React from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -36,53 +21,35 @@ import {
   UncontrolledDropdown
 } from "reactstrap";
 import {SelectableStatusButton, StatusButton} from "../status";
-import React from "react";
 import {Book, Folder, Menu} from "react-feather";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faShare, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {history} from "../../App";
-import {StudyCollaborator, StudyKeywords, StudyTeam} from "../studyMetadata";
-import ExternalLinks from "../externalLinks";
-import StudyRelationships from "../studyRelationships";
-import StudyAssaysTab from "./StudyAssaysTab";
-import StudyFilesTab from "./StudyFilesTab";
-import StudyConclusionsTab from "./StudyConclusionsTab";
-import StudyCommentsTab from "./StudyCommentsTab";
-import StudyTimelineTab from "./StudyTimelineTab";
+import {StudyTeam} from "../studyMetadata";
+import AssayTimelineTab from "./AssayTimelineTab";
+import AssayFilesTab from "./AssayFilesTab";
 
-const StudyDetailHeader = ({study, user}) => {
+const AssayDetailHeader = ({study, assay, user}) => {
   return (
       <Row className="justify-content-between align-items-center">
+
         <Col>
-          <h5 className="text-muted">{study.program.name} Study</h5>
-          <h1>{study.name}</h1>
-          <h4>{study.code}</h4>
+          <h5 className="text-muted">{assay.assayType.name} Assay</h5>
+          <h1>{assay.name}</h1>
+          <h4>{assay.code}</h4>
         </Col>
+
         <Col className="col-auto">
+
           {
-            !!study.collaborator
-                ? <Button
-                    size="lg"
-                    className="mr-1 mb-1"
-                    color="info">
-                  External Study
-                </Button>
-                : ''
-          }
-          {
-            !study.active ? <Button size="lg" className="mr-1 mb-1"
-                                    color="danger">Inactive Study</Button> : ''
-          }
-          {
-            study.legacy ? <Button size="lg" className="mr-1 mb-1"
-                                   color="warning">Legacy Study</Button> : ''
+            !assay.active ? <Button size="lg" className="mr-1 mb-1"
+                                    color="danger">Inactive Assay</Button> : ''
           }
           {
             !!user
-                ? <SelectableStatusButton status={study.status}
-                                          studyId={study.id}/>
-                : <StatusButton status={study.status}/>
-
+                ? <SelectableStatusButton status={assay.status}
+                                          assayId={assay.id}/>
+                : <StatusButton status={assay.status}/>
           }
 
         </Col>
@@ -90,13 +57,13 @@ const StudyDetailHeader = ({study, user}) => {
   );
 };
 
-class StudyDetails extends React.Component {
+export default class AssayDetails extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       activeTab: "1"
-    };
+    }
   }
 
   toggle(tab) {
@@ -109,6 +76,7 @@ class StudyDetails extends React.Component {
 
   render() {
 
+    const assay = this.props.assay;
     const study = this.props.study;
     const createMarkup = (content) => {
       return {__html: content};
@@ -117,22 +85,30 @@ class StudyDetails extends React.Component {
     return (
         <Container fluid className="animated fadeIn">
 
-          {/* Breadcrumb */}
           <Row>
             <Col>
               <Breadcrumb>
+
                 <BreadcrumbItem>
                   <a href={"/"}>Home</a>
                 </BreadcrumbItem>
-                <BreadcrumbItem active>
-                  Study Detail
+
+                <BreadcrumbItem>
+                  <a href={"/study/" + study.code}>
+                    Study {study.code}
+                  </a>
                 </BreadcrumbItem>
+
+                <BreadcrumbItem>
+                  Assay Detail
+                </BreadcrumbItem>
+
               </Breadcrumb>
             </Col>
           </Row>
 
-          {/* Header */}
-          <StudyDetailHeader study={study} user={this.props.user}/>
+          <AssayDetailHeader assay={assay} study={study}
+                             user={this.props.user}/>
 
           <Row>
 
@@ -157,7 +133,8 @@ class StudyDetails extends React.Component {
                         {
                           !!this.props.user ? (
                               <DropdownItem onClick={() => history.push(
-                                  "/study/" + study.code + "/edit")}>
+                                  "/study/" + study.code + "/assay/"
+                                  + assay.code + "/edit")}>
                                 <FontAwesomeIcon icon={faEdit}/>
                                 &nbsp;
                                 Edit
@@ -177,35 +154,34 @@ class StudyDetails extends React.Component {
                       </DropdownMenu>
                     </UncontrolledDropdown>
                   </div>
-
                   <CardTitle tag="h5" className="mb-0 text-muted">
-                    Summary
+                    Assay Overview
                   </CardTitle>
-
                 </CardHeader>
 
                 <CardBody>
                   <Row>
-                    <Col xs={12}>
+                    <Col xs="12">
 
                       <h6 className="details-label">Description</h6>
                       <div dangerouslySetInnerHTML={createMarkup(
-                          study.description)}/>
+                          assay.description)}/>
+
 
                       <h6 className="details-label">Created By</h6>
-                      <p>{study.createdBy.displayName}</p>
+                      <p>{assay.createdBy.displayName}</p>
 
                       <h6 className="details-label">Last Updated</h6>
-                      <p>{new Date(study.updatedAt).toLocaleString()}</p>
+                      <p>{new Date(assay.updatedAt).toLocaleString()}</p>
 
                       <h6 className="details-label">Start Date</h6>
-                      <p>{new Date(study.startDate).toLocaleString()}</p>
+                      <p>{new Date(assay.startDate).toLocaleString()}</p>
 
                       <h6 className="details-label">End Date</h6>
                       <p>
                         {
-                          !!study.endDate
-                              ? new Date(study.endDate).toLocaleString()
+                          !!assay.endDate
+                              ? new Date(assay.endDate).toLocaleString()
                               : "n/a"
                         }
                       </p>
@@ -214,30 +190,11 @@ class StudyDetails extends React.Component {
                   </Row>
                 </CardBody>
 
-                {
-                  !!study.collaborator
-                      ? (
-                          <CardBody>
-                            <Row>
-                              <Col xs={12}>
-                                <div>
-                                  <h6 className="details-label">CRO/Collaborator</h6>
-                                  <StudyCollaborator
-                                      collaborator={study.collaborator}
-                                      externalCode={study.externalCode}
-                                  />
-                                </div>
-                              </Col>
-                            </Row>
-                          </CardBody>
-                      ) : ''
-                }
-
                 <CardBody>
                   <Row>
                     <Col xs={12}>
-                      <h6 className="details-label">Study Team</h6>
-                      <StudyTeam users={study.users} owner={study.owner}/>
+                      <h6 className="details-label">Assay Team</h6>
+                      <StudyTeam users={assay.users} owner={assay.owner}/>
                     </Col>
                   </Row>
                 </CardBody>
@@ -245,36 +202,26 @@ class StudyDetails extends React.Component {
                 <CardBody>
                   <Row>
                     <Col xs={12}>
-                      <h6 className="details-label">Keywords</h6>
-                      <StudyKeywords keywords={study.keywords}/>
-                    </Col>
-                  </Row>
-                </CardBody>
-
-                <CardBody>
-                  <Row>
-                    <Col xs={12}>
-
                       <h6 className="details-label">Workspaces</h6>
                       {
-                        !!study.storageFolder
+                        !!assay.storageFolder
                             ? (
-                                <a href={study.storageFolder.url}
+                                <a href={assay.storageFolder.url}
                                    target="_blank"
-                                   className="btn btn-info mt-2 mr-2">
-                                  Study Storage Folder
+                                   className="btn btn-info mr-2">
+                                  Assay Storage Folder
                                   <Folder
                                       className="feather align-middle ml-2 mb-1"/>
                                 </a>
                             ) : ''
                       }
                       {
-                        !!study.notebookFolder
+                        !!assay.notebookFolder
                             ? (
-                                <a href={study.notebookFolder.url}
+                                <a href={assay.notebookFolder.url}
                                    target="_blank"
                                    className="btn btn-info mt-2 mr-2">
-                                  Study ELN Folder
+                                  Assay ELN Folder
                                   <Book
                                       className="feather align-middle ml-2 mb-1"/>
                                 </a>
@@ -285,36 +232,12 @@ class StudyDetails extends React.Component {
                   </Row>
                 </CardBody>
 
-                <CardBody>
-                  <Row>
-                    <Col xs="12">
-                      <ExternalLinks
-                          links={study.externalLinks || []}
-                          studyCode={study.code}
-                          user={this.props.user}
-                      />
-                    </Col>
-                  </Row>
-                </CardBody>
-
-                <CardBody>
-                  <Row>
-                    <Col xs={12}>
-                      <StudyRelationships
-                          relationships={study.studyRelationships}
-                          studyCode={study.code}
-                          user={this.props.user}
-                      />
-                    </Col>
-                  </Row>
-                </CardBody>
-
               </Card>
             </Col>
 
-            <Col lg="7">
+            <Col lg={7}>
 
-              {/* Tabs */}
+              {/*Tabs*/}
               <div className="tab">
                 <Nav tabs>
 
@@ -336,7 +259,7 @@ class StudyDetails extends React.Component {
                           this.toggle("2");
                         }}
                     >
-                      Assays
+                      Files
                     </NavLink>
                   </NavItem>
 
@@ -347,65 +270,37 @@ class StudyDetails extends React.Component {
                           this.toggle("3");
                         }}
                     >
-                      Files
-                    </NavLink>
-                  </NavItem>
-
-                  <NavItem>
-                    <NavLink
-                        className={this.state.activeTab === "4" ? "active" : ''}
-                        onClick={() => {
-                          this.toggle("4");
-                        }}
-                    >
-                      Conclusions
-                    </NavLink>
-                  </NavItem>
-
-                  <NavItem>
-                    <NavLink
-                        className={this.state.activeTab === "5" ? "active" : ''}
-                        onClick={() => {
-                          this.toggle("5");
-                        }}
-                    >
-                      Comments
+                      Results
                     </NavLink>
                   </NavItem>
 
                 </Nav>
 
+                {/*Tab content*/}
                 <TabContent activeTab={this.state.activeTab}>
 
-                  {/* Assay Tab */}
                   <TabPane tabId="1">
-                    <StudyTimelineTab study={study} user={this.props.user}/>
+                    <AssayTimelineTab assay={assay} user={this.props.user}/>
                   </TabPane>
 
                   <TabPane tabId="2">
-                    <StudyAssaysTab study={study} user={this.props.user}/>
+                    <AssayFilesTab assay={assay} user={this.props.user}/>
                   </TabPane>
 
                   <TabPane tabId="3">
-                    <StudyFilesTab study={study} user={this.props.user}/>
-                  </TabPane>
-
-                  <TabPane tabId="4">
-                    <StudyConclusionsTab study={study} user={this.props.user}/>
-                  </TabPane>
-
-                  <TabPane tabId="5">
-                    <StudyCommentsTab study={study} user={this.props.user}/>
+                    <p className="text-center">
+                      Results will go here.
+                    </p>
                   </TabPane>
 
                 </TabContent>
               </div>
             </Col>
+
           </Row>
+
         </Container>
     );
   }
 
 }
-
-export default StudyDetails;
