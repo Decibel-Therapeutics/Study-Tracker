@@ -90,29 +90,22 @@ export default class AssayFilesTab extends React.Component {
 
   render() {
     return (
-        <div>
+        <Col>
 
           <Row className="justify-content-between align-items-center">
-            <div className="col-6">
-              <h4>Assay Files</h4>
-            </div>
-            <div className="col-auto">
+            <Col>
               {
                 !!this.props.user
                     ? (
-                        <Button color="info" onClick={this.toggleModal}>
-                          Upload Files
-                          &nbsp;
-                          <FontAwesomeIcon icon={faFile}/>
-                        </Button>
+                        <span className="float-right">
+                          <Button color="info" onClick={this.toggleModal}>
+                            Upload Files
+                            &nbsp;
+                            <FontAwesomeIcon icon={faFile}/>
+                          </Button>
+                        </span>
                     ) : ''
               }
-            </div>
-          </Row>
-
-          <Row>
-            <Col sm={12}>
-              <hr/>
             </Col>
           </Row>
 
@@ -132,7 +125,7 @@ export default class AssayFilesTab extends React.Component {
               handleSubmit={this.handleSubmit}
           />
 
-        </div>
+        </Col>
     )
   }
 

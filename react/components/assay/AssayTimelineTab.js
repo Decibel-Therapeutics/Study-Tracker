@@ -60,18 +60,6 @@ class AssayTimelineTab extends React.Component {
     return (
         <div className="timeline-tab">
 
-          <Row className="justify-content-between align-items-center">
-            <Col sm={12}>
-              <h4>Assay Timeline</h4>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col sm={12}>
-              <hr/>
-            </Col>
-          </Row>
-
           <Row>
             <Col sm={12}>
               {content}

@@ -150,7 +150,6 @@ export class AssaySummaryCards extends React.Component {
     } else if (this.state.isLoaded) {
       content = [];
       if (this.state.assays.length === 0) {
-        content.push(<hr key={"assay-border"}/>);
         content.push(
             <Row className="text-center" key={"no-assay-message"}>
               <Col>
@@ -160,8 +159,11 @@ export class AssaySummaryCards extends React.Component {
             </Row>
         );
       } else {
-        this.state.assays.forEach(assay => {
-          content.push(<hr key={"assay-border-" + assay.id}/>);
+        for (let i = 0; i < this.state.assays.length; i++) {
+          let assay = this.state.assays[i];
+          if (i > 0) {
+            content.push(<hr key={"assay-border-" + assay.id}/>);
+          }
           content.push(
               <AssaySummaryCard
                   key={"assay-card-" + assay.id}
@@ -169,7 +171,7 @@ export class AssaySummaryCards extends React.Component {
                   assay={assay}
               />
           );
-        });
+        }
       }
     }
 

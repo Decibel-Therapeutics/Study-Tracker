@@ -267,6 +267,7 @@ export default class AssayDetails extends React.Component {
                   Object.keys(assay.fields).length > 0
                       ? (
                           <CardBody>
+                            <CardTitle>{assay.assayType.name} Fields</CardTitle>
                             <AssayFieldData assay={assay}/>
                           </CardBody>
                       )
@@ -277,6 +278,7 @@ export default class AssayDetails extends React.Component {
                   Object.keys(assay.attributes).length > 0
                       ? (
                           <CardBody>
+                            <CardTitle>Attributes</CardTitle>
                             <AssayAttributes attributes={assay.attributes}/>
                           </CardBody>
                       )
@@ -286,7 +288,7 @@ export default class AssayDetails extends React.Component {
                 <CardBody>
                   <Row>
                     <Col xs={12}>
-                      <h6 className="details-label">Assay Team</h6>
+                      <CardTitle>Assay Team</CardTitle>
                       <StudyTeam users={assay.users} owner={assay.owner}/>
                     </Col>
                   </Row>
@@ -295,7 +297,7 @@ export default class AssayDetails extends React.Component {
                 <CardBody>
                   <Row>
                     <Col xs={12}>
-                      <h6 className="details-label">Workspaces</h6>
+                      <CardTitle>Workspaces</CardTitle>
                       {
                         !!assay.storageFolder
                             ? (

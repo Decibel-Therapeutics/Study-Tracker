@@ -221,7 +221,7 @@ class StudyDetails extends React.Component {
                             <Row>
                               <Col xs={12}>
                                 <div>
-                                  <h6 className="details-label">CRO/Collaborator</h6>
+                                  <CardTitle>CRO/Collaborator</CardTitle>
                                   <StudyCollaborator
                                       collaborator={study.collaborator}
                                       externalCode={study.externalCode}
@@ -236,7 +236,7 @@ class StudyDetails extends React.Component {
                 <CardBody>
                   <Row>
                     <Col xs={12}>
-                      <h6 className="details-label">Study Team</h6>
+                      <CardTitle>Study Team</CardTitle>
                       <StudyTeam users={study.users} owner={study.owner}/>
                     </Col>
                   </Row>
@@ -245,7 +245,7 @@ class StudyDetails extends React.Component {
                 <CardBody>
                   <Row>
                     <Col xs={12}>
-                      <h6 className="details-label">Keywords</h6>
+                      <CardTitle>Keywords</CardTitle>
                       <StudyKeywords keywords={study.keywords}/>
                     </Col>
                   </Row>
@@ -254,8 +254,7 @@ class StudyDetails extends React.Component {
                 <CardBody>
                   <Row>
                     <Col xs={12}>
-
-                      <h6 className="details-label">Workspaces</h6>
+                      <CardTitle>Workspaces</CardTitle>
                       {
                         !!study.storageFolder
                             ? (
