@@ -29,6 +29,10 @@ import {StudyTeam} from "../studyMetadata";
 import AssayTimelineTab from "./AssayTimelineTab";
 import AssayFilesTab from "./AssayFilesTab";
 
+const createMarkup = (content) => {
+  return {__html: content};
+};
+
 const AssayDetailHeader = ({study, assay, user}) => {
   return (
       <Row className="justify-content-between align-items-center">
@@ -57,6 +61,79 @@ const AssayDetailHeader = ({study, assay, user}) => {
   );
 };
 
+const AssayFieldData = ({assay}) => {
+
+  let fields = [];
+  const assayTypeFields = assay.assayType.fields;
+  const assayFields = assay.fields;
+  for (let f of assayTypeFields) {
+    if (assayFields.hasOwnProperty(f.fieldName)) {
+
+      const value = assayFields[f.fieldName];
+
+      if (["STRING", "INTEGER", "FLOAT"].indexOf(f.type) > -1) {
+        fields.push(
+            <div key={"assay-field-display-" + f.fieldName}>
+              <h6 className="details-label">{f.displayName}</h6>
+              <p>{value}</p>
+            </div>
+        );
+      } else if (f.type === "TEXT") {
+        fields.push(
+            <div key={"assay-field-display-" + f.fieldName}>
+              <h6 className="details-label">{f.displayName}</h6>
+              <div dangerouslySetInnerHTML={createMarkup(value)}/>
+            </div>
+        )
+      } else if (f.type === "BOOLEAN") {
+        fields.push(
+            <div key={"assay-field-display-" + f.fieldName}>
+              <h6 className="details-label">{f.displayName}</h6>
+              <p>{!!value ? "True" : "False"}</p>
+            </div>
+        );
+      } else if (f.type === "DATE") {
+        fields.push(
+            <div key={"assay-field-display-" + f.fieldName}>
+              <h6 className="details-label">{f.displayName}</h6>
+              <p>{new Date(value).toLocaleString()}</p>
+            </div>
+        );
+      }
+
+    }
+  }
+
+  return (
+      <Row>
+        <Col xs={12}>
+          {fields}
+        </Col>
+      </Row>
+  )
+
+}
+
+const AssayAttributes = ({attributes}) => {
+  let items = [];
+  for (let k of Object.keys(attributes)) {
+    let v = attributes[k];
+    items.push(
+        <div key={"assay-attributes-" + k}>
+          <h6 className="details-label">{k}</h6>
+          <p>{v || "n/a"}</p>
+        </div>
+    )
+  }
+  return (
+      <Row>
+        <Col xs={12}>
+          {items}
+        </Col>
+      </Row>
+  )
+};
+
 export default class AssayDetails extends React.Component {
 
   constructor(props) {
@@ -78,9 +155,6 @@ export default class AssayDetails extends React.Component {
 
     const assay = this.props.assay;
     const study = this.props.study;
-    const createMarkup = (content) => {
-      return {__html: content};
-    };
 
     return (
         <Container fluid className="animated fadeIn">
@@ -167,7 +241,6 @@ export default class AssayDetails extends React.Component {
                       <div dangerouslySetInnerHTML={createMarkup(
                           assay.description)}/>
 
-
                       <h6 className="details-label">Created By</h6>
                       <p>{assay.createdBy.displayName}</p>
 
@@ -189,6 +262,26 @@ export default class AssayDetails extends React.Component {
                     </Col>
                   </Row>
                 </CardBody>
+
+                {
+                  Object.keys(assay.fields).length > 0
+                      ? (
+                          <CardBody>
+                            <AssayFieldData assay={assay}/>
+                          </CardBody>
+                      )
+                      : ''
+                }
+
+                {
+                  Object.keys(assay.attributes).length > 0
+                      ? (
+                          <CardBody>
+                            <AssayAttributes attributes={assay.attributes}/>
+                          </CardBody>
+                      )
+                      : ''
+                }
 
                 <CardBody>
                   <Row>

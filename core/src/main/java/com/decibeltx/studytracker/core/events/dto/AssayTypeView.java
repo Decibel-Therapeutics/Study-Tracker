@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AssayTypeView {
+public final class AssayTypeView {
 
   private String id;
 
