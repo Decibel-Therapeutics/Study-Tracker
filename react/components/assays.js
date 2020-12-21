@@ -41,8 +41,12 @@ const AssaySummaryCard = ({studyCode, assay}) => {
                 </h5>
               </span>
 
-              <h6>Assay {assay.code}</h6>
-              <h4>{assay.name}</h4>
+              <h6>{assay.code}</h6>
+              <h4>
+                <a href={"/study/" + studyCode + "/assay/" + assay.code}>
+                  {assay.name}
+                </a>
+              </h4>
 
             </Col>
           </Row>

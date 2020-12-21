@@ -45,6 +45,7 @@ import {AssayTypeFieldCaptureInputList} from "./assayTypeFieldCapture";
 import Attributes from "./attributes";
 import {TaskInputs} from "./tasks";
 import {LoadingOverlay} from "../loading";
+import ReactQuill from "react-quill";
 
 export default class AssayForm extends React.Component {
 
@@ -337,14 +338,20 @@ export default class AssayForm extends React.Component {
                       <Col sm="7">
                         <FormGroup>
                           <Label>Description *</Label>
-                          <Input
-                              type="textarea"
-                              invalid={!this.state.validation.descriptionIsValid}
-                              rows="5"
+                          <ReactQuill
+                              theme="snow"
                               defaultValue={this.state.assay.description || ''}
-                              onChange={(e) => this.handleFormUpdate(
-                                  {"description": e.target.value})}
+                              onChange={content => this.handleFormUpdate(
+                                  {"description": content})}
                           />
+                          {/*<Input*/}
+                          {/*    type="textarea"*/}
+                          {/*    invalid={!this.state.validation.descriptionIsValid}*/}
+                          {/*    rows="5"*/}
+                          {/*    defaultValue={this.state.assay.description || ''}*/}
+                          {/*    onChange={(e) => this.handleFormUpdate(*/}
+                          {/*        {"description": e.target.value})}*/}
+                          {/*/>*/}
                           <FormFeedback>Description must not be
                             empty.</FormFeedback>
                           <FormText>Provide a brief description of your

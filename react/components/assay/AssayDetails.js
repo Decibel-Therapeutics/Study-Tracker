@@ -303,7 +303,7 @@ export default class AssayDetails extends React.Component {
                             ? (
                                 <a href={assay.storageFolder.url}
                                    target="_blank"
-                                   className="btn btn-info mr-2">
+                                   className="btn btn-outline-info mb-2 mr-2">
                                   Assay Storage Folder
                                   <Folder
                                       className="feather align-middle ml-2 mb-1"/>
@@ -315,7 +315,7 @@ export default class AssayDetails extends React.Component {
                             ? (
                                 <a href={assay.notebookFolder.url}
                                    target="_blank"
-                                   className="btn btn-info mt-2 mr-2">
+                                   className="btn btn-outline-info mb-2 mr-2">
                                   Assay ELN Folder
                                   <Book
                                       className="feather align-middle ml-2 mb-1"/>
@@ -358,16 +358,17 @@ export default class AssayDetails extends React.Component {
                     </NavLink>
                   </NavItem>
 
-                  <NavItem>
-                    <NavLink
-                        className={this.state.activeTab === "3" ? "active" : ''}
-                        onClick={() => {
-                          this.toggle("3");
-                        }}
-                    >
-                      Results
-                    </NavLink>
-                  </NavItem>
+                  {/*TODO*/}
+                  {/*<NavItem>*/}
+                  {/*  <NavLink*/}
+                  {/*      className={this.state.activeTab === "3" ? "active" : ''}*/}
+                  {/*      onClick={() => {*/}
+                  {/*        this.toggle("3");*/}
+                  {/*      }}*/}
+                  {/*  >*/}
+                  {/*    Results*/}
+                  {/*  </NavLink>*/}
+                  {/*</NavItem>*/}
 
                 </Nav>
 
@@ -382,11 +383,12 @@ export default class AssayDetails extends React.Component {
                     <AssayFilesTab assay={assay} user={this.props.user}/>
                   </TabPane>
 
-                  <TabPane tabId="3">
-                    <p className="text-center">
-                      Results will go here.
-                    </p>
-                  </TabPane>
+                  {/*TODO*/}
+                  {/*<TabPane tabId="3">*/}
+                  {/*  <p className="text-center">*/}
+                  {/*    Results will go here.*/}
+                  {/*  </p>*/}
+                  {/*</TabPane>*/}
 
                 </TabContent>
               </div>

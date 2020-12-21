@@ -54,9 +54,8 @@ const StudyDetailHeader = ({study, user}) => {
   return (
       <Row className="justify-content-between align-items-center">
         <Col>
-          <h5 className="text-muted">{study.program.name} Study</h5>
           <h1>{study.name}</h1>
-          <h4>{study.code}</h4>
+          <h5 className="text-muted">{study.code}</h5>
         </Col>
         <Col className="col-auto">
           {
@@ -188,6 +187,22 @@ class StudyDetails extends React.Component {
                   <Row>
                     <Col xs={12}>
 
+                      <h6 className="details-label">Program</h6>
+                      <p>{study.program.name}</p>
+
+                      <h6 className="details-label">Code</h6>
+                      <p>{study.code}</p>
+
+                      {
+                        !!study.externalCode
+                            ? (
+                                <React.Fragment>
+                                  <h6 className="details-label">External Code</h6>
+                                  <p>{study.externalCode}</p>
+                                </React.Fragment>
+                            ) : ''
+                      }
+
                       <h6 className="details-label">Description</h6>
                       <div dangerouslySetInnerHTML={createMarkup(
                           study.description)}/>
@@ -260,7 +275,7 @@ class StudyDetails extends React.Component {
                             ? (
                                 <a href={study.storageFolder.url}
                                    target="_blank"
-                                   className="btn btn-info mt-2 mr-2">
+                                   className="btn btn-outline-info mt-2 mr-2">
                                   Study Storage Folder
                                   <Folder
                                       className="feather align-middle ml-2 mb-1"/>
@@ -272,7 +287,7 @@ class StudyDetails extends React.Component {
                             ? (
                                 <a href={study.notebookFolder.url}
                                    target="_blank"
-                                   className="btn btn-info mt-2 mr-2">
+                                   className="btn btn-outline-info mt-2 mr-2">
                                   Study ELN Folder
                                   <Book
                                       className="feather align-middle ml-2 mb-1"/>

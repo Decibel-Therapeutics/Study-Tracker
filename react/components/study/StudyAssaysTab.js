@@ -25,12 +25,12 @@ const StudyAssaysTab = ({study, user}) => {
 
   return (
       <div>
-        <Row className="justify-content-between align-items-center">
+        <Row className="justify-content-between align-items-center mb-4">
           <Col>
             {
               !!user
                   ? (
-                      <span className="pull-right">
+                      <span className="float-right">
                         <Button color="info" onClick={() => history.push(
                             "/study/" + study.code + "/assays/new")}>
                           New Assay
