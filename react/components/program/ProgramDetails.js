@@ -37,7 +37,7 @@ import {
 import React from "react";
 import {Menu} from "react-feather";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faShare, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {history} from "../../App";
 import {
   ProgramStatusButton,
@@ -134,11 +134,11 @@ class ProgramDetails extends React.Component {
                         <Menu/>
                       </DropdownToggle>
                       <DropdownMenu right>
-                        <DropdownItem onClick={() => console.log("Share!")}>
-                          <FontAwesomeIcon icon={faShare}/>
-                          &nbsp;
-                          Share
-                        </DropdownItem>
+                        {/*<DropdownItem onClick={() => console.log("Share!")}>*/}
+                        {/*  <FontAwesomeIcon icon={faShare}/>*/}
+                        {/*  &nbsp;*/}
+                        {/*  Share*/}
+                        {/*</DropdownItem>*/}
                         {
                           !!this.props.user && !!this.props.user.admin ?
                               <DropdownItem divider/> : ''

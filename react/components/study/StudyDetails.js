@@ -39,7 +39,7 @@ import {SelectableStatusButton, StatusButton} from "../status";
 import React from "react";
 import {Book, Folder, Menu} from "react-feather";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faShare, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {history} from "../../App";
 import {StudyCollaborator, StudyKeywords, StudyTeam} from "../studyMetadata";
 import ExternalLinks from "../externalLinks";
@@ -145,11 +145,11 @@ class StudyDetails extends React.Component {
                         <Menu/>
                       </DropdownToggle>
                       <DropdownMenu right>
-                        <DropdownItem onClick={() => console.log("Share!")}>
-                          <FontAwesomeIcon icon={faShare}/>
-                          &nbsp;
-                          Share
-                        </DropdownItem>
+                        {/*<DropdownItem onClick={() => console.log("Share!")}>*/}
+                        {/*  <FontAwesomeIcon icon={faShare}/>*/}
+                        {/*  &nbsp;*/}
+                        {/*  Share*/}
+                        {/*</DropdownItem>*/}
                         {
                           !!this.props.user ? <DropdownItem divider/> : ''
                         }

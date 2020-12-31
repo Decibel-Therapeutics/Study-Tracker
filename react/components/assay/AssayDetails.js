@@ -23,7 +23,7 @@ import {
 import {SelectableStatusButton, StatusButton} from "../status";
 import {Book, Folder, Menu} from "react-feather";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faShare, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {history} from "../../App";
 import {StudyTeam} from "../studyMetadata";
 import AssayTimelineTab from "./AssayTimelineTab";
@@ -196,11 +196,11 @@ export default class AssayDetails extends React.Component {
                         <Menu/>
                       </DropdownToggle>
                       <DropdownMenu right>
-                        <DropdownItem onClick={() => console.log("Share!")}>
-                          <FontAwesomeIcon icon={faShare}/>
-                          &nbsp;
-                          Share
-                        </DropdownItem>
+                        {/*<DropdownItem onClick={() => console.log("Share!")}>*/}
+                        {/*  <FontAwesomeIcon icon={faShare}/>*/}
+                        {/*  &nbsp;*/}
+                        {/*  Share*/}
+                        {/*</DropdownItem>*/}
                         {
                           !!this.props.user ? <DropdownItem divider/> : ''
                         }
