@@ -49,6 +49,7 @@ import StudyFilesTab from "./StudyFilesTab";
 import StudyConclusionsTab from "./StudyConclusionsTab";
 import StudyCommentsTab from "./StudyCommentsTab";
 import StudyTimelineTab from "./StudyTimelineTab";
+import swal from "sweetalert";
 
 const StudyDetailHeader = ({study, user}) => {
   return (
@@ -96,6 +97,7 @@ class StudyDetails extends React.Component {
     this.state = {
       activeTab: "1"
     };
+    this.handleStudyDelete = this.handleStudyDelete.bind(this);
   }
 
   toggle(tab) {
@@ -104,6 +106,33 @@ class StudyDetails extends React.Component {
         activeTab: tab
       });
     }
+  }
+
+  handleStudyDelete() {
+    swal({
+      title: "Are you sure you want to remove this study?",
+      text: "Removed studies will be hidden from view, but their records will not be deleted. Studies can be recovered in the admin dashboard.",
+      icon: "warning",
+      buttons: true
+    })
+    .then(val => {
+      if (val) {
+        fetch("/api/study/" + this.props.study.code, {
+          method: 'DELETE',
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }).then(response => {
+          history.push("/studies")
+        })
+        .catch(error => {
+          console.error(error);
+          this.setState({
+            modalError: "Failed to remove study. Please try again."
+          });
+        })
+      }
+    });
   }
 
   render() {
@@ -150,9 +179,9 @@ class StudyDetails extends React.Component {
                         {/*  &nbsp;*/}
                         {/*  Share*/}
                         {/*</DropdownItem>*/}
-                        {
-                          !!this.props.user ? <DropdownItem divider/> : ''
-                        }
+                        {/*{*/}
+                        {/*  !!this.props.user ? <DropdownItem divider/> : ''*/}
+                        {/*}*/}
                         {
                           !!this.props.user ? (
                               <DropdownItem onClick={() => history.push(
@@ -165,11 +194,10 @@ class StudyDetails extends React.Component {
                         }
                         {
                           !!this.props.user ? (
-                              <DropdownItem
-                                  onClick={() => console.log("Delete!")}>
+                              <DropdownItem onClick={this.handleStudyDelete}>
                                 <FontAwesomeIcon icon={faTrash}/>
                                 &nbsp;
-                                Delete
+                                Remove
                               </DropdownItem>
                           ) : ''
                         }

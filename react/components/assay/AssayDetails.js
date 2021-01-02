@@ -28,6 +28,7 @@ import {history} from "../../App";
 import {StudyTeam} from "../studyMetadata";
 import AssayTimelineTab from "./AssayTimelineTab";
 import AssayFilesTab from "./AssayFilesTab";
+import swal from "sweetalert";
 
 const createMarkup = (content) => {
   return {__html: content};
@@ -141,6 +142,7 @@ export default class AssayDetails extends React.Component {
     this.state = {
       activeTab: "1"
     }
+    this.handleAssayDelete = this.handleAssayDelete.bind(this);
   }
 
   toggle(tab) {
@@ -149,6 +151,33 @@ export default class AssayDetails extends React.Component {
         activeTab: tab
       });
     }
+  }
+
+  handleAssayDelete() {
+    swal({
+      title: "Are you sure you want to remove this assay?",
+      text: "Removed assays will be hidden from view, but their records will not be deleted. Assays can be recovered in the admin dashboard.",
+      icon: "warning",
+      buttons: true
+    })
+    .then(val => {
+      if (val) {
+        fetch("/api/assay/" + this.props.assay.code, {
+          method: 'DELETE',
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }).then(response => {
+          history.push("/assays")
+        })
+        .catch(error => {
+          console.error(error);
+          this.setState({
+            modalError: "Failed to remove study. Please try again."
+          });
+        })
+      }
+    });
   }
 
   render() {
@@ -201,9 +230,9 @@ export default class AssayDetails extends React.Component {
                         {/*  &nbsp;*/}
                         {/*  Share*/}
                         {/*</DropdownItem>*/}
-                        {
-                          !!this.props.user ? <DropdownItem divider/> : ''
-                        }
+                        {/*{*/}
+                        {/*  !!this.props.user ? <DropdownItem divider/> : ''*/}
+                        {/*}*/}
                         {
                           !!this.props.user ? (
                               <DropdownItem onClick={() => history.push(
@@ -217,8 +246,7 @@ export default class AssayDetails extends React.Component {
                         }
                         {
                           !!this.props.user ? (
-                              <DropdownItem
-                                  onClick={() => console.log("Delete!")}>
+                              <DropdownItem onClick={this.handleAssayDelete}>
                                 <FontAwesomeIcon icon={faTrash}/>
                                 &nbsp;
                                 Delete

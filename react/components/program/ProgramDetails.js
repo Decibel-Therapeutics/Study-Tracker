@@ -37,7 +37,7 @@ import {
 import React from "react";
 import {Menu} from "react-feather";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import {history} from "../../App";
 import {
   ProgramStatusButton,
@@ -46,7 +46,6 @@ import {
 import {ProgramKeywords, ProgramTeam} from "./programMetadata";
 import ProgramTimelineTab from "./ProgramTimelineTab";
 import ProgramStudiesTab from "./ProgramStudiesTab";
-import ProgramCalendarTab from "./ProgramCalendarTab";
 
 const ProgramDetailHeader = ({program, user}) => {
   return (
@@ -139,10 +138,10 @@ class ProgramDetails extends React.Component {
                         {/*  &nbsp;*/}
                         {/*  Share*/}
                         {/*</DropdownItem>*/}
-                        {
-                          !!this.props.user && !!this.props.user.admin ?
-                              <DropdownItem divider/> : ''
-                        }
+                        {/*{*/}
+                        {/*  !!this.props.user && !!this.props.user.admin ?*/}
+                        {/*      <DropdownItem divider/> : ''*/}
+                        {/*}*/}
                         {
                           !!this.props.user && !!this.props.user.admin ? (
                               <DropdownItem onClick={() => history.push(
@@ -153,16 +152,16 @@ class ProgramDetails extends React.Component {
                               </DropdownItem>
                           ) : ''
                         }
-                        {
-                          !!this.props.user && !!this.props.user.admin ? (
-                              <DropdownItem
-                                  onClick={() => console.log("Delete!")}>
-                                <FontAwesomeIcon icon={faTrash}/>
-                                &nbsp;
-                                Delete
-                              </DropdownItem>
-                          ) : ''
-                        }
+                        {/*{*/}
+                        {/*  !!this.props.user && !!this.props.user.admin ? (*/}
+                        {/*      <DropdownItem*/}
+                        {/*          onClick={() => console.log("Delete!")}>*/}
+                        {/*        <FontAwesomeIcon icon={faTrash}/>*/}
+                        {/*        &nbsp;*/}
+                        {/*        Delete*/}
+                        {/*      </DropdownItem>*/}
+                        {/*  ) : ''*/}
+                        {/*}*/}
                       </DropdownMenu>
                     </UncontrolledDropdown>
                   </div>
@@ -243,16 +242,16 @@ class ProgramDetails extends React.Component {
                     </NavLink>
                   </NavItem>
 
-                  <NavItem>
-                    <NavLink
-                        className={this.state.activeTab === "3" ? "active" : ''}
-                        onClick={() => {
-                          this.toggle("3");
-                        }}
-                    >
-                      Calendar
-                    </NavLink>
-                  </NavItem>
+                  {/*<NavItem>*/}
+                  {/*  <NavLink*/}
+                  {/*      className={this.state.activeTab === "3" ? "active" : ''}*/}
+                  {/*      onClick={() => {*/}
+                  {/*        this.toggle("3");*/}
+                  {/*      }}*/}
+                  {/*  >*/}
+                  {/*    Calendar*/}
+                  {/*  </NavLink>*/}
+                  {/*</NavItem>*/}
 
                 </Nav>
 
@@ -268,10 +267,10 @@ class ProgramDetails extends React.Component {
                                        user={this.props.user}/>
                   </TabPane>
 
-                  <TabPane tabId="3">
-                    <ProgramCalendarTab program={program} studies={studies}
-                                        user={this.props.user}/>
-                  </TabPane>
+                  {/*<TabPane tabId="3">*/}
+                  {/*  <ProgramCalendarTab program={program} studies={studies}*/}
+                  {/*                      user={this.props.user}/>*/}
+                  {/*</TabPane>*/}
 
                 </TabContent>
               </div>
