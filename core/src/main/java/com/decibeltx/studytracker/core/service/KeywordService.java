@@ -14,19 +14,30 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.core.keyword;
+package com.decibeltx.studytracker.core.service;
 
-import lombok.Data;
+import com.decibeltx.studytracker.core.model.Keyword;
+import java.util.List;
+import java.util.Optional;
 
-@Data
-public class Keyword {
+public interface KeywordService {
 
-  private String keyword;
+  Optional<Keyword> findById(String id);
 
-  private String referenceId;
+  List<Keyword> findAll();
 
-  private String source;
+  List<Keyword> findByKeyword(String keyword);
 
-  private String type;
+  Optional<Keyword> findByKeywordAndCategory(String keyword, String category);
+
+  List<Keyword> search(String fragment);
+
+  List<Keyword> search(String fragment, String category);
+
+  Keyword create(Keyword keyword);
+
+  Keyword update(Keyword keyword);
+
+  void delete(Keyword keyword);
 
 }
