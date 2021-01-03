@@ -54,6 +54,8 @@ public class KeywordServiceTests {
     keywords = keywordService.search("AKT", "Cell Line");
     Assert.assertEquals(0, keywords.size());
 
+    Assert.assertEquals(2, keywordService.findAllCategories().size());
+
   }
 
   @Test

@@ -19,6 +19,7 @@ package com.decibeltx.studytracker.core.service;
 import com.decibeltx.studytracker.core.model.Keyword;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface KeywordService {
 
@@ -28,11 +29,15 @@ public interface KeywordService {
 
   List<Keyword> findByKeyword(String keyword);
 
+  List<Keyword> findByCategory(String category);
+
   Optional<Keyword> findByKeywordAndCategory(String keyword, String category);
 
   List<Keyword> search(String fragment);
 
   List<Keyword> search(String fragment, String category);
+
+  Set<String> findAllCategories();
 
   Keyword create(Keyword keyword);
 

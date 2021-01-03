@@ -6,6 +6,7 @@ import com.decibeltx.studytracker.core.repository.KeywordRepository;
 import com.decibeltx.studytracker.core.service.KeywordService;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +36,28 @@ public class KeywordServiceImpl implements KeywordService {
   }
 
   @Override
+  public List<Keyword> findByCategory(String category) {
+    return keywordRepository.findByCategory(category);
+  }
+
+  @Override
   public Optional<Keyword> findByKeywordAndCategory(String keyword, String category) {
     return keywordRepository.findByKeywordAndCategory(keyword, category);
   }
 
   @Override
   public List<Keyword> search(String fragment) {
-    return keywordRepository.findByKeywordLike(fragment);
+    return keywordRepository.search(fragment);
   }
 
   @Override
   public List<Keyword> search(String fragment, String category) {
-    return keywordRepository.findByCategoryAndKeywordLike(category, fragment);
+    return keywordRepository.search(fragment, category);
+  }
+
+  @Override
+  public Set<String> findAllCategories() {
+    return keywordRepository.findAllCategories();
   }
 
   @Override
