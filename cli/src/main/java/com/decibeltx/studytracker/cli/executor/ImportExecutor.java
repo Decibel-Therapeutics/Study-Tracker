@@ -2,7 +2,7 @@ package com.decibeltx.studytracker.cli.executor;
 
 import com.decibeltx.studytracker.cli.argument.ImportArguments;
 import com.decibeltx.studytracker.cli.executor.importer.CollaboratorImporter;
-import com.decibeltx.studytracker.cli.executor.importer.KeywordsImporter;
+import com.decibeltx.studytracker.cli.executor.importer.KeywordImporter;
 import com.decibeltx.studytracker.cli.executor.importer.ProgramImporter;
 import com.decibeltx.studytracker.cli.executor.importer.StudyImporter;
 import com.decibeltx.studytracker.cli.executor.importer.UserImporter;
@@ -42,7 +42,7 @@ public class ImportExecutor {
   private CollaboratorImporter collaboratorImporter;
 
   @Autowired
-  private KeywordsImporter keywordsImporter;
+  private KeywordImporter keywordImporter;
 
   @Autowired
   private StudyImporter studyImporter;
@@ -108,7 +108,7 @@ public class ImportExecutor {
 
     // Keywords
     if (!seeds.getKeywords().isEmpty()) {
-      keywordsImporter.importRecords(seeds.getKeywords());
+      keywordImporter.importRecords(seeds.getKeywords());
     }
 
     // Studies

@@ -30,7 +30,9 @@ public class UserImporter extends RecordImporter<User> {
       LOGGER.warn(String.format("A user with the username %s or email %s already exists. "
           + "Skipping record.", user.getUsername(), user.getEmail()));
     } else {
-      user.setPassword(passwordEncoder.encode(user.getPassword()));
+      if (user.getPassword() != null) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+      }
       this.validate(user);
       userService.create(user);
     }

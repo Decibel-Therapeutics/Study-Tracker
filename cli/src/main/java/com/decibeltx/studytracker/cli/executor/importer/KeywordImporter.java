@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KeywordsImporter extends RecordImporter<Keyword> {
+public class KeywordImporter extends RecordImporter<Keyword> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(KeywordsImporter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(KeywordImporter.class);
 
   @Autowired
   private KeywordService keywordService;
 
-  public KeywordsImporter() {
+  public KeywordImporter() {
     super(Keyword.class);
   }
 
