@@ -15,7 +15,8 @@ event dispatcher service for easy data access and integration with external syst
 
 ## Documentation
 
-Documentation (work-in-progress) can be found in the `documentation` folder of the repository.
+For instructions about how to configure and deploy Study
+Tracker, [see the wiki](https://github.com/Decibel-Therapeutics/Study-Tracker/wiki).
 
 ## Supported Integrations
 
