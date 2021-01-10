@@ -82,7 +82,7 @@
     <dependency>
       <artifactId>tomcat-embed-jasper</artifactId>
       <groupId>org.apache.tomcat.embed</groupId>
-      <scope>provided</scope>
+<!--      <scope>provided</scope>-->
     </dependency>
 
     <dependency>
