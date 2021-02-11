@@ -18,6 +18,9 @@ package com.decibeltx.studytracker.web.controller.api;
 
 import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.service.ActivityService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +43,13 @@ public class ActivityController {
   private ActivityService activityService;
 
   @GetMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok")
+  })
   public HttpEntity<?> getActivity(Pageable pageable, HttpServletRequest request) {
     Map<String, String[]> params = request.getParameterMap();
     if (params.containsKey("page") || params.containsKey("size")) {

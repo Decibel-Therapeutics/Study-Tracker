@@ -24,11 +24,15 @@ import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.service.StudyExternalLinkService;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,12 +52,31 @@ public class StudyExternalLinksController extends AbstractStudyController {
   private StudyExternalLinkService studyExternalLinkService;
 
   @GetMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public List<ExternalLink> getStudyExternalLinks(@PathVariable("id") String studyId) {
     Study study = getStudyFromIdentifier(studyId);
     return study.getExternalLinks();
   }
 
   @PostMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 201, message = "Created"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> addExternalLink(@PathVariable("id") String studyId,
       @RequestBody ExternalLink externalLink) {
     Study study = getStudyFromIdentifier(studyId);
@@ -73,6 +96,17 @@ public class StudyExternalLinksController extends AbstractStudyController {
   }
 
   @PutMapping("/{linkId}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 201, message = "Created"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> editExternalLink(@PathVariable("id") String studyId,
       @PathVariable("linkId") String linkId, @RequestBody ExternalLink externalLink) {
     Study study = getStudyFromIdentifier(studyId);
@@ -97,6 +131,15 @@ public class StudyExternalLinksController extends AbstractStudyController {
   }
 
   @DeleteMapping("/{linkId}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> removeExternalLink(@PathVariable("id") String studyId,
       @PathVariable("linkId") String linkId) {
     Study study = getStudyFromIdentifier(studyId);

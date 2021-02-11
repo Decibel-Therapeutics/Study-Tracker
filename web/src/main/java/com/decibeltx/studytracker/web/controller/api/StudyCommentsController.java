@@ -24,6 +24,9 @@ import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.service.StudyCommentService;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -31,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,12 +56,31 @@ public class StudyCommentsController extends AbstractStudyController {
   private StudyCommentService studyCommentService;
 
   @GetMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public List<Comment> getStudyComments(@PathVariable("studyId") String studyId) {
     Study study = getStudyFromIdentifier(studyId);
     return study.getComments();
   }
 
   @PostMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 201, message = "Created"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<Comment> addStudyComment(@PathVariable("studyId") String studyId,
       @RequestBody Comment comment) {
 
@@ -82,6 +105,17 @@ public class StudyCommentsController extends AbstractStudyController {
   }
 
   @PutMapping("/{commentId}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 201, message = "Created"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<Comment> editedStudyComment(@PathVariable("studyId") String studyId,
       @PathVariable("commentId") String commentId, @RequestBody Comment updated) {
 
@@ -114,6 +148,15 @@ public class StudyCommentsController extends AbstractStudyController {
   }
 
   @DeleteMapping("/{commentId}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> deleteStudyComment(@PathVariable("studyId") String studyId,
       @PathVariable("commentId") String commentId) {
 

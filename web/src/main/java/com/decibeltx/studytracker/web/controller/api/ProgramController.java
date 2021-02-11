@@ -26,6 +26,9 @@ import com.decibeltx.studytracker.core.service.EventsService;
 import com.decibeltx.studytracker.core.service.ProgramService;
 import com.decibeltx.studytracker.core.service.UserService;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -33,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,11 +69,26 @@ public class ProgramController {
   private EventsService eventsService;
 
   @GetMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Created")
+  })
   public List<Program> getAllPrograms() throws Exception {
     return programService.findAll();
   }
 
   @GetMapping("/{id}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public Program getProgram(@PathVariable("id") String programId) throws Exception {
     Optional<Program> optional = programService.findById(programId);
     if (optional.isPresent()) {
@@ -80,6 +99,16 @@ public class ProgramController {
   }
 
   @PostMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 201, message = "Created"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized")
+  })
   public HttpEntity<Program> createProgram(@RequestBody Program program) {
 
     LOGGER.info("Creating new program: " + program.toString());
@@ -104,6 +133,17 @@ public class ProgramController {
   }
 
   @PutMapping("/{id}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 201, message = "Created"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<Program> updateProgram(@PathVariable("id") String programId,
       @RequestBody Program program) {
 
@@ -130,6 +170,15 @@ public class ProgramController {
   }
 
   @DeleteMapping("/{id}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> deleteProgram(@PathVariable("id") String programId) {
     Optional<Program> optional = programService.findById(programId);
     if (!optional.isPresent()) {
@@ -155,6 +204,17 @@ public class ProgramController {
   }
 
   @PostMapping("/{id}/status")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> updateProgramStatus(@PathVariable("id") String programId,
       @RequestParam("active") boolean active) {
     Optional<Program> optional = programService.findById(programId);
@@ -180,6 +240,14 @@ public class ProgramController {
   }
 
   @GetMapping("/{id}/activity")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<List<Activity>> getProgramActivity(@PathVariable("id") String programId) {
     Optional<Program> optional = programService.findById(programId);
     if (!optional.isPresent()) {

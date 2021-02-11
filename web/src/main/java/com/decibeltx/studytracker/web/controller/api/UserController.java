@@ -21,6 +21,9 @@ import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.service.ActivityService;
 import com.decibeltx.studytracker.core.service.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -28,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,11 +65,26 @@ public class UserController {
   }
 
   @GetMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok")
+  })
   public List<User> getAllUsers() throws Exception {
     return userService.findAll();
   }
 
   @GetMapping("/{id}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public User getUser(@PathVariable("id") String id) throws Exception {
     Optional<User> optional = this.findByIdentifier(id);
     if (optional.isPresent()) {
@@ -76,6 +95,17 @@ public class UserController {
   }
 
   @PostMapping("/{id}/status")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> updateUserStatus(@PathVariable("id") String userId,
       @RequestParam("active") boolean active) {
     Optional<User> optional = userService.findById(userId);
@@ -89,6 +119,14 @@ public class UserController {
   }
 
   @GetMapping("/{id}/activity")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<List<Activity>> getUserActivity(@PathVariable("id") String userId) {
     Optional<User> optional = userService.findById(userId);
     if (!optional.isPresent()) {
@@ -100,6 +138,17 @@ public class UserController {
   }
 
   @PostMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 201, message = "Created"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<User> createUser(@RequestBody User user) {
     LOGGER.info("Registering new user: " + user.toString());
     userService.create(user);
@@ -107,6 +156,17 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 201, message = "Created"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<User> updateUser(@PathVariable("id") String userId,
       @RequestBody User updatedUser) {
 

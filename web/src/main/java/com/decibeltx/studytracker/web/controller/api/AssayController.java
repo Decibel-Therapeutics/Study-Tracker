@@ -23,6 +23,9 @@ import com.decibeltx.studytracker.core.model.Assay;
 import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,6 +53,13 @@ public class AssayController extends AbstractAssayController {
   private static final Logger LOGGER = LoggerFactory.getLogger(AssayController.class);
 
   @GetMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok")
+  })
   public List<Assay> findAll() {
     return getAssayService().findAll().stream()
         .filter(Assay::isActive)
@@ -57,11 +68,30 @@ public class AssayController extends AbstractAssayController {
   }
 
   @GetMapping("/{id}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public Assay findById(@PathVariable("id") String assayId) throws RecordNotFoundException {
     return getAssayFromIdentifier(assayId);
   }
 
   @PutMapping("/{id}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 201, message = "Created"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<Assay> update(@PathVariable("id") String id, @RequestBody Assay assay) {
 
     LOGGER.info("Updating assay with id: " + id);
@@ -80,6 +110,15 @@ public class AssayController extends AbstractAssayController {
   }
 
   @DeleteMapping("/{id}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> delete(@PathVariable("id") String id) {
 
     LOGGER.info("Deleting assay: " + id);
@@ -97,6 +136,17 @@ public class AssayController extends AbstractAssayController {
   }
 
   @PostMapping("/{id}/status")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> updateStatus(@PathVariable("id") String id,
       @RequestBody Map<String, Object> params) throws StudyTrackerException {
 
@@ -121,6 +171,14 @@ public class AssayController extends AbstractAssayController {
   }
 
   @GetMapping("/{assayId}/activity")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public List<Activity> getAssayActivity(@PathVariable("assayId") String assayId) {
     Assay assay = this.getAssayFromIdentifier(assayId);
     return getActivityService().findByAssay(assay);

@@ -25,12 +25,16 @@ import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.service.StudyConclusionsService;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,6 +56,14 @@ public class StudyConclusionsController extends AbstractStudyController {
   private StudyConclusionsService studyConclusionsService;
 
   @GetMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public Conclusions getStudyConclusions(@PathVariable("studyId") String studyId) {
     Study study = getStudyFromIdentifier(studyId);
     Optional<Conclusions> optional = studyConclusionsService.findStudyConclusions(study);
@@ -109,6 +121,15 @@ public class StudyConclusionsController extends AbstractStudyController {
   }
 
   @DeleteMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> deleteStudyConclusions(@PathVariable("studyId") String studyId) {
     LOGGER.info(String.format("Deleting conclusions for study %s", studyId));
     Study study = getStudyFromIdentifier(studyId);

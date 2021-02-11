@@ -25,12 +25,16 @@ import com.decibeltx.studytracker.core.model.StudyRelationship.Type;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.service.StudyRelationshipService;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,12 +55,31 @@ public class StudyRelationshipsController extends AbstractStudyController {
   private StudyRelationshipService studyRelationshipService;
 
   @GetMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public List<StudyRelationship> getStudyRelationships(@PathVariable("id") String studyId) {
     Study study = getStudyFromIdentifier(studyId);
     return studyRelationshipService.getStudyRelationships(study);
   }
 
   @PostMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 201, message = "Created"),
+      @ApiResponse(code = 400, message = "Bad request"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> createStudyRelationship(@PathVariable("id") String sourceStudyId,
       @RequestBody StudyRelationship studyRelationship) {
 
@@ -94,6 +117,15 @@ public class StudyRelationshipsController extends AbstractStudyController {
   }
 
   @DeleteMapping("")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 401, message = "Unauthorized"),
+      @ApiResponse(code = 404, message = "Not found")
+  })
   public HttpEntity<?> deleteStudyRelationship(@PathVariable("id") String sourceStudyId,
       @RequestBody StudyRelationship studyRelationship) {
 

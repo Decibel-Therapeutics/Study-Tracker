@@ -25,6 +25,9 @@ import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,6 +63,9 @@ public class StudyBaseController extends AbstractStudyController {
   private static final Logger LOGGER = LoggerFactory.getLogger(StudyBaseController.class);
 
   @GetMapping("")
+  @Operation(responses = {
+      @ApiResponse(responseCode = "200", description = "Ok")
+  })
   public List<Study> getAllStudies(
       @RequestParam(value = "code", required = false) String code,
       @RequestParam(value = "owner", required = false) String owner,
@@ -159,11 +166,20 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @GetMapping("/{id}")
+  @Operation(responses = {
+      @ApiResponse(responseCode = "200", description = "Ok"),
+      @ApiResponse(responseCode = "404", description = "Not found")
+  })
   public Study getStudy(@PathVariable("id") String studyId) throws RecordNotFoundException {
     return getStudyFromIdentifier(studyId);
   }
 
   @PostMapping("")
+  @Operation(responses = {
+      @ApiResponse(responseCode = "201", description = "Created"),
+      @ApiResponse(responseCode = "400", description = "Bad Request"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized")
+  })
   public HttpEntity<Study> createStudy(@RequestBody Study study) {
 
     LOGGER.info("Creating study");
@@ -203,6 +219,13 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @PutMapping("/{id}")
+  @PostMapping("")
+  @Operation(responses = {
+      @ApiResponse(responseCode = "201", description = "Created"),
+      @ApiResponse(responseCode = "400", description = "Bad Request"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized"),
+      @ApiResponse(responseCode = "404", description = "Not found")
+  })
   public HttpEntity<Study> updateStudy(@PathVariable("id") String id, @RequestBody Study study) {
     LOGGER.info("Updating study");
     LOGGER.info(study.toString());
@@ -237,6 +260,15 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @DeleteMapping("/{id}")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @Operation(responses = {
+      @ApiResponse(responseCode = "200", description = "Ok"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized"),
+      @ApiResponse(responseCode = "404", description = "Not found")
+  })
   public HttpEntity<?> deleteStudy(@PathVariable("id") String id) {
 
     LOGGER.info("Deleting study: " + id);
@@ -259,6 +291,17 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @PostMapping("/{id}/status")
+  @ApiOperation(
+      value = "",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @Operation(responses = {
+      @ApiResponse(responseCode = "200", description = "Ok"),
+      @ApiResponse(responseCode = "400", description = "Bad Request"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized"),
+      @ApiResponse(responseCode = "404", description = "Not found")
+  })
   public void updateStudyStatus(@PathVariable("id") String id,
       @RequestBody Map<String, Object> params) throws StudyTrackerException {
 
