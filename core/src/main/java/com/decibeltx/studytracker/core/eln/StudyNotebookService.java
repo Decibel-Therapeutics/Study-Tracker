@@ -36,4 +36,5 @@ public interface StudyNotebookService {
 
   NotebookFolder createAssayFolder(Assay assay) throws NotebookException;
 
+  NotebookFolder getContentFullNotebookFolder(NotebookFolder folder, Study study);
 }
