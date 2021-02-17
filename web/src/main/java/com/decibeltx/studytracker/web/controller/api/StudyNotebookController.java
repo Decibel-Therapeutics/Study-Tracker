@@ -25,7 +25,7 @@ public class StudyNotebookController extends AbstractStudyController {
 
   @GetMapping("")
   public NotebookFolder getStudyNotebookFolder(@PathVariable("studyId") String studyId)
-          throws Exception {
+          throws RecordNotFoundException {
     LOGGER.info("Fetching notebook folder for study: " + studyId);
     Study study = getStudyFromIdentifier(studyId);
 
@@ -35,6 +35,6 @@ public class StudyNotebookController extends AbstractStudyController {
     if (notebookFolder.isEmpty())
       throw new RecordNotFoundException("Could not load NoteBook folder");
 
-    return studyNotebookService.getContentFullNotebookFolder(notebookFolder.get(), study);
+    return notebookFolder.get();
   }
 }
