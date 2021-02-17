@@ -18,6 +18,7 @@ package com.decibeltx.studytracker.benchling.eln;
 
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingEntry;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingFolder;
+import com.decibeltx.studytracker.benchling.eln.entities.BenchlingProject;
 import com.decibeltx.studytracker.benchling.exception.EntityNotFoundException;
 import com.decibeltx.studytracker.core.eln.NotebookEntry;
 import com.decibeltx.studytracker.core.eln.NotebookFolder;
@@ -97,17 +98,16 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     parentBenchlingFolder.ifPresent(folder -> notebookFolder.setParentFolder(convertBenchlingFolder(folder)));
   }
 
-  private void setProjectInPath(StringBuilder path, NotebookFolder folder) {
-    Optional<BenchlingFolder> benchlingFolderOptional = client.findFolderById(folder.getReferenceId());
-    benchlingFolderOptional
+  private String getProjectPath(NotebookFolder folder) {
+    return client.findFolderById(folder.getReferenceId())
             .flatMap(benchlingFolder -> client.findProjectById(benchlingFolder.getProjectId()))
-            .ifPresent(benchlingProject -> path.append(benchlingProject.getName()).append("/"));
+            .map(BenchlingProject::getName).map(name -> name + "/").orElse("");
   }
 
   private String getNotebookFolderPath(Study study) {
     StringBuilder path = new StringBuilder("/");
     NotebookFolder studyFolder = study.getNotebookFolder();
-    setProjectInPath(path, studyFolder);
+    path.append(getProjectPath(studyFolder));
     path.append(study.getProgram().getName()).append("/").append(study.getName());
     return path.toString();
   }
@@ -115,7 +115,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   private String getNotebookFolderPath(Assay assay) {
     StringBuilder path = new StringBuilder("/");
     NotebookFolder assayFolder = assay.getNotebookFolder();
-    setProjectInPath(path, assayFolder);
+    path.append(getProjectPath(assayFolder));
     Study study = assay.getStudy();
     Program program = study.getProgram();
     path.append(program.getName()).append("/").append(study.getName()).append("/").append(assay.getName());
@@ -140,9 +140,8 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     LOGGER.info("Fetching benchling notebook entry for program: " + program.getName());
 
     if (program.getNotebookFolder() != null) {
-      Optional<BenchlingFolder> optional = client
-          .findFolderById(program.getNotebookFolder().getReferenceId());
-      return optional.map(this::convertFolder);
+      return client.findFolderById(program.getNotebookFolder().getReferenceId())
+              .map(this::convertFolder);
     } else {
       LOGGER.warn(
           String.format("Program %s does not have a notebook folder set.", program.getName()));
@@ -159,8 +158,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     // Does the study have the folder object set?
     if (study.getNotebookFolder() != null) {
       NotebookFolder studyFolder = study.getNotebookFolder();
-      Optional<BenchlingFolder> benchlingFolderOptional = client.findFolderById(studyFolder.getReferenceId());
-      return benchlingFolderOptional
+      return client.findFolderById(studyFolder.getReferenceId())
               .map(this::convertFolder)
               .map(notebookFolder -> getContentFullNotebookFolder(notebookFolder, study));
     } else {
@@ -177,8 +175,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
     if (assay.getNotebookFolder() != null) {
       NotebookFolder assayFolder = assay.getNotebookFolder();
-      Optional<BenchlingFolder> benchlingFolderOptional = client.findFolderById(assayFolder.getReferenceId());
-      return benchlingFolderOptional
+      return client.findFolderById(assayFolder.getReferenceId())
               .map(this::convertFolder)
               .map(notebookFolder -> getContentFullNotebookFolder(notebookFolder, assay));
     } else {
