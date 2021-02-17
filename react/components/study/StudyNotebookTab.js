@@ -66,6 +66,7 @@ class StudyNotebookTabContent extends React.Component {
               folder={this.state.folder}
               isLoaded={this.state.isLoaded}
               isError={this.state.isError}
+              errorMessage={this.state.error}
               folderFileKey={'entries'}
             />
           </Col>

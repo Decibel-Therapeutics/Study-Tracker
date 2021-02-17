@@ -82,7 +82,7 @@ const formatFileSize = (size) => {
 };
 
 const DEFAULT_FOLDER_FILE_KEY = 'files';
-
+const DEfAULT_ERROR_MESSAGE = 'Failed to load files folder.';
 class Folder extends React.Component {
 
   constructor(props) {
@@ -198,11 +198,16 @@ const FolderContents = ({folder, folderFileKey = DEFAULT_FOLDER_FILE_KEY, depth,
  * @returns {*}
  * @constructor
  */
-export const StorageFolderFileList = ({folder, isLoaded, isError, folderFileKey = DEFAULT_FOLDER_FILE_KEY}) => {
+export const StorageFolderFileList = ({
+  folder,
+  isLoaded,
+  isError,
+  folderFileKey = DEFAULT_FOLDER_FILE_KEY,
+  errorMessage = DEfAULT_ERROR_MESSAGE,
+}) => {
 
   if (isError) {
-    return <DismissableAlert color={'warning'}
-                             message={'Failed to load study folder.'}/>
+    return <DismissableAlert color={'warning'} message={errorMessage}/>
   } else if (isLoaded) {
     if (folder.subFolders.length === 0 && folder[folderFileKey].length === 0) {
       return (

@@ -27,7 +27,7 @@ class AssayNotebookTabContent extends React.Component {
       isError: false,
     };
 
-    this.fetchUrl = '/api/study/' + this.props.assay.code + '/notebook';
+    this.fetchUrl = '/api/assay/' + this.props.assay.code + '/notebook';
     this.refreshData = this.refreshData.bind(this);
   }
 
@@ -53,7 +53,7 @@ class AssayNotebookTabContent extends React.Component {
       console.error(e);
       this.setState({
         isError: true,
-        error: e.message
+        error: e.message,
       })
     });
   }
@@ -67,6 +67,7 @@ class AssayNotebookTabContent extends React.Component {
               folder={this.state.folder}
               isLoaded={this.state.isLoaded}
               isError={this.state.isError}
+              errorMessage={this.state.error}
               folderFileKey={'entries'}
             />
           </Col>
