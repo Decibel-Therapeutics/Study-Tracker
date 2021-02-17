@@ -97,19 +97,39 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     parentBenchlingFolder.ifPresent(folder -> notebookFolder.setParentFolder(convertBenchlingFolder(folder)));
   }
 
-  private String getNotebookFolderPath(Study study) {
-    StringBuilder path = new StringBuilder("/");
-    NotebookFolder studyFolder = study.getNotebookFolder();
-    Optional<BenchlingFolder> benchlingFolderOptional = client.findFolderById(studyFolder.getReferenceId());
+  private void setProjectInPath(StringBuilder path, NotebookFolder folder) {
+    Optional<BenchlingFolder> benchlingFolderOptional = client.findFolderById(folder.getReferenceId());
     benchlingFolderOptional
             .flatMap(benchlingFolder -> client.findProjectById(benchlingFolder.getProjectId()))
             .ifPresent(benchlingProject -> path.append(benchlingProject.getName()).append("/"));
+  }
+
+  private String getNotebookFolderPath(Study study) {
+    StringBuilder path = new StringBuilder("/");
+    NotebookFolder studyFolder = study.getNotebookFolder();
+    setProjectInPath(path, studyFolder);
     path.append(study.getProgram().getName()).append("/").append(study.getName());
+    return path.toString();
+  }
+
+  private String getNotebookFolderPath(Assay assay) {
+    StringBuilder path = new StringBuilder("/");
+    NotebookFolder assayFolder = assay.getNotebookFolder();
+    setProjectInPath(path, assayFolder);
+    Study study = assay.getStudy();
+    Program program = study.getProgram();
+    path.append(program.getName()).append("/").append(study.getName()).append("/").append(assay.getName());
     return path.toString();
   }
 
   private NotebookFolder getContentFullNotebookFolder(NotebookFolder notebookFolder, Study study) {
     String path = getNotebookFolderPath(study);
+    notebookFolder.setPath(path);
+    return notebookFolder;
+  }
+
+  private NotebookFolder getContentFullNotebookFolder(NotebookFolder notebookFolder, Assay assay) {
+    String path = getNotebookFolderPath(assay);
     notebookFolder.setPath(path);
     return notebookFolder;
   }
@@ -157,8 +177,10 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
     if (assay.getNotebookFolder() != null) {
       NotebookFolder assayFolder = assay.getNotebookFolder();
-      Optional<BenchlingFolder> optional = client.findFolderById(assayFolder.getReferenceId());
-      return optional.map(this::convertFolder);
+      Optional<BenchlingFolder> benchlingFolderOptional = client.findFolderById(assayFolder.getReferenceId());
+      return benchlingFolderOptional
+              .map(this::convertFolder)
+              .map(notebookFolder -> getContentFullNotebookFolder(notebookFolder, assay));
     } else {
       LOGGER.warn(String.format("Assay %s does not have a notebook folder set.", assay.getName()));
       return Optional.empty();
