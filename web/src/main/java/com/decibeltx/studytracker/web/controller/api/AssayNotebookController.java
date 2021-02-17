@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
-@RequestMapping({"/api/assay/{assayId}/notebook", "/api/study/{studyId}/assays/{assayId}/notebook"})
+@RequestMapping("/api/assay/{assayId}/notebook")
 @RestController
 public class AssayNotebookController extends AbstractAssayController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AssayStorageController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AssayNotebookController.class);
 
   @Autowired(required = false)
   private StudyNotebookService studyNotebookService;

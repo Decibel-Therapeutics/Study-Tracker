@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequestMapping("/api/study/{studyId}/notebook")
 public class StudyNotebookController extends AbstractStudyController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(StudyStorageController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(StudyNotebookController.class);
 
   @Autowired(required = false)
   private StudyNotebookService studyNotebookService;
