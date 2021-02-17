@@ -29,12 +29,9 @@ public class StudyNotebookController extends AbstractStudyController {
     LOGGER.info("Fetching notebook folder for study: " + studyId);
     Study study = getStudyFromIdentifier(studyId);
 
-    Optional<NotebookFolder> notebookFolder = (studyNotebookService == null) ?
-            Optional.empty() : studyNotebookService.findStudyFolder(study);
-
-    if (notebookFolder.isEmpty())
-      throw new RecordNotFoundException("Could not load NoteBook folder");
-
-    return notebookFolder.get();
+    Optional<NotebookFolder> notebookFolder = Optional.ofNullable(studyNotebookService)
+            .flatMap(service -> service.findStudyFolder(study));
+    return notebookFolder
+            .orElseThrow(() -> new RecordNotFoundException("Could not load notebook folder"));
   }
 }
