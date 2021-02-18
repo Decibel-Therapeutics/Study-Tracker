@@ -268,11 +268,11 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   }
 
   @Override
-  public NotebookEntry createNotebook(Assay assay, String templateId) {
+  public NotebookEntry createNotebook(Assay assay, String templateId, String entryName) {
     NotebookFolder assayFolder = assay.getNotebookFolder();
     BenchlingEntryRequest request = new BenchlingEntryRequest();
     request.setFolderId(assayFolder.getReferenceId());
-    request.setName("new Notebook");
+    request.setName(entryName);
     request.setEntryTemplateId(templateId);
     return convertEntry(client.createEntry(request));
   }
