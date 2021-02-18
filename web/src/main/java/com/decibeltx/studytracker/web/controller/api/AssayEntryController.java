@@ -21,12 +21,12 @@ public class AssayEntryController extends AbstractAssayController {
     private StudyNotebookService studyNotebookService;
 
     @GetMapping("")
-    public NotebookEntry createEntry(@PathVariable("assayId") String assayId){
+    public NotebookEntry createEntry(@PathVariable("assayId") String assayId) throws RecordNotFoundException {
+        System.out.println("ENTERED !!!");
         Assay assay = getAssayFromIdentifier(assayId);
         LOGGER.info("Adding entry for assay: " + assayId);
         return Optional.ofNullable(studyNotebookService)
-                .map(service -> service.createNotebook(assay)).
+                .map(service -> service.createNotebook(assay, "tmpl_LwR3TYWL")).
                         orElseThrow(() -> new RecordNotFoundException("Could not create new entry"));
     }
-
 }
