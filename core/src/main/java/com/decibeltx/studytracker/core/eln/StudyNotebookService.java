@@ -20,6 +20,7 @@ import com.decibeltx.studytracker.core.exception.NotebookException;
 import com.decibeltx.studytracker.core.model.Assay;
 import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.Study;
+
 import java.util.Optional;
 
 public interface StudyNotebookService {
@@ -36,6 +37,6 @@ public interface StudyNotebookService {
 
   NotebookFolder createAssayFolder(Assay assay) throws NotebookException;
 
-  NotebookEntry createNotebook(Assay assay, String templateId, String entryName);
+  void createNotebook(Assay assay, String templateId);
 
 }

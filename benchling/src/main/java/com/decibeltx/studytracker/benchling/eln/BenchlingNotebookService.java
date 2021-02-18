@@ -16,12 +16,10 @@
 
 package com.decibeltx.studytracker.benchling.eln;
 
-import com.decibeltx.studytracker.benchling.eln.entities.BenchlingEntry;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingEntryRequest;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingFolder;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingProject;
 import com.decibeltx.studytracker.benchling.exception.EntityNotFoundException;
-import com.decibeltx.studytracker.core.eln.NotebookEntry;
 import com.decibeltx.studytracker.core.eln.NotebookFolder;
 import com.decibeltx.studytracker.core.eln.StudyNotebookService;
 import com.decibeltx.studytracker.core.exception.NotebookException;
@@ -259,21 +257,13 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
   }
 
-  private NotebookEntry convertEntry(BenchlingEntry entry) {
-    NotebookEntry notebookEntry = new NotebookEntry();
-    notebookEntry.setName(entry.getName());
-    notebookEntry.setReferenceId(entry.getId());
-    notebookEntry.setUrl(entry.getWebURL());
-    return notebookEntry;
-  }
-
   @Override
-  public NotebookEntry createNotebook(Assay assay, String templateId, String entryName) {
+  public void createNotebook(Assay assay, String templateId) {
     NotebookFolder assayFolder = assay.getNotebookFolder();
     BenchlingEntryRequest request = new BenchlingEntryRequest();
     request.setFolderId(assayFolder.getReferenceId());
-    request.setName(entryName);
+    request.setName(assay.getName());
     request.setEntryTemplateId(templateId);
-    return convertEntry(client.createEntry(request));
+    client.createEntry(request);
   }
 }

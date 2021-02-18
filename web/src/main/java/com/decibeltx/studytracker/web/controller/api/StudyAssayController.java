@@ -16,6 +16,7 @@
 
 package com.decibeltx.studytracker.web.controller.api;
 
+import com.decibeltx.studytracker.core.eln.StudyNotebookService;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.exception.StudyTrackerException;
 import com.decibeltx.studytracker.core.model.Assay;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +50,9 @@ public class StudyAssayController extends AbstractAssayController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(StudyAssayController.class);
 
+  @Autowired(required = false)
+  private StudyNotebookService studyNotebookService;
+
   @GetMapping("")
   public List<Assay> findStudyAssays(@PathVariable("studyId") String studyId) {
     return getStudyFromIdentifier(studyId).getAssays().stream()
@@ -60,9 +65,10 @@ public class StudyAssayController extends AbstractAssayController {
     return getAssayFromIdentifier(assayId);
   }
 
-  @PostMapping("")
+  @PostMapping("/{templateId}")
   public HttpEntity<Assay> create(@PathVariable("studyId") String studyId,
-      @RequestBody Assay assay) {
+      @RequestBody Assay assay, @PathVariable("templateId") String templateId)
+  throws RecordNotFoundException {
     LOGGER.info("Creating assay");
     LOGGER.info(assay.toString());
     Study study = this.getStudyFromIdentifier(studyId);
@@ -71,6 +77,15 @@ public class StudyAssayController extends AbstractAssayController {
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
     Assay created = this.createAssay(assay, study, user);
+
+    if(!templateId.isEmpty()) {
+      if(studyNotebookService != null) {
+        studyNotebookService.createNotebook(created, templateId);
+      } else {
+        throw new RecordNotFoundException("Could not create new entry");
+      }
+    }
+
     return new ResponseEntity<>(created, HttpStatus.CREATED);
   }
 
