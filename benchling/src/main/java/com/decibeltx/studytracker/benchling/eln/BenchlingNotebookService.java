@@ -17,6 +17,7 @@
 package com.decibeltx.studytracker.benchling.eln;
 
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingEntry;
+import com.decibeltx.studytracker.benchling.eln.entities.BenchlingEntryRequest;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingFolder;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingProject;
 import com.decibeltx.studytracker.benchling.exception.EntityNotFoundException;
@@ -256,5 +257,23 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
     return assayFolder;
 
+  }
+
+  private NotebookEntry convertEntry(BenchlingEntry entry) {
+    NotebookEntry notebookEntry = new NotebookEntry();
+    notebookEntry.setName(entry.getName());
+    notebookEntry.setReferenceId(entry.getId());
+    notebookEntry.setUrl(entry.getWebURL());
+    return notebookEntry;
+  }
+
+  @Override
+  public NotebookEntry createNotebook(Assay assay) {
+    NotebookFolder assayFolder = assay.getNotebookFolder();
+    BenchlingEntryRequest request = new BenchlingEntryRequest();
+    request.setFolderId(assayFolder.getReferenceId());
+    request.setName("new Notebook");
+    request.setEntryTemplateId("lib_RfxZS9K1");
+    return convertEntry(client.createEntry(request));
   }
 }
