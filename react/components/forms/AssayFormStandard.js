@@ -63,6 +63,7 @@ export default class AssayForm extends React.Component {
       fields: {},
       tasks: [],
       attributes: {},
+      entryTemplateId: '',
     };
     assay.lastModifiedBy = this.props.user;
 
