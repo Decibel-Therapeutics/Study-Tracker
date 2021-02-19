@@ -65,9 +65,9 @@ public class StudyAssayController extends AbstractAssayController {
     return getAssayFromIdentifier(assayId);
   }
 
-  @PostMapping("/{templateId}")
+  @PostMapping("")
   public HttpEntity<Assay> create(@PathVariable("studyId") String studyId,
-      @RequestBody Assay assay, @PathVariable("templateId") String templateId)
+      @RequestBody Assay assay)
   throws RecordNotFoundException {
     LOGGER.info("Creating assay");
     LOGGER.info(assay.toString());
@@ -78,9 +78,9 @@ public class StudyAssayController extends AbstractAssayController {
         .orElseThrow(RecordNotFoundException::new);
     Assay created = this.createAssay(assay, study, user);
 
-    if(!templateId.isEmpty()) {
+    if(!assay.getEntryTemplateId().isEmpty()) {
       if(studyNotebookService != null) {
-        studyNotebookService.createNotebook(created, templateId);
+        studyNotebookService.createNotebook(created, assay.getEntryTemplateId());
       } else {
         throw new RecordNotFoundException("Could not create new entry");
       }

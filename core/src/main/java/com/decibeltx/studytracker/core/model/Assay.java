@@ -88,6 +88,8 @@ public class Assay implements Persistable<String> {
 
   private boolean active;
 
+  private String entryTemplateId;
+
   @CreatedDate
   private Date createdAt;
 
