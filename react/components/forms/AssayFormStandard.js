@@ -41,6 +41,7 @@ import {UserInputs} from "./users";
 import swal from 'sweetalert';
 import {history} from '../../App';
 import {AssayTypeDropdown} from "./assayTypes";
+import {AssayNotebookTemplatesDropdown} from './assayNotebookTemplates';
 import {AssayTypeFieldCaptureInputList} from "./assayTypeFieldCapture";
 import Attributes from "./attributes";
 import {TaskInputs} from "./tasks";
@@ -61,7 +62,7 @@ export default class AssayForm extends React.Component {
       lastModifiedBy: this.props.user,
       fields: {},
       tasks: [],
-      attributes: {}
+      attributes: {},
     };
     assay.lastModifiedBy = this.props.user;
 
@@ -74,15 +75,16 @@ export default class AssayForm extends React.Component {
         usersIsValid: true,
         ownerIsValid: true
       },
-      showLoadingOverlay: false
+      showLoadingOverlay: false,
+      isUpdate: !!assay.id,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleFormUpdate = this.handleFormUpdate.bind(this);
+    this.handleTemplateSelection = this.handleTemplateSelection.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.handleFieldUpdate = this.handleFieldUpdate.bind(this);
-
   }
 
   /**
@@ -99,6 +101,17 @@ export default class AssayForm extends React.Component {
     console.log(assay);
     this.setState({
       assay: assay
+    })
+  }
+
+  handleTemplateSelection(selectedItem) {
+    this.setState({
+      assay: {
+        ...this.state.assay,
+        entryTemplateId: selectedItem
+          ? selectedItem.value
+          : '',
+      },
     })
   }
 
@@ -360,6 +373,12 @@ export default class AssayForm extends React.Component {
                         </FormGroup>
                       </Col>
                       <Col sm="5">
+                        { !this.state.isUpdate &&
+                          <AssayNotebookTemplatesDropdown
+                            notebookTemplates={this.props.notebookTemplates}
+                            onChange={this.handleTemplateSelection}
+                          />
+                        }
 
                         <StatusDropdown
                             selected={this.state.assay.status}
