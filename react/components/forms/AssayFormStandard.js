@@ -76,7 +76,9 @@ export default class AssayForm extends React.Component {
         ownerIsValid: true
       },
       showLoadingOverlay: false,
-      isUpdate: !!assay.id,
+
+      isUpdateModeOn: !!assay.id,
+      baseUrl: '/api/study/' + this.props.study.code + '/assays/',
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -85,6 +87,18 @@ export default class AssayForm extends React.Component {
     this.handleTemplateSelection = this.handleTemplateSelection.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.handleFieldUpdate = this.handleFieldUpdate.bind(this);
+  }
+
+  get submitUrl() {
+    return this.state.isUpdateModeOn
+      ? this.state.baseUrl + this.state.assay.id
+      : this.state.baseUrl
+  }
+
+  get submitMethod() {
+    return this.state.isUpdateModeOn
+      ? 'PUT'
+      : 'POST';
   }
 
   /**
@@ -200,16 +214,10 @@ export default class AssayForm extends React.Component {
         }
       }
 
-      const isUpdate = !!assay.id;
-
-      const url = isUpdate
-          ? "/api/study/" + this.props.study.code + "/assays/"
-          + this.state.assay.id
-          : "/api/study/" + this.props.study.code + "/assays/";
       this.setState({showLoadingOverlay: true});
 
-      fetch(url, {
-        method: isUpdate ? "PUT" : "POST",
+      fetch(this.submitUrl, {
+        method: this.submitMethod,
         headers: {
           "Content-Type": "application/json"
         },
@@ -373,7 +381,7 @@ export default class AssayForm extends React.Component {
                         </FormGroup>
                       </Col>
                       <Col sm="5">
-                        { !this.state.isUpdate &&
+                        { !this.state.isUpdateModeOn &&
                           <AssayNotebookTemplatesDropdown
                             notebookTemplates={this.props.notebookTemplates}
                             onChange={this.handleTemplateSelection}
