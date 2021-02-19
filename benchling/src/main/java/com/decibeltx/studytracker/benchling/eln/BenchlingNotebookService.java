@@ -16,10 +16,12 @@
 
 package com.decibeltx.studytracker.benchling.eln;
 
+import com.decibeltx.studytracker.benchling.eln.entities.BenchlingEntry;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingEntryRequest;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingFolder;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingProject;
 import com.decibeltx.studytracker.benchling.exception.EntityNotFoundException;
+import com.decibeltx.studytracker.core.eln.NotebookEntry;
 import com.decibeltx.studytracker.core.eln.NotebookFolder;
 import com.decibeltx.studytracker.core.eln.StudyNotebookService;
 import com.decibeltx.studytracker.core.exception.NotebookException;
