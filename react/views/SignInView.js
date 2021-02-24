@@ -79,7 +79,7 @@ export default class SignInView extends React.Component {
                         <User size={80} className="align-middle mr-2"/>
                       </div>
 
-                      <Form action={"/login"} method={"post"}>
+                      <Form action={"/auth/signin"} method={"post"}>
 
                         <FormGroup>
                           <Label>Username</Label>
@@ -150,6 +150,20 @@ export default class SignInView extends React.Component {
                       </Form>
                     </div>
                   </CardBody>
+
+                  <CardBody>
+                    <div className="m-sm-4">
+                      <Form>
+                        <a
+                            className="btn btn-outline-info btn-block"
+                            href="/saml/loginredirect"
+                        >
+                          Single Sign-On
+                        </a>
+                      </Form>
+                    </div>
+                  </CardBody>
+
                 </Card>
 
               </Col>

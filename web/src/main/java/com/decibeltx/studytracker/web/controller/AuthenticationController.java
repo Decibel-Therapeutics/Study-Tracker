@@ -23,10 +23,14 @@ import com.decibeltx.studytracker.core.service.UserService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,11 +44,34 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
+
   @Autowired
   private UserService userService;
 
   @Autowired
   private PasswordEncoder passwordEncoder;
+
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+  @Autowired
+  private AuthenticationManager authenticationManager;
+
+  @PostMapping("/signin")
+  public String signIn(@RequestParam String username,
+      @RequestParam(required = false) String password) {
+    try {
+      Authentication authentication = authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(username, password));
+      if (authentication.isAuthenticated()) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+      } else {
+        throw new RuntimeException("Authentication failed for user: " + username);
+      }
+      return "redirect:/";
+    } catch (Exception e) {
+      return "redirect:/login?username=" + username + "&error=Login failed";
+    }
+  }
 
   @GetMapping("/user")
   public HttpEntity<?> getAuthenticatedUser() {
@@ -63,6 +90,13 @@ public class AuthenticationController {
     Map<String, Object> payload = new HashMap<>();
     payload.put("user", user);
     return new ResponseEntity<>(payload, HttpStatus.OK);
+  }
+
+  @GetMapping("/dosaml")
+  public String doSamlAuth() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    LOGGER.info("doSaml auth result: {}", auth);
+    return "redirect:/";
   }
 
   @GetMapping("/passwordreset")
