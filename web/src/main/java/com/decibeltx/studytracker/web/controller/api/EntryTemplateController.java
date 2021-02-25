@@ -54,7 +54,7 @@ public class EntryTemplateController {
         return new ResponseEntity<>(entryTemplate, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}/status")
+    @PostMapping("/{id}/status")
     public HttpEntity<EntryTemplate> updateTemplate(@PathVariable("id") String id,
                                                     @RequestParam("active") boolean active)
             throws RecordNotFoundException {
