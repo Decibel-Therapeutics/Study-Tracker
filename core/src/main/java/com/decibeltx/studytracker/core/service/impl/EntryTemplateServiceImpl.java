@@ -50,8 +50,12 @@ public class EntryTemplateServiceImpl implements EntryTemplateService {
     }
 
     @Override
-    public void deleteAll() {
-        entryTemplateRepository.deleteAll();
+    public void delete(EntryTemplate entryTemplate) {
+        LOGGER.info("Deleting entry template with name: " + entryTemplate.getName());
+
+        assert entryTemplate.getId() != null;
+        entryTemplateRepository.findById(entryTemplate.getId()).orElseThrow(RecordNotFoundException::new);
+        entryTemplateRepository.delete(entryTemplate);
     }
 
     @Override

@@ -1,9 +1,13 @@
 package com.decibeltx.studytracker.web.controller.api;
 
+import com.decibeltx.studytracker.core.events.util.EntryTemplateActivityUtils;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.model.EntryTemplate;
 import com.decibeltx.studytracker.core.model.User;
+import com.decibeltx.studytracker.core.service.ActivityService;
 import com.decibeltx.studytracker.core.service.EntryTemplateService;
+import com.decibeltx.studytracker.core.service.EventsService;
 import com.decibeltx.studytracker.core.service.UserService;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
 import org.slf4j.Logger;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @RestController
 @RequestMapping("/api/entryTemplate")
 public class EntryTemplateController {
@@ -28,6 +33,12 @@ public class EntryTemplateController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ActivityService activityService;
+
+    @Autowired
+    private EventsService eventsService;
 
     @GetMapping("")
     public List<EntryTemplate> getEntryTemplates() {
@@ -48,15 +59,22 @@ public class EntryTemplateController {
             throws RecordNotFoundException {
         LOGGER.info("Creating new entry template : " + entryTemplate.toString());
 
-        entryTemplate.setCreatedBy(getAuthenticatedUser());
+        User user = getAuthenticatedUser();
+        entryTemplate.setCreatedBy(user);
         entryTemplateService.create(entryTemplate);
+
+        // Publish events
+        Activity activity = EntryTemplateActivityUtils
+                .fromNewEntryTemplate(entryTemplate, user);
+        activityService.create(activity);
+        eventsService.dispatchEvent(activity);
 
         return new ResponseEntity<>(entryTemplate, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}/status")
-    public HttpEntity<EntryTemplate> updateTemplate(@PathVariable("id") String id,
-                                                    @RequestParam("active") boolean active)
+    @PostMapping("/{id}/status")
+    public HttpEntity<EntryTemplate> updateTemplateStatus(@PathVariable("id") String id,
+                                                          @RequestParam("active") boolean active)
             throws RecordNotFoundException {
         LOGGER.info("Updating template with id: " + id);
 
@@ -64,18 +82,39 @@ public class EntryTemplateController {
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Template not found: " + id));
 
-        entryTemplate.setLastModifiedBy(getAuthenticatedUser());
+        User user = getAuthenticatedUser();
+        entryTemplate.setLastModifiedBy(user);
         entryTemplate.setActive(active);
         entryTemplateService.update(entryTemplate);
+
+        // Publish events
+        Activity activity = EntryTemplateActivityUtils
+                .fromUpdatedEntryTemplate(entryTemplate, user);
+        activityService.create(activity);
+        eventsService.dispatchEvent(activity);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("")
-    public void deleteTemplates() {
-        LOGGER.info("Deleting all templates");
+    @DeleteMapping("/{id}")
+    public HttpEntity<EntryTemplate> deleteTemplate(@PathVariable("id") String id) {
+        LOGGER.info("Deleting template with id: " + id);
 
-        entryTemplateService.deleteAll();
+        EntryTemplate entryTemplate = entryTemplateService
+                .findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Template not found: " + id));
+
+        User user = getAuthenticatedUser();
+        entryTemplate.setLastModifiedBy(user);
+        entryTemplateService.delete(entryTemplate);
+
+        // Publish events
+        Activity activity = EntryTemplateActivityUtils
+                .fromDeletedEntryTemplate(entryTemplate, user);
+        activityService.create(activity);
+        eventsService.dispatchEvent(activity);
+
+        return new ResponseEntity<>(entryTemplate, HttpStatus.OK);
     }
 
 }
