@@ -44,6 +44,7 @@ public class EntryTemplateServiceImpl implements EntryTemplateService {
     public void update(EntryTemplate entryTemplate) {
         LOGGER.info("Updating entry template with name: " + entryTemplate.getName());
 
+        assert entryTemplate.getId() != null;
         entryTemplateRepository.findById(entryTemplate.getId()).orElseThrow(RecordNotFoundException::new);
         entryTemplateRepository.save(entryTemplate);
     }

@@ -48,8 +48,7 @@ public class EntryTemplateController {
             throws RecordNotFoundException {
         LOGGER.info("Creating new entry template : " + entryTemplate.toString());
 
-        User user = getAuthenticatedUser();
-        entryTemplate.setCreatedBy(user);
+        entryTemplate.setCreatedBy(getAuthenticatedUser());
         entryTemplateService.create(entryTemplate);
 
         return new ResponseEntity<>(entryTemplate, HttpStatus.CREATED);
@@ -65,8 +64,7 @@ public class EntryTemplateController {
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Template not found: " + id));
 
-        User user = getAuthenticatedUser();
-        entryTemplate.setLastModifiedBy(user);
+        entryTemplate.setLastModifiedBy(getAuthenticatedUser());
         entryTemplate.setActive(active);
         entryTemplateService.update(entryTemplate);
 

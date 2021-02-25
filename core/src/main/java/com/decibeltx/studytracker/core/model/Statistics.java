@@ -22,6 +22,8 @@ public class Statistics {
 
   private long activityCount;
 
+  private long entryTemplateCount;
+
   /* Specific counts */
   private long activeUserCount;
 
