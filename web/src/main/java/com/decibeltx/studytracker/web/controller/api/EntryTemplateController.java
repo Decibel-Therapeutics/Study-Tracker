@@ -16,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/entryTemplate")
@@ -32,41 +31,41 @@ public class EntryTemplateController {
 
     @GetMapping("")
     public List<EntryTemplate> getEntryTemplates() {
+        LOGGER.info("Getting all entry templates");
+
         return entryTemplateService.findAll();
     }
 
-    @PostMapping("")
-    public HttpEntity<EntryTemplate> createTemplate(@RequestBody EntryTemplate entryTemplate) {
-        LOGGER.info("Creating new entry template : " + entryTemplate.toString());
-
-        // Get authenticated user
+    private User getAuthenticatedUser() throws RecordNotFoundException {
         String username = UserAuthenticationUtils
                 .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
-        User user = userService.findByUsername(username)
+        return userService.findByUsername(username)
                 .orElseThrow(RecordNotFoundException::new);
+    }
 
+    @PostMapping("")
+    public HttpEntity<EntryTemplate> createTemplate(@RequestBody EntryTemplate entryTemplate)
+            throws RecordNotFoundException {
+        LOGGER.info("Creating new entry template : " + entryTemplate.toString());
+
+        User user = getAuthenticatedUser();
         entryTemplate.setCreatedBy(user);
-
         entryTemplateService.create(entryTemplate);
 
         return new ResponseEntity<>(entryTemplate, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}/status")
-    public HttpEntity<EntryTemplate> updateTemplate(@PathVariable("id") String templateId,
-                                                    @RequestParam("active") boolean active) {
-        Optional<EntryTemplate> entryTemplateOptional = entryTemplateService.findById(templateId);
-        if (entryTemplateOptional.isEmpty()) {
-            throw new RecordNotFoundException("Template not found: " + templateId);
-        }
+    public HttpEntity<EntryTemplate> updateTemplate(@PathVariable("id") String id,
+                                                    @RequestParam("active") boolean active)
+            throws RecordNotFoundException {
+        LOGGER.info("Updating template with id: " + id);
 
-        EntryTemplate entryTemplate = entryTemplateOptional.get();
+        EntryTemplate entryTemplate = entryTemplateService
+                .findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Template not found: " + id));
 
-        String username = UserAuthenticationUtils
-                .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
-        User user = userService.findByUsername(username)
-                .orElseThrow(RecordNotFoundException::new);
-
+        User user = getAuthenticatedUser();
         entryTemplate.setLastModifiedBy(user);
         entryTemplate.setActive(active);
         entryTemplateService.update(entryTemplate);
@@ -76,6 +75,8 @@ public class EntryTemplateController {
 
     @DeleteMapping("")
     public void deleteTemplates() {
+        LOGGER.info("Deleting all templates");
+
         entryTemplateService.deleteAll();
     }
 
