@@ -40,18 +40,24 @@ public class EntryTemplateController {
     @Autowired
     private EventsService eventsService;
 
-    @GetMapping("")
-    public List<EntryTemplate> getEntryTemplates() {
-        LOGGER.info("Getting all entry templates");
-
-        return entryTemplateService.findAll();
-    }
-
     private User getAuthenticatedUser() throws RecordNotFoundException {
         String username = UserAuthenticationUtils
                 .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
         return userService.findByUsername(username)
                 .orElseThrow(RecordNotFoundException::new);
+    }
+
+    private EntryTemplate getTemplateById(String id) throws RecordNotFoundException {
+        return entryTemplateService
+                .findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Template not found: " + id));
+    }
+
+    @GetMapping("")
+    public List<EntryTemplate> getEntryTemplates() {
+        LOGGER.info("Getting all entry templates");
+
+        return entryTemplateService.findAll();
     }
 
     @PostMapping("")
@@ -78,10 +84,7 @@ public class EntryTemplateController {
             throws RecordNotFoundException {
         LOGGER.info("Updating template with id: " + id);
 
-        EntryTemplate entryTemplate = entryTemplateService
-                .findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Template not found: " + id));
-
+        EntryTemplate entryTemplate = getTemplateById(id);
         User user = getAuthenticatedUser();
         entryTemplate.setLastModifiedBy(user);
         entryTemplate.setActive(active);
@@ -96,14 +99,21 @@ public class EntryTemplateController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/activity")
+    public HttpEntity<List<Activity>> getTemplateActivity(@PathVariable("id") String id)
+            throws RecordNotFoundException {
+        LOGGER.info("Getting activities of entry template with id: " + id);
+
+        List<Activity> activities = activityService.findByEntryTemplate(getTemplateById(id));
+        return new ResponseEntity<>(activities, HttpStatus.OK);
+    }
+
+
     @DeleteMapping("/{id}")
     public HttpEntity<EntryTemplate> deleteTemplate(@PathVariable("id") String id) {
         LOGGER.info("Deleting template with id: " + id);
 
-        EntryTemplate entryTemplate = entryTemplateService
-                .findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Template not found: " + id));
-
+        EntryTemplate entryTemplate = getTemplateById(id);
         User user = getAuthenticatedUser();
         entryTemplate.setLastModifiedBy(user);
         entryTemplateService.delete(entryTemplate);
@@ -116,5 +126,4 @@ public class EntryTemplateController {
 
         return new ResponseEntity<>(entryTemplate, HttpStatus.OK);
     }
-
 }
