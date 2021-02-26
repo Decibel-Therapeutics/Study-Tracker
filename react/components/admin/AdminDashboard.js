@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,8 +16,22 @@ import UserSettings from "./UserSettings";
 import AssayTypeSettings from "./AssayTypeSettings";
 import TemplateTypesSettings from './TemplateTypesSettings';
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 export const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('users');
+  const [activeTab, setActiveTab] = useState(null);
+  const activeTabQuery = useQuery().get('active');
+
+  useEffect(() => {
+    if ( ['users', 'assay-types', 'template-types'].includes(activeTabQuery) && activeTab !== activeTabQuery ) {
+      setActiveTab(activeTabQuery);
+    }
+    else {
+      setActiveTab('users');
+    }
+  }, []);
 
   const getDashboardContent = () => {
     switch(activeTab) {
