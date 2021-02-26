@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import cellEditFactory from 'react-bootstrap-table2-editor';
 
 export const TemplateTypesSettings = () => {
     const [templateTypes, setTemplateTypes] = useState([]);
@@ -26,7 +27,7 @@ export const TemplateTypesSettings = () => {
         .then(rs => rs.json())
         .then(json => setTemplateTypes(json))
         .catch(error => console.log(error));
-    }
+    };
 
     const handleStatusChange = ({ id, statusToSet }) => {
       fetch(`/api/entryTemplate/${ id }/status?${ new URLSearchParams({ active: statusToSet }) }`, {
@@ -37,21 +38,38 @@ export const TemplateTypesSettings = () => {
           console.log(error);
           swal('Something went wrong', 'Template status change failed.');
         });
-    }
+    };
 
     const templateTableColumns = [
       {
         dataField: 'name',
         text: 'Name',
         sort: true,
+        validator: (newValue) => {
+          if (!newValue) {
+            return {
+              valid: false,
+              message: 'Required field',
+            }
+          }
+        },
       },
       {
         dataField: 'templateId',
         text: 'Template ID',
+        validator: (newValue) => {
+          if (!newValue) {
+            return {
+              valid: false,
+              message: 'Required field',
+            }
+          }
+        },
       },
       {
         dataField: 'active',
         text: 'Active',
+        editable: false,
         formatter: (cell, row) => {
           const isActive = row.active
           const status = {
@@ -92,6 +110,22 @@ export const TemplateTypesSettings = () => {
 }
 
 export const TemplateTypesList = ({ templateTypes, templateTableColumns }) => {
+  const updateTemplate = (updatedTemplate) => {
+    fetch('/api/entryTemplate/', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...updatedTemplate,
+      }),
+    })
+      .catch(error => {
+        console.log(error);
+        swal('Something went wrong', 'Template update failed.');
+      });
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -129,6 +163,12 @@ export const TemplateTypesList = ({ templateTypes, templateTableColumns }) => {
                   dataField: "name",
                   order: "asc"
                 }]}
+                cellEdit={ cellEditFactory({
+                  mode: 'click',
+                  afterSaveCell: (oldValue, newValue, row, column) => {
+                    updateTemplate(row);
+                  }
+                }) }
                 {...props.baseProps}
               >
               </BootstrapTable>
