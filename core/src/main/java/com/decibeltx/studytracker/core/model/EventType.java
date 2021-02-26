@@ -48,6 +48,10 @@ public enum EventType {
   // Users
   NEW_USER,
   UPDATED_USER,
-  DELETED_USER
+  DELETED_USER,
 
+  //EntryTemplate events
+  NEW_ENTRY_TEMPLATE,
+  UPDATED_ENTRY_TEMPLATE,
+  DELETED_ENTRY_TEMPLATE
 }

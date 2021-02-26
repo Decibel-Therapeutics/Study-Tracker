@@ -36,6 +36,9 @@ public interface ActivityRepository extends MongoRepository<Activity, String> {
   @Query("{ 'reference': 'PROGRAM', 'referenceId': ?0 }")
   List<Activity> findByProgramId(String programId);
 
+  @Query("{ 'reference': 'ENTRY_TEMPLATE', 'referenceId': ?0 }")
+  List<Activity> findByEntryTemplateId(String templateId);
+
   @Query("{ 'user.id': ?0 }")
   List<Activity> findByUserId(String userId);
 

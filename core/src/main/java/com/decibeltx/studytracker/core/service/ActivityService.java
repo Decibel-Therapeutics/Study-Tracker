@@ -16,15 +16,18 @@
 
 package com.decibeltx.studytracker.core.service;
 
-import com.decibeltx.studytracker.core.model.Activity;
-import com.decibeltx.studytracker.core.model.Assay;
-import com.decibeltx.studytracker.core.model.EventType;
-import com.decibeltx.studytracker.core.model.Program;
-import com.decibeltx.studytracker.core.model.Study;
-import com.decibeltx.studytracker.core.model.User;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import com.decibeltx.studytracker.core.model.Activity;
+import com.decibeltx.studytracker.core.model.Assay;
+import com.decibeltx.studytracker.core.model.Program;
+import com.decibeltx.studytracker.core.model.Study;
+import com.decibeltx.studytracker.core.model.EntryTemplate;
+import com.decibeltx.studytracker.core.model.EventType;
+import com.decibeltx.studytracker.core.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -48,6 +51,8 @@ public interface ActivityService {
   List<Activity> findByEventType(EventType type);
 
   List<Activity> findByUser(User user);
+
+  List<Activity> findByEntryTemplate(EntryTemplate entryTemplate);
 
   Activity create(Activity activity);
 
