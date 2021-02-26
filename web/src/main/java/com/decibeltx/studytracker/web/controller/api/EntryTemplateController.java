@@ -99,6 +99,20 @@ public class EntryTemplateController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping("")
+    public HttpEntity<EntryTemplate> updateEntryTemplate(@RequestBody EntryTemplate entryTemplate) {
+        getTemplateById(entryTemplate.getId());
+        User user = getAuthenticatedUser();
+        entryTemplate.setLastModifiedBy(user);
+        entryTemplateService.update(entryTemplate);
+        // Publish events
+        Activity activity = EntryTemplateActivityUtils
+                .fromUpdatedEntryTemplate(entryTemplate, user);
+        activityService.create(activity);
+        eventsService.dispatchEvent(activity);
+        return new ResponseEntity<>(entryTemplate, HttpStatus.CREATED);
+    }
+
     @GetMapping("/{id}/activity")
     public HttpEntity<List<Activity>> getTemplateActivity(@PathVariable("id") String id)
             throws RecordNotFoundException {
