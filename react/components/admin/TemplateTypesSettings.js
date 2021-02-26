@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import { Card, CardHeader, CardBody, CardTitle, Button, Badge } from 'reactstrap';
-import {CheckCircle, Edit, PlusCircle, Trash} from "react-feather";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardTitle,
+  Button,
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from 'reactstrap';
+import { PlusCircle } from "react-feather";
 import { Link } from 'react-router-dom';
 
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
@@ -10,107 +20,124 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 
 export const TemplateTypesSettings = () => {
     const [templateTypes, setTemplateTypes] = useState([]);
-    const [error, setError] = useState();
+
+    const fetchTemplates = () => {
+      fetch('/api/entryTemplate')
+        .then(rs => rs.json())
+        .then(json => setTemplateTypes(json))
+        .catch(error => console.log(error));
+    }
+
+    const handleStatusChange = ({ id, statusToSet }) => {
+      fetch(`/api/entryTemplate/${ id }/status?${ new URLSearchParams({ active: statusToSet }) }`, {
+        method: 'POST',
+      })
+        .then(fetchTemplates)
+        .catch(error => {
+          console.log(error);
+          swal('Something went wrong', 'Template status change failed.');
+        });
+    }
+
     const templateTableColumns = [
-        {
-            dataField: 'name',
-            text: 'Name',
-            sort: true,
+      {
+        dataField: 'name',
+        text: 'Name',
+        sort: true,
+      },
+      {
+        dataField: 'templateId',
+        text: 'Template ID',
+      },
+      {
+        dataField: 'active',
+        text: 'Active',
+        formatter: (cell, row) => {
+          const isActive = row.active
+          const status = {
+            text: isActive ? 'Active' : 'Inactive',
+            color: isActive ? 'success' : 'warning',
+            actionText: isActive ? 'Deactivate' : 'Activate',
+          };
+
+          return (
+            <UncontrolledButtonDropdown>
+              <DropdownToggle
+                caret
+                color={ status.color }
+              >
+                { status.text }
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem onClick={ () => handleStatusChange({ id: row.id, statusToSet: !row.active }) }>
+                  { status.actionText }
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledButtonDropdown>
+          );
         },
-        {
-            dataField: 'templateId',
-            text: 'Template ID',
-        },
-        {
-            dataField: 'active',
-            text: 'Active',
-            formatter: (cell, row) => {
-                return row.active
-                    ? <Badge color="success">Active</Badge>
-                    : <Badge color="warning">Inactive</Badge>
-            }
-        },
-        {
-            dataField: 'actions',
-            text: 'Actions',
-            formatter: (cell, row) => {
-                return (
-                    <>
-                        <Link
-                            title={"Edit assay type"}
-                            className="text-warning"
-                            to={`/template-types/${row.id}/edit`}
-                        >
-                            <Edit className="align-middle mr-1" size={18} />
-                        </Link>
-                    </>
-                )
-            }
-        }
-    ]
+      },
+    ];
 
     useEffect(() => {
-        fetch('/api/entryTemplate')
-            .then(rs => rs.json())
-            .then(json => setTemplateTypes(json))
-            .catch(error => setError(error));
+      fetchTemplates();
     }, []);
 
     return (
-        <TemplateTypesList
-            templateTypes={ templateTypes }
-            templateTableColumns={ templateTableColumns }
-        />
+      <TemplateTypesList
+        templateTypes={ templateTypes }
+        templateTableColumns={ templateTableColumns }
+      />
     )
 }
 
 export const TemplateTypesList = ({ templateTypes, templateTableColumns }) => {
-    return (
-        <Card>
-            <CardHeader>
-                Template Types
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          Template Types
+          <span className="float-right">
+            <Link to="/template-types/new">
+              <Button color="primary">
+                New Template Type
+                &nbsp;
+                <PlusCircle className="feather align-middle ml-2 mb-1"/>
+              </Button>
+            </Link>
+          </span>
+        </CardTitle>
+      </CardHeader>
 
-                <span className="float-right">
-                  <Button
-                      color="primary"
-                      onClick={() => history.push("/template-types/new")}
-                  >
-                    New Temlate Type
-                    &nbsp;
-                    <PlusCircle className="feather align-middle ml-2 mb-1"/>
-                  </Button>
-                </span>
-            </CardHeader>
-
-            <CardBody>
-                <ToolkitProvider
-                    keyField="id"
-                    data={ templateTypes }
-                    columns={ templateTableColumns }
-                >
-                    {props => (
-                        <div>
-                            <BootstrapTable
-                                bootstrap4
-                                keyField="id"
-                                bordered={false}
-                                pagination={paginationFactory({
-                                    sizePerPage: 10,
-                                    sizePerPageList: [10, 20, 40, 80]
-                                })}
-                                defaultSorted={[{
-                                    dataField: "name",
-                                    order: "asc"
-                                }]}
-                                {...props.baseProps}
-                            >
-                            </BootstrapTable>
-                        </div>
-                    )}
-                </ToolkitProvider>
-            </CardBody>
-        </Card>
-    )
+      <CardBody>
+        <ToolkitProvider
+          keyField="id"
+          data={ templateTypes }
+          columns={ templateTableColumns }
+        >
+          {props => (
+            <div>
+              <BootstrapTable
+                bootstrap4
+                keyField="id"
+                bordered={false}
+                pagination={paginationFactory({
+                  sizePerPage: 10,
+                  sizePerPageList: [10, 20, 40, 80]
+                })}
+                defaultSorted={[{
+                  dataField: "name",
+                  order: "asc"
+                }]}
+                {...props.baseProps}
+              >
+              </BootstrapTable>
+            </div>
+          )}
+        </ToolkitProvider>
+      </CardBody>
+    </Card>
+  );
 }
 
 export default TemplateTypesSettings;

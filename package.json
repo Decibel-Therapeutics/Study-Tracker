@@ -42,6 +42,7 @@
     "classnames": "2.2.6",
     "crossfilter2": "^1.5.2",
     "dateformat": "^3.0.3",
+    "formik": "^2.2.6",
     "fullcalendar": "3.10.0",
     "google-map-react": "1.1.4",
     "jquery": "3.5.0",
