@@ -6,9 +6,8 @@ import com.decibeltx.studytracker.core.model.EntryTemplate;
 import com.decibeltx.studytracker.core.model.EventType;
 import com.decibeltx.studytracker.core.model.User;
 
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class EntryTemplateActivityUtils {
 
