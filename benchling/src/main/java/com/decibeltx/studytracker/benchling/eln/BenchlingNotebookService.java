@@ -156,6 +156,10 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
   @Override
   public Optional<NotebookFolder> findStudyFolder(Study study) {
+      return findStudyFolder(study, true);
+  }
+
+  private Optional<NotebookFolder> findStudyFolder(Study study, boolean includeContents) {
 
     LOGGER.info("Fetching notebook entry for study: " + study.getCode());
 
@@ -164,7 +168,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
       NotebookFolder studyFolder = study.getNotebookFolder();
       Optional<BenchlingFolder> optional = client.findFolderById(studyFolder.getReferenceId());
       if (optional.isPresent()) {
-        return Optional.of(getContentFullNotebookFolder(this.convertFolder(optional.get()), study));
+        return Optional.of(getContentFullNotebookFolder(this.convertFolder(optional.get(), includeContents), study));
       } else {
         return Optional.empty();
       }
@@ -241,7 +245,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   public NotebookFolder createAssayFolder(Assay assay) throws NotebookException {
     LOGGER.info("Creating Benchling folder for assay: " + assay.getCode());
 
-    Optional<NotebookFolder> studyFolderOptional = this.findStudyFolder(assay.getStudy());
+    Optional<NotebookFolder> studyFolderOptional = this.findStudyFolder(assay.getStudy(), false);
     if (studyFolderOptional.isEmpty()) {
       throw new EntityNotFoundException(
           "Could not find folder for study: " + assay.getStudy().getCode());
