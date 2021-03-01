@@ -122,14 +122,16 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     return path.toString();
   }
 
-  private NotebookFolder getContentFullNotebookFolder(NotebookFolder notebookFolder, Study study) {
-    String path = getNotebookFolderPath(study);
+  private NotebookFolder getContentFullNotebookFolder(BenchlingFolder benchlingFolder, Assay assay) {
+    NotebookFolder notebookFolder = convertFolder(benchlingFolder);
+    String path = getNotebookFolderPath(assay);
     notebookFolder.setPath(path);
     return notebookFolder;
   }
 
-  private NotebookFolder getContentFullNotebookFolder(NotebookFolder notebookFolder, Assay assay) {
-    String path = getNotebookFolderPath(assay);
+  private NotebookFolder getContentFullNotebookFolder(BenchlingFolder benchlingFolder, Study study) {
+    NotebookFolder notebookFolder = convertFolder(benchlingFolder);
+    String path = getNotebookFolderPath(study);
     notebookFolder.setPath(path);
     return notebookFolder;
   }
@@ -168,7 +170,11 @@ public final class BenchlingNotebookService implements StudyNotebookService {
       NotebookFolder studyFolder = study.getNotebookFolder();
       Optional<BenchlingFolder> optional = client.findFolderById(studyFolder.getReferenceId());
       if (optional.isPresent()) {
-        return Optional.of(getContentFullNotebookFolder(this.convertFolder(optional.get(), includeContents), study));
+        if (includeContents) {
+          return Optional.of(getContentFullNotebookFolder(optional.get(), study));
+        } else {
+          return Optional.of(this.convertFolder(optional.get(), false));
+        }
       } else {
         return Optional.empty();
       }
@@ -188,7 +194,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
       NotebookFolder assayFolder = assay.getNotebookFolder();
       Optional<BenchlingFolder> optional = client.findFolderById(assayFolder.getReferenceId());
       if (optional.isPresent()) {
-        return Optional.of(getContentFullNotebookFolder(this.convertFolder(optional.get()), assay));
+        return Optional.of(getContentFullNotebookFolder(optional.get(), assay));
       } else {
         return Optional.empty();
       }
