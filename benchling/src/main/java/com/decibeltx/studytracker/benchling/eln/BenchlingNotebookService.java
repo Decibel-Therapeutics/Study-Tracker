@@ -76,6 +76,10 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     return notebookFolder;
   }
 
+  private NotebookFolder convertFolder(BenchlingFolder benchlingFolder) {
+    return convertFolder(benchlingFolder, null);
+  }
+
   private NotebookFolder convertFolder(BenchlingFolder benchlingFolder, List<BenchlingEntry> projectEntries) {
     NotebookFolder notebookFolder = convertBenchlingFolder(benchlingFolder);
     if (projectEntries != null) {
@@ -144,7 +148,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     if (program.getNotebookFolder() != null) {
       Optional<BenchlingFolder> optional = client.findFolderById(program.getNotebookFolder().getReferenceId());
       if (optional.isPresent()) {
-        return Optional.of(this.convertFolder(optional.get(), null));
+        return Optional.of(this.convertFolder(optional.get()));
       } else {
         return Optional.empty();
       }
@@ -173,7 +177,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
         if (includeContents) {
           return Optional.of(getContentFullNotebookFolder(optional.get(), study));
         } else {
-          return Optional.of(this.convertFolder(optional.get(), null));
+          return Optional.of(this.convertFolder(optional.get());
         }
       } else {
         return Optional.empty();
@@ -214,7 +218,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
       try {
         BenchlingFolder folder = client.findFolderById(program.getNotebookFolder().getReferenceId())
             .get();
-        return this.convertFolder(folder, null);
+        return this.convertFolder(folder);
       } catch (Exception e) {
         LOGGER.error("Failed to register new program: " + program.getName());
         throw new NotebookException(e);
@@ -240,7 +244,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     BenchlingFolder benchlingFolder = client
         .createFolder(namingService.getStudyNotebookFolderName(study),
             programFolder.getReferenceId());
-    NotebookFolder studyFolder = this.convertFolder(benchlingFolder, null);
+    NotebookFolder studyFolder = this.convertFolder(benchlingFolder);
     studyFolder.setParentFolder(programFolder);
     return studyFolder;
 
@@ -261,7 +265,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     BenchlingFolder benchlingFolder = client
         .createFolder(namingService.getAssayNotebookFolderName(assay),
             studyFolder.getReferenceId());
-    NotebookFolder assayFolder = this.convertFolder(benchlingFolder, null);
+    NotebookFolder assayFolder = this.convertFolder(benchlingFolder);
     assayFolder.setParentFolder(studyFolder);
 
     return assayFolder;
