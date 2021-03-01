@@ -19,9 +19,7 @@ public class EntryTemplateActivityUtils {
         activity.setEventType(eventType);
         activity.setDate(new Date());
         activity.setUser(triggeredBy);
-        Map<String, Object> data = new HashMap<>();
-        data.put("entryTemplate", entryTemplate);
-        activity.setData(data);
+        activity.setData(Collections.singletonMap("entryTemplate", entryTemplate));
         return activity;
     }
 
