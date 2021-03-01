@@ -15,12 +15,14 @@ import {
 import UserSettings from "./UserSettings";
 import AssayTypeSettings from "./AssayTypeSettings";
 import TemplateTypesSettings from './TemplateTypesSettings';
+import { history } from '../../App';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
 export const AdminDashboard = () => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState(null);
   const activeTabQuery = useQuery().get('active');
 
@@ -31,7 +33,7 @@ export const AdminDashboard = () => {
     else {
       setActiveTab('users');
     }
-  }, []);
+  }, [location]);
 
   const getDashboardContent = () => {
     switch(activeTab) {
@@ -42,6 +44,13 @@ export const AdminDashboard = () => {
       case 'template-types':
         return <TemplateTypesSettings />
     }
+  }
+
+  const onSetActiveTab = (tabName) => {
+    history.push({
+      pathname: '/admin',
+      search: `?active=${ tabName }`,
+    });
   }
 
   return (
@@ -75,21 +84,21 @@ export const AdminDashboard = () => {
               <ListGroupItem
                 action
                 active={activeTab === 'users'}
-                onClick={() => setActiveTab('users')}
+                onClick={() => onSetActiveTab('users')}
               >
                 Users
               </ListGroupItem>
               <ListGroupItem
                 action
                 active={activeTab === 'assay-types'}
-                onClick={() => setActiveTab('assay-types')}
+                onClick={() => onSetActiveTab('assay-types')}
               >
                 Assay Types
               </ListGroupItem>
               <ListGroupItem
                 action
                 active={activeTab === 'template-types'}
-                onClick={() => setActiveTab('template-types')}
+                onClick={() => onSetActiveTab('template-types')}
               >
                 Template Types
               </ListGroupItem>
