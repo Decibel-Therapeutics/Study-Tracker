@@ -29,6 +29,7 @@ import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.service.NamingService;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -75,27 +76,24 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     return notebookFolder;
   }
 
-  private NotebookFolder convertFolder(BenchlingFolder benchlingFolder) {
-    return convertFolder(benchlingFolder, true);
-  }
-
-  private NotebookFolder convertFolder(BenchlingFolder benchlingFolder, boolean includeContents) {
+  private NotebookFolder convertFolder(BenchlingFolder benchlingFolder, List<BenchlingEntry> projectEntries) {
     NotebookFolder notebookFolder = convertBenchlingFolder(benchlingFolder);
-    if (includeContents) {
-      loadContents(benchlingFolder, notebookFolder);
+    if (projectEntries != null) {
+      loadContents(benchlingFolder, notebookFolder, projectEntries);
     }
     return notebookFolder;
   }
 
-  private void loadContents(BenchlingFolder benchlingFolder, NotebookFolder notebookFolder) {
-    List<BenchlingEntry> projectEntries = client.findProjectEntries(benchlingFolder.getProjectId());
-    projectEntries.stream()
-            .filter(entry -> entry.getFolderId().equals(benchlingFolder.getId()))
-            .forEach(entry -> notebookFolder.getEntries().add(convertBenchlingEntry(entry)));
+  private void loadContents(BenchlingFolder benchlingFolder, NotebookFolder notebookFolder, List<BenchlingEntry> projectEntries) {
+    for(Iterator<BenchlingEntry> entryIterator = projectEntries.iterator(); entryIterator.hasNext(); ) {
+      BenchlingEntry entry = entryIterator.next();
+      if (entry.getFolderId().equals(benchlingFolder.getId())) {
+        notebookFolder.getEntries().add(convertBenchlingEntry(entry));
+        entryIterator.remove();
+      }
+    }
     List<BenchlingFolder> childrenFolders = client.findFolderChildren(benchlingFolder.getId());
-    childrenFolders.forEach(folder -> notebookFolder.getSubFolders().add(convertFolder(folder)));
-    Optional<BenchlingFolder> parentBenchlingFolder = client.findFolderById(benchlingFolder.getParentFolderId());
-    parentBenchlingFolder.ifPresent(folder -> notebookFolder.setParentFolder(convertBenchlingFolder(folder)));
+    childrenFolders.forEach(folder -> notebookFolder.getSubFolders().add(convertFolder(folder, projectEntries)));
   }
 
   private String getProjectPath(NotebookFolder folder) {
@@ -123,14 +121,16 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   }
 
   private NotebookFolder getContentFullNotebookFolder(BenchlingFolder benchlingFolder, Assay assay) {
-    NotebookFolder notebookFolder = convertFolder(benchlingFolder);
+    List<BenchlingEntry> projectEntries = client.findProjectEntries(benchlingFolder.getProjectId());
+    NotebookFolder notebookFolder = convertFolder(benchlingFolder, projectEntries);
     String path = getNotebookFolderPath(assay);
     notebookFolder.setPath(path);
     return notebookFolder;
   }
 
   private NotebookFolder getContentFullNotebookFolder(BenchlingFolder benchlingFolder, Study study) {
-    NotebookFolder notebookFolder = convertFolder(benchlingFolder);
+    List<BenchlingEntry> projectEntries = client.findProjectEntries(benchlingFolder.getProjectId());
+    NotebookFolder notebookFolder = convertFolder(benchlingFolder, projectEntries);
     String path = getNotebookFolderPath(study);
     notebookFolder.setPath(path);
     return notebookFolder;
@@ -144,7 +144,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     if (program.getNotebookFolder() != null) {
       Optional<BenchlingFolder> optional = client.findFolderById(program.getNotebookFolder().getReferenceId());
       if (optional.isPresent()) {
-        return Optional.of(this.convertFolder(optional.get(), false));
+        return Optional.of(this.convertFolder(optional.get(), null));
       } else {
         return Optional.empty();
       }
@@ -173,7 +173,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
         if (includeContents) {
           return Optional.of(getContentFullNotebookFolder(optional.get(), study));
         } else {
-          return Optional.of(this.convertFolder(optional.get(), false));
+          return Optional.of(this.convertFolder(optional.get(), null));
         }
       } else {
         return Optional.empty();
@@ -214,7 +214,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
       try {
         BenchlingFolder folder = client.findFolderById(program.getNotebookFolder().getReferenceId())
             .get();
-        return this.convertFolder(folder, false);
+        return this.convertFolder(folder, null);
       } catch (Exception e) {
         LOGGER.error("Failed to register new program: " + program.getName());
         throw new NotebookException(e);
@@ -240,7 +240,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     BenchlingFolder benchlingFolder = client
         .createFolder(namingService.getStudyNotebookFolderName(study),
             programFolder.getReferenceId());
-    NotebookFolder studyFolder = this.convertFolder(benchlingFolder, false);
+    NotebookFolder studyFolder = this.convertFolder(benchlingFolder, null);
     studyFolder.setParentFolder(programFolder);
     return studyFolder;
 
@@ -261,7 +261,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     BenchlingFolder benchlingFolder = client
         .createFolder(namingService.getAssayNotebookFolderName(assay),
             studyFolder.getReferenceId());
-    NotebookFolder assayFolder = this.convertFolder(benchlingFolder, false);
+    NotebookFolder assayFolder = this.convertFolder(benchlingFolder, null);
     assayFolder.setParentFolder(studyFolder);
 
     return assayFolder;
