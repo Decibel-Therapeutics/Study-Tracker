@@ -177,7 +177,11 @@ public final class BenchlingNotebookService implements StudyNotebookService {
         if (includeContents) {
           return Optional.of(getContentFullNotebookFolder(optional.get(), study));
         } else {
+<<<<<<< HEAD
           return Optional.of(this.convertFolder(optional.get()));
+=======
+          return Optional.of(this.convertFolder(optional.get());
+>>>>>>> 43ef54bf31fb442696aca5fde4951ceaf2593f5e
         }
       } else {
         return Optional.empty();
