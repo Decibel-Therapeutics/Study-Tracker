@@ -130,30 +130,18 @@ public class ExampleDataGenerator {
   public List<EntryTemplate> generateExampleEntryTemplates(List<User> users) {
     User user = users.get(0);
     List<EntryTemplate> templates = new ArrayList<>();
-    EntryTemplate entryTemplate = new EntryTemplate();
-    entryTemplate.setTemplateId("id1");
-    entryTemplate.setName("table1");
-    entryTemplate.setCreatedBy(user);
-    entryTemplate.setLastModifiedBy(user);
-    entryTemplate.setCreatedAt(new Date());
-    entryTemplate.setUpdatedAt(new Date());
-    templates.add(entryTemplate);
+    createEntryTemplate(user, templates, "id1", "table1", new Date());
+    createEntryTemplate(user, templates, "id2", "table2", new Date());
+    return templates;
+  }
+
+  private void createEntryTemplate(User user, List<EntryTemplate> templates,
+                                   String templateId, String name, Date timeStamp) {
+    EntryTemplate entryTemplate = EntryTemplate.of(user, templateId, name, timeStamp);
     Activity activity = EntryTemplateActivityUtils
             .fromNewEntryTemplate(entryTemplate, user);
     activityRepository.insert(activity);
-
-    entryTemplate = new EntryTemplate();
-    entryTemplate.setTemplateId("id2");
-    entryTemplate.setName("table2");
-    entryTemplate.setCreatedBy(user);
-    entryTemplate.setLastModifiedBy(user);
-    entryTemplate.setCreatedAt(new Date());
-    entryTemplate.setUpdatedAt(new Date());
     templates.add(entryTemplate);
-    activity = EntryTemplateActivityUtils
-            .fromNewEntryTemplate(entryTemplate, user);
-    activityRepository.insert(activity);
-    return templates;
   }
 
   public List<Program> generateExamplePrograms(List<User> users) {

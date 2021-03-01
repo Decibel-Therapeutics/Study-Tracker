@@ -37,6 +37,6 @@ public interface StudyNotebookService {
 
   NotebookFolder createAssayFolder(Assay assay) throws NotebookException;
 
-  void createNotebook(Assay assay, String templateId);
+  void makeRequestToCreateNotebook(Assay assay, String templateId);
 
 }

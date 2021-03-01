@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class EntryTemplateActivityUtils {
 
-    private static Activity getActivity(EntryTemplate entryTemplate, User triggeredBy, EventType eventType) {
+    private static Activity createActivity(EntryTemplate entryTemplate, User triggeredBy, EventType eventType) {
         Activity activity = new Activity();
         activity.setReference(Reference.ENTRY_TEMPLATE);
         activity.setReferenceId(entryTemplate.getId());
@@ -23,10 +23,10 @@ public class EntryTemplateActivityUtils {
     }
 
     public static Activity fromNewEntryTemplate(EntryTemplate entryTemplate, User triggeredBy) {
-        return getActivity(entryTemplate, triggeredBy, EventType.NEW_ENTRY_TEMPLATE);
+        return createActivity(entryTemplate, triggeredBy, EventType.NEW_ENTRY_TEMPLATE);
     }
 
     public static Activity fromUpdatedEntryTemplate(EntryTemplate entryTemplate, User triggeredBy) {
-        return getActivity(entryTemplate, triggeredBy, EventType.UPDATED_ENTRY_TEMPLATE);
+        return createActivity(entryTemplate, triggeredBy, EventType.UPDATED_ENTRY_TEMPLATE);
     }
 }

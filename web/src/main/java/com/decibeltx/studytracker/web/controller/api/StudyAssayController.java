@@ -79,11 +79,10 @@ public class StudyAssayController extends AbstractAssayController {
     Assay created = this.createAssay(assay, study, user);
 
     if(!assay.getEntryTemplateId().isEmpty()) {
-      if(studyNotebookService != null) {
-        studyNotebookService.createNotebook(created, assay.getEntryTemplateId());
-      } else {
+      if (studyNotebookService == null) {
         throw new RecordNotFoundException("Could not create new entry");
       }
+      studyNotebookService.makeRequestToCreateNotebook(created, assay.getEntryTemplateId());
     }
 
     return new ResponseEntity<>(created, HttpStatus.CREATED);

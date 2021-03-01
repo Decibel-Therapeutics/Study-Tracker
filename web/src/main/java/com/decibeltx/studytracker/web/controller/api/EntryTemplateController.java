@@ -20,6 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @RestController
@@ -72,15 +75,8 @@ public class EntryTemplateController {
             throws RecordNotFoundException {
         LOGGER.info("Creating new entry template : " + entryTemplate.toString());
 
-        User user = getAuthenticatedUser();
-        entryTemplate.setCreatedBy(user);
-        entryTemplateService.create(entryTemplate);
-
-        // Publish events
-        Activity activity = EntryTemplateActivityUtils
-                .fromNewEntryTemplate(entryTemplate, user);
-        activityService.create(activity);
-        eventsService.dispatchEvent(activity);
+        authenticateUserAndApplyTemplateOperation(Optional.empty(), entryTemplate,
+                entryTemplateService::create, EntryTemplateActivityUtils::fromNewEntryTemplate);
 
         return new ResponseEntity<>(entryTemplate, HttpStatus.CREATED);
     }
@@ -92,16 +88,8 @@ public class EntryTemplateController {
         LOGGER.info("Updating template with id: " + id);
 
         EntryTemplate entryTemplate = getTemplateById(id);
-        User user = getAuthenticatedUser();
-        entryTemplate.setLastModifiedBy(user);
-        entryTemplate.setActive(active);
-        entryTemplateService.update(entryTemplate);
-
-        // Publish events
-        Activity activity = EntryTemplateActivityUtils
-                .fromUpdatedEntryTemplate(entryTemplate, user);
-        activityService.create(activity);
-        eventsService.dispatchEvent(activity);
+        authenticateUserAndApplyTemplateOperation(Optional.of(active), entryTemplate,
+                entryTemplateService::update,EntryTemplateActivityUtils::fromUpdatedEntryTemplate);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -109,14 +97,25 @@ public class EntryTemplateController {
     @PutMapping("")
     public HttpEntity<EntryTemplate> updateEntryTemplate(@RequestBody EntryTemplate entryTemplate) {
         getTemplateById(entryTemplate.getId());
+        authenticateUserAndApplyTemplateOperation(Optional.empty(), entryTemplate,
+                entryTemplateService::update, EntryTemplateActivityUtils::fromUpdatedEntryTemplate);
+        return new ResponseEntity<>(entryTemplate, HttpStatus.CREATED);
+    }
+
+    private void authenticateUserAndApplyTemplateOperation(Optional<Boolean> status, EntryTemplate entryTemplate,
+                                                           Consumer<EntryTemplate> templateConsumer,
+                                                           BiFunction<EntryTemplate, User, Activity> activityGenerator) {
         User user = getAuthenticatedUser();
         entryTemplate.setLastModifiedBy(user);
-        entryTemplateService.update(entryTemplate);
-        // Publish events
-        Activity activity = EntryTemplateActivityUtils
-                .fromUpdatedEntryTemplate(entryTemplate, user);
+        status.ifPresent(entryTemplate::setActive);
+        templateConsumer.accept(entryTemplate);
+        publishEvents(entryTemplate, user, activityGenerator);
+    }
+
+    private void publishEvents(EntryTemplate entryTemplate, User user,
+                               BiFunction<EntryTemplate, User, Activity> generateActivity) {
+        Activity activity = generateActivity.apply(entryTemplate, user);
         activityService.create(activity);
         eventsService.dispatchEvent(activity);
-        return new ResponseEntity<>(entryTemplate, HttpStatus.CREATED);
     }
 }

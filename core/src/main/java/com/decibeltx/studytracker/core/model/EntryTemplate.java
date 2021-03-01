@@ -45,6 +45,18 @@ public class EntryTemplate implements Persistable<String> {
 
     private boolean active = true;
 
+    public static EntryTemplate of(User user, String templateId,
+                                   String name, Date timeStamp) {
+        EntryTemplate entryTemplate = new EntryTemplate();
+        entryTemplate.setTemplateId(templateId);
+        entryTemplate.setName(name);
+        entryTemplate.setCreatedBy(user);
+        entryTemplate.setLastModifiedBy(user);
+        entryTemplate.setCreatedAt(timeStamp);
+        entryTemplate.setUpdatedAt(timeStamp);
+        return entryTemplate;
+    }
+
     @Override
     public boolean isNew() {
         return id == null;

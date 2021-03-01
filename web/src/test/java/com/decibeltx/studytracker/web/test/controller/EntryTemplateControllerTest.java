@@ -78,13 +78,7 @@ public class EntryTemplateControllerTest {
     public void createEntryTemplateTest() throws Exception {
         User user = userRepository.findByUsername("jsmith")
                 .orElseThrow(RecordNotFoundException::new);
-        EntryTemplate entryTemplate = new EntryTemplate();
-        entryTemplate.setTemplateId("id3");
-        entryTemplate.setName("table3");
-        entryTemplate.setCreatedBy(user);
-        entryTemplate.setLastModifiedBy(user);
-        entryTemplate.setCreatedAt(new Date());
-        entryTemplate.setUpdatedAt(new Date());
+        EntryTemplate entryTemplate = EntryTemplate.of(user, "id3", "table3", new Date());
         mockMvc.perform(post("/api/entryTemplate")
                 .with(user(user.getUsername()))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -149,8 +143,6 @@ public class EntryTemplateControllerTest {
         List<EntryTemplate> templates = entryTemplateRepository.findAll();
         EntryTemplate testTemplate = templates.get(0);
         testTemplate.setId("badId");
-        testTemplate.setName("updated name");
-        testTemplate.setTemplateId("updated id");
         mockMvc.perform(put("/api/entryTemplate")
                 .with(user(user.getUsername()))
                 .contentType(MediaType.APPLICATION_JSON)
