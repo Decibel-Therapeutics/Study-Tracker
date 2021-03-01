@@ -30,9 +30,9 @@ export const AssayNotebookTemplatesDropdown = ({
 
       return 0;
     })
-    .map(({id, name}) => {
+    .map(({templateId, name}) => {
       return {
-        value: id,
+        value: templateId,
         label: name,
       };
     });
