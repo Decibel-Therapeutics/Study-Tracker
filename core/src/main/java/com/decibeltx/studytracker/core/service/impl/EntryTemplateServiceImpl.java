@@ -41,8 +41,9 @@ public class EntryTemplateServiceImpl implements EntryTemplateService {
     public void create(EntryTemplate entryTemplate) {
         LOGGER.info("Creating new entry template with name: " + entryTemplate.getName());
 
-        entryTemplate.setCreatedAt(new Date());
-        entryTemplate.setUpdatedAt(new Date());
+        Date now = new Date();
+        entryTemplate.setCreatedAt(now);
+        entryTemplate.setUpdatedAt(now);
         entryTemplateRepository.insert(entryTemplate);
     }
 
