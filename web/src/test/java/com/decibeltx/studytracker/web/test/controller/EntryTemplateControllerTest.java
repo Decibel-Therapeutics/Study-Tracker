@@ -172,23 +172,4 @@ public class EntryTemplateControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(ENTRY_TEMPLATE_COUNT-1)));
     }
-
-    @Test
-    public void getTemplateActivityTest() throws Exception {
-        List<EntryTemplate> templates = entryTemplateRepository.findAll();
-        EntryTemplate testTemplate = templates.get(0);
-        mockMvc.perform(get("/api/entryTemplate/" + testTemplate.getId() + "/activity"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void getNonExistentTemplateActivityTest() throws Exception {
-        mockMvc.perform(get("/api/entryTemplate/" + "XXXX" + "/activity"))
-                .andExpect(status().isNotFound());
-    }
-
-
-
-
-
 }

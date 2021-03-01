@@ -119,32 +119,4 @@ public class EntryTemplateController {
         eventsService.dispatchEvent(activity);
         return new ResponseEntity<>(entryTemplate, HttpStatus.CREATED);
     }
-
-    @GetMapping("/{id}/activity")
-    public HttpEntity<List<Activity>> getTemplateActivity(@PathVariable("id") String id)
-            throws RecordNotFoundException {
-        LOGGER.info("Getting activities of entry template with id: " + id);
-
-        List<Activity> activities = activityService.findByEntryTemplate(getTemplateById(id));
-        return new ResponseEntity<>(activities, HttpStatus.OK);
-    }
-
-
-    @DeleteMapping("/{id}")
-    public HttpEntity<EntryTemplate> deleteTemplate(@PathVariable("id") String id) {
-        LOGGER.info("Deleting template with id: " + id);
-
-        EntryTemplate entryTemplate = getTemplateById(id);
-        User user = getAuthenticatedUser();
-        entryTemplate.setLastModifiedBy(user);
-        entryTemplateService.delete(entryTemplate);
-
-        // Publish events
-        Activity activity = EntryTemplateActivityUtils
-                .fromDeletedEntryTemplate(entryTemplate, user);
-        activityService.create(activity);
-        eventsService.dispatchEvent(activity);
-
-        return new ResponseEntity<>(entryTemplate, HttpStatus.OK);
-    }
 }

@@ -17,6 +17,7 @@
 package com.decibeltx.studytracker.core.example;
 
 import com.decibeltx.studytracker.core.eln.NotebookFolder;
+import com.decibeltx.studytracker.core.events.util.EntryTemplateActivityUtils;
 import com.decibeltx.studytracker.core.events.util.StudyActivityUtils;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.exception.StudyTrackerException;
@@ -25,6 +26,7 @@ import com.decibeltx.studytracker.core.model.Comment;
 import com.decibeltx.studytracker.core.model.Conclusions;
 import com.decibeltx.studytracker.core.model.ExternalLink;
 import com.decibeltx.studytracker.core.model.Keyword;
+import com.decibeltx.studytracker.core.model.Activity;
 import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.Study;
@@ -136,6 +138,9 @@ public class ExampleDataGenerator {
     entryTemplate.setCreatedAt(new Date());
     entryTemplate.setUpdatedAt(new Date());
     templates.add(entryTemplate);
+    Activity activity = EntryTemplateActivityUtils
+            .fromNewEntryTemplate(entryTemplate, user);
+    activityRepository.insert(activity);
 
     entryTemplate = new EntryTemplate();
     entryTemplate.setTemplateId("id2");
@@ -145,6 +150,9 @@ public class ExampleDataGenerator {
     entryTemplate.setCreatedAt(new Date());
     entryTemplate.setUpdatedAt(new Date());
     templates.add(entryTemplate);
+    activity = EntryTemplateActivityUtils
+            .fromNewEntryTemplate(entryTemplate, user);
+    activityRepository.insert(activity);
     return templates;
   }
 

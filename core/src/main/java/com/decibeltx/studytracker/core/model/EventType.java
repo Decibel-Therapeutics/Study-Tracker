@@ -52,6 +52,5 @@ public enum EventType {
 
   //EntryTemplate events
   NEW_ENTRY_TEMPLATE,
-  UPDATED_ENTRY_TEMPLATE,
-  DELETED_ENTRY_TEMPLATE
+  UPDATED_ENTRY_TEMPLATE
 }

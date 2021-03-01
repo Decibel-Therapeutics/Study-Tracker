@@ -32,9 +32,4 @@ public class EntryTemplateActivityUtils {
     public static Activity fromUpdatedEntryTemplate(EntryTemplate entryTemplate, User triggeredBy) {
         return getActivity(entryTemplate, triggeredBy, EventType.UPDATED_ENTRY_TEMPLATE);
     }
-
-    public static Activity fromDeletedEntryTemplate(EntryTemplate entryTemplate, User triggeredBy) {
-        return getActivity(entryTemplate, triggeredBy, EventType.DELETED_ENTRY_TEMPLATE);
-    }
-
 }

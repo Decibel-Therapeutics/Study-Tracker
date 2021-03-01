@@ -18,8 +18,6 @@ public interface EntryTemplateService {
 
     void update(EntryTemplate entryTemplate);
 
-    void delete(EntryTemplate entryTemplate);
-
     /**
      * Counting number of templates created before/after/between given dates.
      */
