@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EntryTemplateServiceImpl implements EntryTemplateService {
@@ -29,6 +30,11 @@ public class EntryTemplateServiceImpl implements EntryTemplateService {
     @Override
     public List<EntryTemplate> findAll() {
         return entryTemplateRepository.findAll();
+    }
+
+    @Override
+    public List<EntryTemplate> findAllActive() {
+        return findAll().stream().filter(EntryTemplate::isActive).collect(Collectors.toList());
     }
 
     @Override

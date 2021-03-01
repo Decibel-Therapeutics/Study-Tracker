@@ -60,6 +60,13 @@ public class EntryTemplateController {
         return entryTemplateService.findAll();
     }
 
+    @GetMapping("/active")
+    public List<EntryTemplate> getActiveTemplates() {
+        LOGGER.info("Getting all active entry templates");
+
+        return entryTemplateService.findAllActive();
+    }
+
     @PostMapping("")
     public HttpEntity<EntryTemplate> createTemplate(@RequestBody EntryTemplate entryTemplate)
             throws RecordNotFoundException {

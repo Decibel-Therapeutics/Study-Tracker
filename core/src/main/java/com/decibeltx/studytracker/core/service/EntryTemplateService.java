@@ -12,6 +12,8 @@ public interface EntryTemplateService {
 
     List<EntryTemplate> findAll();
 
+    List<EntryTemplate> findAllActive();
+
     void create(EntryTemplate entryTemplate);
 
     void update(EntryTemplate entryTemplate);
