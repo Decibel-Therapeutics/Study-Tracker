@@ -16,7 +16,6 @@
 
 package com.decibeltx.studytracker.web.controller.api;
 
-import com.decibeltx.studytracker.benchling.eln.entities.BenchlingEntryTemplate;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.exception.StudyTrackerException;
 import com.decibeltx.studytracker.core.model.Activity;
@@ -125,18 +124,6 @@ public class AssayController extends AbstractAssayController {
   public List<Activity> getAssayActivity(@PathVariable("assayId") String assayId) {
     Assay assay = this.getAssayFromIdentifier(assayId);
     return getActivityService().findByAssay(assay);
-  }
-
-  @GetMapping("/templates")
-  public List<BenchlingEntryTemplate> getEntryTemplates() {
-    BenchlingEntryTemplate template1 = new BenchlingEntryTemplate();
-    template1.setName("Cell Banking");
-    template1.setId("tmpl_LwR3TYWL");
-    BenchlingEntryTemplate template2 = new BenchlingEntryTemplate();
-    template2.setName("Registration table");
-    template2.setId("tmpl_eSXc9pam");
-
-    return List.of(template1, template2);
   }
 
 }

@@ -7,6 +7,7 @@ import com.decibeltx.studytracker.core.service.ProgramService;
 import com.decibeltx.studytracker.core.service.StatisticsService;
 import com.decibeltx.studytracker.core.service.StudyService;
 import com.decibeltx.studytracker.core.service.UserService;
+import com.decibeltx.studytracker.core.service.EntryTemplateService;
 import java.util.Calendar;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class StatisticsServiceImpl implements StatisticsService {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private EntryTemplateService entryTemplateService;
+
   @Override
   public Statistics getCurrent() {
     Statistics statistics = new Statistics();
@@ -39,6 +43,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     statistics.setUserCount(userService.count());
     statistics.setActivityCount(activityService.count());
     statistics.setActiveUserCount(userService.countActiveUsers());
+    statistics.setEntryTemplateCount(entryTemplateService.count());
     return statistics;
   }
 
@@ -51,6 +56,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     statistics.setUserCount(userService.countBeforeDate(date));
     statistics.setActivityCount(activityService.countBeforeDate(date));
     statistics.setActiveUserCount(userService.countActiveUsers());
+    statistics.setEntryTemplateCount(entryTemplateService.countBeforeDate(date));
     return statistics;
   }
 
@@ -63,6 +69,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     statistics.setUserCount(userService.countFromDate(date));
     statistics.setActivityCount(activityService.countFromDate(date));
     statistics.setActiveUserCount(userService.countActiveUsers());
+    statistics.setEntryTemplateCount(entryTemplateService.countFromDate(date));
     return statistics;
   }
 
@@ -75,6 +82,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     statistics.setUserCount(userService.countBetweenDates(startDate, endDate));
     statistics.setActivityCount(activityService.countBetweenDates(startDate, endDate));
     statistics.setActiveUserCount(userService.countActiveUsers());
+    statistics.setEntryTemplateCount(entryTemplateService.countBetweenDates(startDate, endDate));
     return statistics;
   }
 
