@@ -59,8 +59,8 @@ export const TemplateFormView = (props) => {
     );
   }, [templateFormHeading]);
 
-  const handleCancel = (values) => {
-    console.log('cancel!', values);
+  const handleCancel = () => {
+    history.push('/admin?active=template-types')
   }
 
   return (
@@ -133,34 +133,42 @@ export const TemplateFormView = (props) => {
                       message={'Creating new template...'}
                     />
                     <Form>
-                      <Container>
-                        <Row>
-                          <Col xs="12" md="6">
-                            <Input
-                              type="text"
-                              name="name"
-                              tag={Field}
-                              placeholder="Enter template name..."
-                              invalid={ errors.name && touched.name }
-                            />
-                            <FormFeedback>{errors.name}</FormFeedback>
-                          </Col>
-                          <Col xs="12" md="6">
-                            <Input
-                              type="text"
-                              name="templateId"
-                              tag={Field}
-                              placeholder="Enter template id..."
-                              invalid={ errors.templateId && touched.templateId }
-                            />
-                            <FormFeedback>{errors.templateId}</FormFeedback>
-                          </Col>
-                        </Row>
+                      <Row form>
+                        <Col xs="12" md="6">
+                          <Input
+                            type="text"
+                            name="name"
+                            tag={Field}
+                            placeholder="Enter template name..."
+                            invalid={ errors.name && touched.name }
+                          />
+                          <FormFeedback>{errors.name}</FormFeedback>
+                        </Col>
+                        <Col xs="12" md="6">
+                          <Input
+                            type="text"
+                            name="templateId"
+                            tag={Field}
+                            placeholder="Enter template id..."
+                            invalid={ errors.templateId && touched.templateId }
+                          />
+                          <FormFeedback>{errors.templateId}</FormFeedback>
+                        </Col>
+                      </Row>
     
-                        <hr />
+                      <hr />
     
-                        <Row>
-                          <Col xs="12">
+                      <Row form>
+                        <Col xs="12">
+                          <div className="text-center">
+                            <Button
+                              className="mx-1"
+                              size="lg"
+                              color="secondary"
+                              onClick={handleCancel}
+                            >
+                              Cancel
+                            </Button>
                             <Button
                               className="mx-1"
                               size="lg"
@@ -169,17 +177,9 @@ export const TemplateFormView = (props) => {
                             >
                               Submit
                             </Button>
-                            <Button
-                              className="mx-1"
-                              size="lg"
-                              color="secondary"
-                              onClick={() => handleCancel(values)}
-                            >
-                              Cancel
-                            </Button>
-                          </Col>
-                        </Row>
-                      </Container>
+                          </div>
+                        </Col>
+                      </Row>
                     </Form>
                   </>
                 ) }
