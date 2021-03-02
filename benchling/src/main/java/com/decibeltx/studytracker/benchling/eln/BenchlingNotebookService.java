@@ -32,7 +32,7 @@ import com.decibeltx.studytracker.core.service.NamingService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,12 +79,12 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   }
 
   private NotebookFolder convertFolder(BenchlingFolder benchlingFolder) {
-    return convertFolder(benchlingFolder, null);
+    return convertFolder(benchlingFolder, new ArrayList<>());
   }
 
   private NotebookFolder convertFolder(BenchlingFolder benchlingFolder, List<BenchlingEntry> entries) {
     NotebookFolder notebookFolder = convertBenchlingFolder(benchlingFolder);
-    if (entries != null) {
+    if (!entries.isEmpty()) {
       loadContents(benchlingFolder, notebookFolder, entries);
     }
     return notebookFolder;
@@ -122,40 +122,15 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     return path.toString();
   }
 
-  private List<BenchlingEntry> getStudyOrAssayEntries(BenchlingFolder benchlingFolder, NotebookFolder notebookFolder) {
-    String notebookFolderId = notebookFolder.getReferenceId();
-    List<BenchlingEntry> projectEntries = client.findProjectEntries(benchlingFolder.getProjectId());
-    List<String> notebookFolderChildrenIds = client.findFolderChildren(notebookFolderId).stream().
-            map(BenchlingFolder::getId).collect(Collectors.toList());
-    List<BenchlingEntry> studyOrAssayEntries = new ArrayList<>();
-
-    for(BenchlingEntry entry : projectEntries) {
-        String entryFolderId = entry.getFolderId();
-        if(notebookFolderChildrenIds.contains(entryFolderId) || entryFolderId.equals(notebookFolderId)) {
-            studyOrAssayEntries.add(entry);
-        }
-    }
-
-    return studyOrAssayEntries;
-  }
-
-  private List<BenchlingEntry> getEntries(BenchlingFolder benchlingFolder, Assay assay) {
-    return getStudyOrAssayEntries(benchlingFolder, assay.getNotebookFolder());
-  }
-
-  private List<BenchlingEntry> getEntries(BenchlingFolder benchlingFolder, Study study) {
-    return getStudyOrAssayEntries(benchlingFolder, study.getNotebookFolder());
-  }
-
   private NotebookFolder getContentFullNotebookFolder(BenchlingFolder benchlingFolder, Assay assay) {
-    NotebookFolder notebookFolder = convertFolder(benchlingFolder, getEntries(benchlingFolder, assay));
+    NotebookFolder notebookFolder = convertFolder(benchlingFolder, client.findProjectEntries(benchlingFolder.getProjectId()));
     String path = getNotebookFolderPath(assay);
     notebookFolder.setPath(path);
     return notebookFolder;
   }
 
   private NotebookFolder getContentFullNotebookFolder(BenchlingFolder benchlingFolder, Study study) {
-    NotebookFolder notebookFolder = convertFolder(benchlingFolder, getEntries(benchlingFolder, study));
+    NotebookFolder notebookFolder = convertFolder(benchlingFolder, client.findProjectEntries(benchlingFolder.getProjectId()));
     String path = getNotebookFolderPath(study);
     notebookFolder.setPath(path);
     return notebookFolder;
