@@ -29,9 +29,11 @@ import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.service.NamingService;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,24 +82,20 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     return convertFolder(benchlingFolder, null);
   }
 
-  private NotebookFolder convertFolder(BenchlingFolder benchlingFolder, List<BenchlingEntry> projectEntries) {
+  private NotebookFolder convertFolder(BenchlingFolder benchlingFolder, List<BenchlingEntry> entries) {
     NotebookFolder notebookFolder = convertBenchlingFolder(benchlingFolder);
-    if (projectEntries != null) {
-      loadContents(benchlingFolder, notebookFolder, projectEntries);
+    if (entries != null) {
+      loadContents(benchlingFolder, notebookFolder, entries);
     }
     return notebookFolder;
   }
 
-  private void loadContents(BenchlingFolder benchlingFolder, NotebookFolder notebookFolder, List<BenchlingEntry> projectEntries) {
-    for(Iterator<BenchlingEntry> entryIterator = projectEntries.iterator(); entryIterator.hasNext(); ) {
-      BenchlingEntry entry = entryIterator.next();
-      if (entry.getFolderId().equals(benchlingFolder.getId())) {
-        notebookFolder.getEntries().add(convertBenchlingEntry(entry));
-        entryIterator.remove();
-      }
-    }
+  private void loadContents(BenchlingFolder benchlingFolder, NotebookFolder notebookFolder, List<BenchlingEntry> entries) {
+    entries.stream()
+            .filter(entry -> entry.getFolderId().equals(benchlingFolder.getId()))
+            .forEach(entry -> notebookFolder.getEntries().add(convertBenchlingEntry(entry)));
     List<BenchlingFolder> childrenFolders = client.findFolderChildren(benchlingFolder.getId());
-    childrenFolders.forEach(folder -> notebookFolder.getSubFolders().add(convertFolder(folder, projectEntries)));
+    childrenFolders.forEach(folder -> notebookFolder.getSubFolders().add(convertFolder(folder, entries)));
   }
 
   private String getProjectPath(NotebookFolder folder) {
@@ -124,17 +122,40 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     return path.toString();
   }
 
-  private NotebookFolder getContentFullNotebookFolder(BenchlingFolder benchlingFolder, Assay assay) {
+  private List<BenchlingEntry> getStudyOrAssayEntries(BenchlingFolder benchlingFolder, NotebookFolder notebookFolder) {
+    String notebookFolderId = notebookFolder.getReferenceId();
     List<BenchlingEntry> projectEntries = client.findProjectEntries(benchlingFolder.getProjectId());
-    NotebookFolder notebookFolder = convertFolder(benchlingFolder, projectEntries);
+    List<String> notebookFolderChildrenIds = client.findFolderChildren(notebookFolderId).stream().
+            map(BenchlingFolder::getId).collect(Collectors.toList());
+    List<BenchlingEntry> studyOrAssayEntries = new ArrayList<>();
+
+    for(BenchlingEntry entry : projectEntries) {
+        String entryFolderId = entry.getFolderId();
+        if(notebookFolderChildrenIds.contains(entryFolderId) || entryFolderId.equals(notebookFolderId)) {
+            studyOrAssayEntries.add(entry);
+        }
+    }
+
+    return studyOrAssayEntries;
+  }
+
+  private List<BenchlingEntry> getEntries(BenchlingFolder benchlingFolder, Assay assay) {
+    return getStudyOrAssayEntries(benchlingFolder, assay.getNotebookFolder());
+  }
+
+  private List<BenchlingEntry> getEntries(BenchlingFolder benchlingFolder, Study study) {
+    return getStudyOrAssayEntries(benchlingFolder, study.getNotebookFolder());
+  }
+
+  private NotebookFolder getContentFullNotebookFolder(BenchlingFolder benchlingFolder, Assay assay) {
+    NotebookFolder notebookFolder = convertFolder(benchlingFolder, getEntries(benchlingFolder, assay));
     String path = getNotebookFolderPath(assay);
     notebookFolder.setPath(path);
     return notebookFolder;
   }
 
   private NotebookFolder getContentFullNotebookFolder(BenchlingFolder benchlingFolder, Study study) {
-    List<BenchlingEntry> projectEntries = client.findProjectEntries(benchlingFolder.getProjectId());
-    NotebookFolder notebookFolder = convertFolder(benchlingFolder, projectEntries);
+    NotebookFolder notebookFolder = convertFolder(benchlingFolder, getEntries(benchlingFolder, study));
     String path = getNotebookFolderPath(study);
     notebookFolder.setPath(path);
     return notebookFolder;
