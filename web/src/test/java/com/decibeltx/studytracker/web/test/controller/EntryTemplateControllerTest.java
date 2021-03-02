@@ -57,7 +57,7 @@ public class EntryTemplateControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    EntryTemplateRepository entryTemplateRepository;
+    private EntryTemplateRepository entryTemplateRepository;
 
     @Before
     public void doBefore() {

@@ -20,7 +20,7 @@ public class EntryTemplateServiceImpl implements EntryTemplateService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EntryTemplateServiceImpl.class);
 
     @Autowired
-    EntryTemplateRepository entryTemplateRepository;
+    private EntryTemplateRepository entryTemplateRepository;
 
     @Override
     public Optional<EntryTemplate> findById(String id) {
@@ -54,25 +54,5 @@ public class EntryTemplateServiceImpl implements EntryTemplateService {
         assert entryTemplate.getId() != null;
         entryTemplateRepository.findById(entryTemplate.getId()).orElseThrow(RecordNotFoundException::new);
         entryTemplateRepository.save(entryTemplate);
-    }
-
-    @Override
-    public long count() {
-        return entryTemplateRepository.count();
-    }
-
-    @Override
-    public long countFromDate(Date startDate) {
-        return entryTemplateRepository.countByCreatedAtAfter(startDate);
-    }
-
-    @Override
-    public long countBeforeDate(Date endDate) {
-        return entryTemplateRepository.countByCreatedAtBefore(endDate);
-    }
-
-    @Override
-    public long countBetweenDates(Date startDate, Date endDate) {
-        return entryTemplateRepository.countByCreatedAtBetween(startDate, endDate);
     }
 }
