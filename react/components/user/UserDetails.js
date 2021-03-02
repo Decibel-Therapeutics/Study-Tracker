@@ -172,8 +172,6 @@ class UserDetails extends React.Component {
                       <h6 className="details-label">Title</h6>
                       <p>{targetUser.title || 'n/a'}</p>
 
-                      {/*<AttributeList attributes={targetUser.attributes} />*/}
-
                     </Col>
                   </Row>
                 </CardBody>
