@@ -32,7 +32,7 @@ import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.Task;
 import com.decibeltx.studytracker.core.model.User;
-import com.decibeltx.studytracker.core.model.EntryTemplate;
+import com.decibeltx.studytracker.core.model.NotebookEntryTemplate;
 import com.decibeltx.studytracker.core.model.Assay;
 import com.decibeltx.studytracker.core.model.AssayTypeField.AssayFieldType;
 import com.decibeltx.studytracker.core.model.AssayType;
@@ -127,21 +127,21 @@ public class ExampleDataGenerator {
   @Autowired
   private EntryTemplateRepository entryTemplateRepository;
 
-  public List<EntryTemplate> generateExampleEntryTemplates(List<User> users) {
+  public List<NotebookEntryTemplate> generateExampleEntryTemplates(List<User> users) {
     User user = users.get(0);
-    List<EntryTemplate> templates = new ArrayList<>();
+    List<NotebookEntryTemplate> templates = new ArrayList<>();
     createEntryTemplate(user, templates, "id1", "table1", new Date());
     createEntryTemplate(user, templates, "id2", "table2", new Date());
     return templates;
   }
 
-  private void createEntryTemplate(User user, List<EntryTemplate> templates,
+  private void createEntryTemplate(User user, List<NotebookEntryTemplate> templates,
                                    String templateId, String name, Date timeStamp) {
-    EntryTemplate entryTemplate = EntryTemplate.of(user, templateId, name, timeStamp);
+    NotebookEntryTemplate notebookEntryTemplate = NotebookEntryTemplate.of(user, templateId, name, timeStamp);
     Activity activity = EntryTemplateActivityUtils
-            .fromNewEntryTemplate(entryTemplate, user);
+            .fromNewEntryTemplate(notebookEntryTemplate, user);
     activityRepository.insert(activity);
-    templates.add(entryTemplate);
+    templates.add(notebookEntryTemplate);
   }
 
   public List<Program> generateExamplePrograms(List<User> users) {

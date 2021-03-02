@@ -1,7 +1,7 @@
 package com.decibeltx.studytracker.core.service.impl;
 
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
-import com.decibeltx.studytracker.core.model.EntryTemplate;
+import com.decibeltx.studytracker.core.model.NotebookEntryTemplate;
 import com.decibeltx.studytracker.core.repository.EntryTemplateRepository;
 import com.decibeltx.studytracker.core.service.EntryTemplateService;
 import org.slf4j.Logger;
@@ -23,36 +23,36 @@ public class EntryTemplateServiceImpl implements EntryTemplateService {
     private EntryTemplateRepository entryTemplateRepository;
 
     @Override
-    public Optional<EntryTemplate> findById(String id) {
+    public Optional<NotebookEntryTemplate> findById(String id) {
         return entryTemplateRepository.findById(id);
     }
 
     @Override
-    public List<EntryTemplate> findAll() {
+    public List<NotebookEntryTemplate> findAll() {
         return entryTemplateRepository.findAll();
     }
 
     @Override
-    public List<EntryTemplate> findAllActive() {
-        return findAll().stream().filter(EntryTemplate::isActive).collect(Collectors.toList());
+    public List<NotebookEntryTemplate> findAllActive() {
+        return findAll().stream().filter(NotebookEntryTemplate::isActive).collect(Collectors.toList());
     }
 
     @Override
-    public void create(EntryTemplate entryTemplate) {
-        LOGGER.info("Creating new entry template with name: " + entryTemplate.getName());
+    public void create(NotebookEntryTemplate notebookEntryTemplate) {
+        LOGGER.info("Creating new entry template with name: " + notebookEntryTemplate.getName());
 
         Date now = new Date();
-        entryTemplate.setCreatedAt(now);
-        entryTemplate.setUpdatedAt(now);
-        entryTemplateRepository.insert(entryTemplate);
+        notebookEntryTemplate.setCreatedAt(now);
+        notebookEntryTemplate.setUpdatedAt(now);
+        entryTemplateRepository.insert(notebookEntryTemplate);
     }
 
     @Override
-    public void update(EntryTemplate entryTemplate) {
-        LOGGER.info("Updating entry template with name: " + entryTemplate.getName());
+    public void update(NotebookEntryTemplate notebookEntryTemplate) {
+        LOGGER.info("Updating entry template with name: " + notebookEntryTemplate.getName());
 
-        assert entryTemplate.getId() != null;
-        entryTemplateRepository.findById(entryTemplate.getId()).orElseThrow(RecordNotFoundException::new);
-        entryTemplateRepository.save(entryTemplate);
+        assert notebookEntryTemplate.getId() != null;
+        entryTemplateRepository.findById(notebookEntryTemplate.getId()).orElseThrow(RecordNotFoundException::new);
+        entryTemplateRepository.save(notebookEntryTemplate);
     }
 }

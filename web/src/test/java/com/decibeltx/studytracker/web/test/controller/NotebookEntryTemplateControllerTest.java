@@ -3,7 +3,7 @@ package com.decibeltx.studytracker.web.test.controller;
 import com.decibeltx.studytracker.core.example.ExampleDataGenerator;
 
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
-import com.decibeltx.studytracker.core.model.EntryTemplate;
+import com.decibeltx.studytracker.core.model.NotebookEntryTemplate;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.core.repository.EntryTemplateRepository;
 import com.decibeltx.studytracker.core.repository.UserRepository;
@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @ActiveProfiles({"test", "example"})
-public class EntryTemplateControllerTest {
+public class NotebookEntryTemplateControllerTest {
 
     private static final int ENTRY_TEMPLATE_COUNT = 2;
 
@@ -78,11 +78,11 @@ public class EntryTemplateControllerTest {
     public void createEntryTemplateTest() throws Exception {
         User user = userRepository.findByUsername("jsmith")
                 .orElseThrow(RecordNotFoundException::new);
-        EntryTemplate entryTemplate = EntryTemplate.of(user, "id3", "table3", new Date());
+        NotebookEntryTemplate notebookEntryTemplate = NotebookEntryTemplate.of(user, "id3", "table3", new Date());
         mockMvc.perform(post("/api/entryTemplate")
                 .with(user(user.getUsername()))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(entryTemplate)))
+                .content(objectMapper.writeValueAsBytes(notebookEntryTemplate)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$", hasKey("id")))
                 .andExpect(jsonPath("$.id", notNullValue()))
@@ -96,8 +96,8 @@ public class EntryTemplateControllerTest {
     public void updateEntryTemplateStatusTest() throws Exception {
         User user = userRepository.findByUsername("jsmith")
                 .orElseThrow(RecordNotFoundException::new);
-        List<EntryTemplate> templates = entryTemplateRepository.findAll();
-        EntryTemplate testTemplate = templates.get(0);
+        List<NotebookEntryTemplate> templates = entryTemplateRepository.findAll();
+        NotebookEntryTemplate testTemplate = templates.get(0);
         boolean previousStatus = testTemplate.isActive();
         mockMvc.perform(post("/api/entryTemplate/" + testTemplate.getId() + "/status/?active=" + !previousStatus)
                 .with(user(user.getUsername()))
@@ -119,8 +119,8 @@ public class EntryTemplateControllerTest {
     public void updateEntryTemplateTest() throws Exception {
         User user = userRepository.findByUsername("jsmith")
                 .orElseThrow(RecordNotFoundException::new);
-        List<EntryTemplate> templates = entryTemplateRepository.findAll();
-        EntryTemplate testTemplate = templates.get(0);
+        List<NotebookEntryTemplate> templates = entryTemplateRepository.findAll();
+        NotebookEntryTemplate testTemplate = templates.get(0);
         testTemplate.setName("updated name");
         testTemplate.setTemplateId("updated id");
         mockMvc.perform(put("/api/entryTemplate")
@@ -140,8 +140,8 @@ public class EntryTemplateControllerTest {
     public void updateNonExistentEntryTemplateTest() throws Exception {
         User user = userRepository.findByUsername("jsmith")
                 .orElseThrow(RecordNotFoundException::new);
-        List<EntryTemplate> templates = entryTemplateRepository.findAll();
-        EntryTemplate testTemplate = templates.get(0);
+        List<NotebookEntryTemplate> templates = entryTemplateRepository.findAll();
+        NotebookEntryTemplate testTemplate = templates.get(0);
         testTemplate.setId("badId");
         mockMvc.perform(put("/api/entryTemplate")
                 .with(user(user.getUsername()))
@@ -154,8 +154,8 @@ public class EntryTemplateControllerTest {
     public void getActiveTemplatesTest() throws Exception {
         User user = userRepository.findByUsername("jsmith")
                 .orElseThrow(RecordNotFoundException::new);
-        List<EntryTemplate> templates = entryTemplateRepository.findAll();
-        EntryTemplate testTemplate = templates.get(0);
+        List<NotebookEntryTemplate> templates = entryTemplateRepository.findAll();
+        NotebookEntryTemplate testTemplate = templates.get(0);
         mockMvc.perform(post("/api/entryTemplate/" + testTemplate.getId() + "/status/?active=" + false)
                 .with(user(user.getUsername()))
                 .contentType(MediaType.APPLICATION_JSON))

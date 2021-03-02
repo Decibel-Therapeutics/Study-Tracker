@@ -17,6 +17,7 @@
 package com.decibeltx.studytracker.web.controller.api;
 
 import com.decibeltx.studytracker.core.eln.StudyNotebookService;
+import com.decibeltx.studytracker.core.exception.NotebookException;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.exception.StudyTrackerException;
 import com.decibeltx.studytracker.core.model.Assay;
@@ -68,7 +69,7 @@ public class StudyAssayController extends AbstractAssayController {
   @PostMapping("")
   public HttpEntity<Assay> create(@PathVariable("studyId") String studyId,
       @RequestBody Assay assay)
-  throws RecordNotFoundException {
+          throws RecordNotFoundException, NotebookException {
     LOGGER.info("Creating assay");
     LOGGER.info(assay.toString());
     Study study = this.getStudyFromIdentifier(studyId);
@@ -82,7 +83,7 @@ public class StudyAssayController extends AbstractAssayController {
       if (studyNotebookService == null) {
         throw new RecordNotFoundException("Could not create new entry");
       }
-      studyNotebookService.makeRequestToCreateNotebook(created, assay.getEntryTemplateId());
+      studyNotebookService.createAssayNotebookEntry(created, assay.getEntryTemplateId());
     }
 
     return new ResponseEntity<>(created, HttpStatus.CREATED);
