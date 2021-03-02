@@ -142,11 +142,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
     if (program.getNotebookFolder() != null) {
       Optional<BenchlingFolder> optional = client.findFolderById(program.getNotebookFolder().getReferenceId());
-      if (optional.isPresent()) {
-        return Optional.of(this.convertFolder(optional.get()));
-      } else {
-        return Optional.empty();
-      }
+      return optional.map(this::convertFolder);
     } else {
       LOGGER.warn(
           String.format("Program %s does not have a notebook folder set.", program.getName()));
@@ -168,15 +164,13 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     if (study.getNotebookFolder() != null) {
       NotebookFolder studyFolder = study.getNotebookFolder();
       Optional<BenchlingFolder> optional = client.findFolderById(studyFolder.getReferenceId());
-      if (optional.isPresent()) {
-        if (includeContents) {
-          return Optional.of(getContentFullNotebookFolder(optional.get(), study));
-        } else {
-          return Optional.of(this.convertFolder(optional.get()));
-        }
-      } else {
-        return Optional.empty();
-      }
+      return optional.flatMap(folder -> {
+          if (includeContents) {
+              return Optional.of(getContentFullNotebookFolder(folder, study));
+          } else {
+              return Optional.of(this.convertFolder(folder));
+          }
+      });
     } else {
       LOGGER.warn(String.format("Study %s does not have a notebook folder set.", study.getName()));
       return Optional.empty();
@@ -192,11 +186,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     if (assay.getNotebookFolder() != null) {
       NotebookFolder assayFolder = assay.getNotebookFolder();
       Optional<BenchlingFolder> optional = client.findFolderById(assayFolder.getReferenceId());
-      if (optional.isPresent()) {
-        return Optional.of(getContentFullNotebookFolder(optional.get(), assay));
-      } else {
-        return Optional.empty();
-      }
+      return optional.flatMap(folder -> Optional.of(getContentFullNotebookFolder(folder, assay)));
     } else {
       LOGGER.warn(String.format("Assay %s does not have a notebook folder set.", assay.getName()));
       return Optional.empty();
@@ -226,7 +216,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   }
 
   @Override
-  public NotebookFolder createStudyFolder(Study study) throws NotebookException {
+  public NotebookFolder createStudyFolder(Study study) {
     LOGGER.info("Creating Benchling folder for study: " + study.getCode());
 
     Optional<NotebookFolder> programFolderOptional = this.findProgramFolder(study.getProgram());
@@ -247,7 +237,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
 
   @Override
-  public NotebookFolder createAssayFolder(Assay assay) throws NotebookException {
+  public NotebookFolder createAssayFolder(Assay assay) {
     LOGGER.info("Creating Benchling folder for assay: " + assay.getCode());
 
     Optional<NotebookFolder> studyFolderOptional = this.findStudyFolder(assay.getStudy(), false);
