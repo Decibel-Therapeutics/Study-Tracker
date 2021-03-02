@@ -29,7 +29,6 @@ import com.decibeltx.studytracker.core.model.Program;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.service.NamingService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,12 +78,12 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   }
 
   private NotebookFolder convertFolder(BenchlingFolder benchlingFolder) {
-    return convertFolder(benchlingFolder, new ArrayList<>());
+    return convertFolder(benchlingFolder, null);
   }
 
   private NotebookFolder convertFolder(BenchlingFolder benchlingFolder, List<BenchlingEntry> entries) {
     NotebookFolder notebookFolder = convertBenchlingFolder(benchlingFolder);
-    if (!entries.isEmpty()) {
+    if (entries != null) {
       loadContents(benchlingFolder, notebookFolder, entries);
     }
     return notebookFolder;
