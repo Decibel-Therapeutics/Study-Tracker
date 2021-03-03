@@ -130,11 +130,11 @@ export const TemplateTypesList = ({ templateTypes, templateTableColumns }) => {
     <Card>
       <CardHeader>
         <CardTitle>
-          Template Types
+          ELN Entry Templates
           <span className="float-right">
             <Link to="/template-types/new">
               <Button color="primary">
-                New Template Type
+                New Template
                 &nbsp;
                 <PlusCircle className="feather align-middle ml-2 mb-1"/>
               </Button>

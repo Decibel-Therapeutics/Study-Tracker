@@ -100,7 +100,7 @@ export const AdminDashboard = () => {
                 active={activeTab === 'template-types'}
                 onClick={() => onSetActiveTab('template-types')}
               >
-                Template Types
+                ELN Entry Templates
               </ListGroupItem>
             </ListGroup>
           </Card>
