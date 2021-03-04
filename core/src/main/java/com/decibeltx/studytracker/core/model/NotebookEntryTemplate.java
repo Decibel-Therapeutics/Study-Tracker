@@ -10,9 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-@Document(collection = "templates")
+@Document(collection = "notebook_entry_templates")
 @Data
-public class EntryTemplate implements Persistable<String> {
+public class NotebookEntryTemplate implements Persistable<String> {
 
     @Id
     private String id;
@@ -26,13 +26,13 @@ public class EntryTemplate implements Persistable<String> {
     private String templateId;
 
     @CreatedBy
-    @Linked(model = EntryTemplate.class)
+    @Linked(model = NotebookEntryTemplate.class)
     @NotNull
     @DBRef
     private User createdBy;
 
     @LastModifiedBy
-    @Linked(model = EntryTemplate.class)
+    @Linked(model = NotebookEntryTemplate.class)
     @NotNull
     @DBRef
     private User lastModifiedBy;
@@ -45,16 +45,16 @@ public class EntryTemplate implements Persistable<String> {
 
     private boolean active = true;
 
-    public static EntryTemplate of(User user, String templateId,
-                                   String name, Date timeStamp) {
-        EntryTemplate entryTemplate = new EntryTemplate();
-        entryTemplate.setTemplateId(templateId);
-        entryTemplate.setName(name);
-        entryTemplate.setCreatedBy(user);
-        entryTemplate.setLastModifiedBy(user);
-        entryTemplate.setCreatedAt(timeStamp);
-        entryTemplate.setUpdatedAt(timeStamp);
-        return entryTemplate;
+    public static NotebookEntryTemplate of(User user, String templateId,
+                                           String name, Date timeStamp) {
+        NotebookEntryTemplate notebookEntryTemplate = new NotebookEntryTemplate();
+        notebookEntryTemplate.setTemplateId(templateId);
+        notebookEntryTemplate.setName(name);
+        notebookEntryTemplate.setCreatedBy(user);
+        notebookEntryTemplate.setLastModifiedBy(user);
+        notebookEntryTemplate.setCreatedAt(timeStamp);
+        notebookEntryTemplate.setUpdatedAt(timeStamp);
+        return notebookEntryTemplate;
     }
 
     @Override

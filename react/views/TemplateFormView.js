@@ -41,8 +41,8 @@ export const TemplateFormView = (props) => {
 
   const templateFormHeading = useMemo(() => {
     return templateTypeId
-      ? 'Edit TemplateType'
-      : 'Create Template Type';
+      ? 'Edit Template'
+      : 'Create Template';
   }, [templateTypeId]);
 
   const templateFormBreadcrumbs = useMemo(() => {

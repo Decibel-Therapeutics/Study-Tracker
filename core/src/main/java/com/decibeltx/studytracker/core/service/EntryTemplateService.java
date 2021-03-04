@@ -1,31 +1,19 @@
 package com.decibeltx.studytracker.core.service;
 
-import com.decibeltx.studytracker.core.model.EntryTemplate;
+import com.decibeltx.studytracker.core.model.NotebookEntryTemplate;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public interface EntryTemplateService {
 
-    Optional<EntryTemplate> findById(String id);
+    Optional<NotebookEntryTemplate> findById(String id);
 
-    List<EntryTemplate> findAll();
+    List<NotebookEntryTemplate> findAll();
 
-    List<EntryTemplate> findAllActive();
+    List<NotebookEntryTemplate> findAllActive();
 
-    void create(EntryTemplate entryTemplate);
+    void create(NotebookEntryTemplate notebookEntryTemplate);
 
-    void update(EntryTemplate entryTemplate);
-
-    /**
-     * Counting number of templates created before/after/between given dates.
-     */
-    long count();
-
-    long countFromDate(Date startDate);
-
-    long countBeforeDate(Date endDate);
-
-    long countBetweenDates(Date startDate, Date endDate);
+    void update(NotebookEntryTemplate notebookEntryTemplate);
 }
