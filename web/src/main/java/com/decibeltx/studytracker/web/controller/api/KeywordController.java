@@ -19,9 +19,6 @@ package com.decibeltx.studytracker.web.controller.api;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.model.Keyword;
 import com.decibeltx.studytracker.core.service.KeywordService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,13 +48,6 @@ public class KeywordController {
   private KeywordService keywordService;
 
   @GetMapping("")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok")
-  })
   public List<Keyword> findAll(@RequestParam(required = false) String category,
       @RequestParam(required = false, value = "q") String query) {
     if (query != null && category != null) {
@@ -73,13 +62,6 @@ public class KeywordController {
   }
 
   @GetMapping("/{id}")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok")
-  })
   public Keyword findById(@PathVariable("id") String assayId) throws RecordNotFoundException {
     Optional<Keyword> optional = keywordService.findById(assayId);
     if (optional.isPresent()) {
@@ -90,28 +72,11 @@ public class KeywordController {
   }
 
   @GetMapping("/categories")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok")
-  })
   public Set<String> findKeywordCategories() {
     return keywordService.findAllCategories();
   }
 
   @PostMapping("")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 201, message = "Created"),
-      @ApiResponse(code = 400, message = "Bad request"),
-      @ApiResponse(code = 401, message = "Unauthorized")
-  })
   public HttpEntity<Keyword> create(@RequestBody Keyword keyword) {
     LOGGER.info("Creating keyword");
     LOGGER.info(keyword.toString());
@@ -120,34 +85,14 @@ public class KeywordController {
   }
 
   @PutMapping("/{id}")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 201, message = "Created"),
-      @ApiResponse(code = 400, message = "Bad request"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public HttpEntity<Keyword> update(@PathVariable("id") String id, @RequestBody Keyword keyword) {
     LOGGER.info("Updating assay type");
     LOGGER.info(keyword.toString());
     keywordService.update(keyword);
-    return new ResponseEntity<>(keyword, HttpStatus.CREATED);
+    return new ResponseEntity<>(keyword, HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public HttpEntity<?> delete(@PathVariable("id") String id) {
     LOGGER.info("Deleting assay type: " + id);
     Keyword keyword = keywordService.findById(id).orElseThrow(RecordNotFoundException::new);

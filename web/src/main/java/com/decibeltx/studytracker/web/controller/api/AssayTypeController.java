@@ -19,15 +19,14 @@ package com.decibeltx.studytracker.web.controller.api;
 import com.decibeltx.studytracker.core.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.core.model.AssayType;
 import com.decibeltx.studytracker.core.service.AssayTypeService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,26 +46,11 @@ public class AssayTypeController {
   private AssayTypeService assayTypeService;
 
   @GetMapping("")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok")
-  })
   public List<AssayType> findAll() {
     return assayTypeService.findAll();
   }
 
   @GetMapping("/{id}")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public AssayType findById(@PathVariable("id") String assayId) throws RecordNotFoundException {
     Optional<AssayType> optional = assayTypeService.findById(assayId);
     if (optional.isPresent()) {
@@ -77,53 +61,24 @@ public class AssayTypeController {
   }
 
   @PostMapping("")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 201, message = "Created"),
-      @ApiResponse(code = 400, message = "Bad request"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
-  public AssayType create(@RequestBody AssayType assayType) {
+  public HttpEntity<AssayType> create(@RequestBody AssayType assayType) {
     LOGGER.info("Creating assay type");
     LOGGER.info(assayType.toString());
     assayType.setActive(true);
     assayTypeService.create(assayType);
-    return assayType;
+    return new ResponseEntity<>(assayType, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok"),
-      @ApiResponse(code = 400, message = "Bad request"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
-  public void update(@PathVariable("id") String id, @RequestBody AssayType assayType) {
+  public HttpEntity<AssayType> update(@PathVariable("id") String id,
+      @RequestBody AssayType assayType) {
     LOGGER.info("Updating assay type");
     LOGGER.info(assayType.toString());
     assayTypeService.update(assayType);
+    return new ResponseEntity<>(assayType, HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public void delete(@PathVariable("id") String id) {
     LOGGER.info("Deleting assay type: " + id);
     AssayType assayType = assayTypeService.findById(id).orElseThrow(RecordNotFoundException::new);

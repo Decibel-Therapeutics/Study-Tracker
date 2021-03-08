@@ -27,16 +27,12 @@ import com.decibeltx.studytracker.core.storage.StorageFolder;
 import com.decibeltx.studytracker.core.storage.StudyStorageService;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
 import com.decibeltx.studytracker.web.service.FileStorageService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,14 +56,6 @@ public class StudyStorageController extends AbstractStudyController {
   private StudyStorageService studyStorageService;
 
   @GetMapping("")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public StorageFolder getStudyStorageFolder(@PathVariable("studyId") String studyId)
       throws Exception {
     LOGGER.info("Fetching storage folder for study: " + studyId);
@@ -76,18 +64,7 @@ public class StudyStorageController extends AbstractStudyController {
   }
 
   @PostMapping("")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 201, message = "Created"),
-      @ApiResponse(code = 400, message = "Bad request"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
-  public HttpEntity<?> uploadStudyFile(@PathVariable("studyId") String studyId,
+  public HttpEntity<StorageFile> uploadStudyFile(@PathVariable("studyId") String studyId,
       @RequestParam("file") MultipartFile file) throws Exception {
     LOGGER.info("Uploaded file: " + file.getOriginalFilename());
     String username = UserAuthenticationUtils

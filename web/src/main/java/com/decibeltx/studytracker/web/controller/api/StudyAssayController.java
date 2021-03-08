@@ -25,9 +25,6 @@ import com.decibeltx.studytracker.core.model.Status;
 import com.decibeltx.studytracker.core.model.Study;
 import com.decibeltx.studytracker.core.model.User;
 import com.decibeltx.studytracker.web.controller.UserAuthenticationUtils;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,14 +55,6 @@ public class StudyAssayController extends AbstractAssayController {
   private StudyNotebookService studyNotebookService;
 
   @GetMapping("")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public List<Assay> findStudyAssays(@PathVariable("studyId") String studyId) {
     return getStudyFromIdentifier(studyId).getAssays().stream()
         .filter(Assay::isActive)
@@ -74,30 +62,11 @@ public class StudyAssayController extends AbstractAssayController {
   }
 
   @GetMapping("/{assayId}")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public Assay findById(@PathVariable("assayId") String assayId) throws RecordNotFoundException {
     return getAssayFromIdentifier(assayId);
   }
 
   @PostMapping("")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 201, message = "Created"),
-      @ApiResponse(code = 400, message = "Bad request"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public HttpEntity<Assay> create(@PathVariable("studyId") String studyId,
       @RequestBody Assay assay)
           throws RecordNotFoundException, NotebookException {
@@ -121,17 +90,6 @@ public class StudyAssayController extends AbstractAssayController {
   }
 
   @PutMapping("/{assayId}")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 201, message = "Created"),
-      @ApiResponse(code = 400, message = "Bad request"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public HttpEntity<Assay> update(@PathVariable("assayId") String assayId,
       @RequestBody Assay assay) {
     LOGGER.info("Updating assay");
@@ -141,19 +99,10 @@ public class StudyAssayController extends AbstractAssayController {
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
     this.updateAssay(assay, user);
-    return new ResponseEntity<>(assay, HttpStatus.CREATED);
+    return new ResponseEntity<>(assay, HttpStatus.OK);
   }
 
   @DeleteMapping("/{assayId}")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Ok"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public HttpEntity<?> delete(@PathVariable("assayId") String id) {
     LOGGER.info("Deleting assay: " + id);
     String username = UserAuthenticationUtils
@@ -165,17 +114,6 @@ public class StudyAssayController extends AbstractAssayController {
   }
 
   @PostMapping("/{id}/status")
-  @ApiOperation(
-      value = "",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      consumes = MediaType.APPLICATION_JSON_VALUE
-  )
-  @ApiResponses({
-      @ApiResponse(code = 201, message = "Created"),
-      @ApiResponse(code = 400, message = "Bad request"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not found")
-  })
   public HttpEntity<?> updateStatus(@PathVariable("id") String id,
       @RequestBody Map<String, Object> params) throws StudyTrackerException {
 
