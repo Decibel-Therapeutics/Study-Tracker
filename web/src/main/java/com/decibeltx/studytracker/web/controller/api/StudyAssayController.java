@@ -83,7 +83,8 @@ public class StudyAssayController extends AbstractAssayController {
       if (studyNotebookService == null) {
         throw new RecordNotFoundException("Could not create new entry");
       }
-      studyNotebookService.createAssayNotebookEntry(created, assay.getEntryTemplateId());
+      studyNotebookService.createAssayNotebookEntry(created, assay.getEntryTemplateId(),
+              user.getAttributes().get("benchlingUserId"));
     }
 
     return new ResponseEntity<>(created, HttpStatus.CREATED);
