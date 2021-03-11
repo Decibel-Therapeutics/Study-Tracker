@@ -15,11 +15,12 @@ import {
   ModalHeader,
   Row
 } from 'reactstrap';
-import {Tag} from 'react-feather';
+import {Edit, Tag} from 'react-feather';
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Select from 'react-select';
+import swal from "sweetalert";
 
 const emptyKeyword = {
   id: null,
@@ -37,12 +38,14 @@ export default class KeywordSettings extends React.Component {
       categories: [],
       isLoaded: false,
       isError: false,
-      selectedKeyword: emptyKeyword
+      selectedKeyword: emptyKeyword,
+      categoryInput: "select"
     };
     this.toggleModal = this.toggleModal.bind(this);
     this.handleCategorySelect = this.handleCategorySelect.bind(this);
     this.handleInputUpdate = this.handleInputUpdate.bind(this);
     this.handleKeywordSubmit = this.handleKeywordSubmit.bind(this);
+    this.toggleCategoryInput = this.toggleCategoryInput.bind(this);
   }
 
   toggleModal(keyword) {
@@ -50,6 +53,15 @@ export default class KeywordSettings extends React.Component {
       selectedKeyword: keyword || emptyKeyword,
       showModal: !this.state.showModal
     })
+  }
+
+  toggleCategoryInput(e) {
+    console.log(e.target.value);
+    if (e.target.checked) {
+      this.setState({
+        categoryInput: e.target.value
+      })
+    }
   }
 
   componentDidMount() {
@@ -92,7 +104,33 @@ export default class KeywordSettings extends React.Component {
   }
 
   handleKeywordSubmit() {
-    console.log(this.state.selectedKeyword);
+
+    let keyword = this.state.selectedKeyword;
+    const url = "/api/keyword/" + (keyword.id || "");
+    const method = !!keyword.id ? "PUT" : "POST";
+    console.log(keyword);
+    console.log(url);
+
+    fetch(url, {
+      method: method,
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(keyword)
+    })
+    .then(response => response.json())
+    .then(json => {
+      swal("Keyword added",
+          "Refresh the keywords table to view any new records.", "success")
+      .then(() => {
+        this.toggleModal();
+      })
+    })
+    .catch(e => {
+      console.error(e);
+      swal("Request failed",
+          "Failed to save the keyword record. Try again or check to make sure this keyword has not already been registered.",
+          "warning");
+    });
+
   }
 
   render() {
@@ -120,7 +158,10 @@ export default class KeywordSettings extends React.Component {
         formatter: (c, d, i, x) => {
           return (
               <React.Fragment>
-                n/a
+                <a className="text-warning" title={"Edit keyword"}
+                   onClick={() => this.toggleModal(d)}>
+                  <Edit className="align-middle mr-1" size={18}/>
+                </a>
               </React.Fragment>
           )
         }
@@ -234,20 +275,61 @@ export default class KeywordSettings extends React.Component {
               <ModalBody>
                 <Row>
 
-                  <Col xs={12} sm={6}>
-                    <FormGroup>
+                  <Col xs={12} sm={4}>
+                    <FormGroup check className="mb-2">
+                      <Label check>
+                        <Input
+                            type={"radio"}
+                            name={"category-radio"}
+                            value={"select"}
+                            checked={this.state.categoryInput === "select"}
+                            onChange={this.toggleCategoryInput}
+                        />
+                        {" "}Use existing category
+                      </Label>
+                    </FormGroup>
+                    <FormGroup check className="mb-2">
+                      <Label check>
+                        <Input
+                            type={"radio"}
+                            name={"category-radio"}
+                            value={"input"}
+                            checked={this.state.categoryInput === "input"}
+                            onChange={this.toggleCategoryInput}
+                        />
+                        {" "}Create new category
+                      </Label>
+                    </FormGroup>
+                  </Col>
+
+                  <Col xs={12} sm={4}>
+                    <FormGroup style={{
+                      display: this.state.categoryInput === "select" ? "block"
+                          : "none"
+                    }}>
                       <Label>Category</Label>
                       <Select
                           className="react-select-container"
                           classNamePrefix="react-select"
                           options={categoryOptions}
+                          defaultValue={this.state.selectedKeyword.category}
                           onChange={(selected) => this.handleInputUpdate(
                               {category: selected.value})}
                       />
                     </FormGroup>
+                    <FormGroup style={{
+                      display: this.state.categoryInput === "input" ? "block"
+                          : "none"
+                    }}>
+                      <Label>Category</Label>
+                      <Input
+                          onChange={(e) => this.handleInputUpdate(
+                              {category: e.target.value})}
+                      />
+                    </FormGroup>
                   </Col>
 
-                  <Col xs={12} sm={6}>
+                  <Col xs={12} sm={4}>
                     <FormGroup>
                       <Label>Keyword</Label>
                       <Input
@@ -264,7 +346,12 @@ export default class KeywordSettings extends React.Component {
                 <Button color="secondary" onClick={() => this.toggleModal()}>
                   Cancel
                 </Button>
-                <Button color="primary" onClick={this.handleKeywordSubmit}>
+                <Button
+                    color="primary"
+                    onClick={this.handleKeywordSubmit}
+                    disabled={!(!!this.state.selectedKeyword.keyword
+                        && !!this.state.selectedKeyword.category)}
+                >
                   Submit
                 </Button>
               </ModalFooter>
