@@ -51,7 +51,8 @@ export default class KeywordSettings extends React.Component {
   toggleModal(keyword) {
     this.setState({
       selectedKeyword: keyword || emptyKeyword,
-      showModal: !this.state.showModal
+      showModal: !this.state.showModal,
+      categoryInput: "select"
     })
   }
 
@@ -118,8 +119,9 @@ export default class KeywordSettings extends React.Component {
     })
     .then(response => response.json())
     .then(json => {
-      swal("Keyword added",
-          "Refresh the keywords table to view any new records.", "success")
+      swal("Keyword saved",
+          "Refresh the keywords table to view updated records. You must refresh the page before new categories will show up.",
+          "success")
       .then(() => {
         this.toggleModal();
       })
@@ -273,74 +275,17 @@ export default class KeywordSettings extends React.Component {
                 }
               </ModalHeader>
               <ModalBody>
-                <Row>
-
-                  <Col xs={12} sm={4}>
-                    <FormGroup check className="mb-2">
-                      <Label check>
-                        <Input
-                            type={"radio"}
-                            name={"category-radio"}
-                            value={"select"}
-                            checked={this.state.categoryInput === "select"}
-                            onChange={this.toggleCategoryInput}
-                        />
-                        {" "}Use existing category
-                      </Label>
-                    </FormGroup>
-                    <FormGroup check className="mb-2">
-                      <Label check>
-                        <Input
-                            type={"radio"}
-                            name={"category-radio"}
-                            value={"input"}
-                            checked={this.state.categoryInput === "input"}
-                            onChange={this.toggleCategoryInput}
-                        />
-                        {" "}Create new category
-                      </Label>
-                    </FormGroup>
-                  </Col>
-
-                  <Col xs={12} sm={4}>
-                    <FormGroup style={{
-                      display: this.state.categoryInput === "select" ? "block"
-                          : "none"
-                    }}>
-                      <Label>Category</Label>
-                      <Select
-                          className="react-select-container"
-                          classNamePrefix="react-select"
-                          options={categoryOptions}
-                          defaultValue={this.state.selectedKeyword.category}
-                          onChange={(selected) => this.handleInputUpdate(
-                              {category: selected.value})}
+                {
+                  !!this.state.showModal
+                      ? <ModalInputs
+                          categories={categoryOptions}
+                          keyword={this.state.selectedKeyword}
+                          handleUpdate={this.handleInputUpdate}
+                          categoryInput={this.state.categoryInput}
+                          toggleCategoryInput={this.toggleCategoryInput}
                       />
-                    </FormGroup>
-                    <FormGroup style={{
-                      display: this.state.categoryInput === "input" ? "block"
-                          : "none"
-                    }}>
-                      <Label>Category</Label>
-                      <Input
-                          onChange={(e) => this.handleInputUpdate(
-                              {category: e.target.value})}
-                      />
-                    </FormGroup>
-                  </Col>
-
-                  <Col xs={12} sm={4}>
-                    <FormGroup>
-                      <Label>Keyword</Label>
-                      <Input
-                          defaultValue={this.state.selectedKeyword.keyword}
-                          onChange={(e) => this.handleInputUpdate(
-                              {keyword: e.target.value})}
-                      />
-                    </FormGroup>
-                  </Col>
-
-                </Row>
+                      : ""
+                }
               </ModalBody>
               <ModalFooter>
                 <Button color="secondary" onClick={() => this.toggleModal()}>
@@ -363,3 +308,81 @@ export default class KeywordSettings extends React.Component {
   }
 
 }
+
+const ModalInputs = ({
+  keyword,
+  handleUpdate,
+  categories,
+  categoryInput,
+  toggleCategoryInput
+}) => {
+  return (
+      <Row>
+
+        <Col xs={12} sm={4}>
+          <FormGroup check className="mb-2">
+            <Label check>
+              <Input
+                  type={"radio"}
+                  name={"category-radio"}
+                  value={"select"}
+                  checked={categoryInput === "select"}
+                  onChange={toggleCategoryInput}
+              />
+              {" "}Use existing category
+            </Label>
+          </FormGroup>
+          <FormGroup check className="mb-2">
+            <Label check>
+              <Input
+                  type={"radio"}
+                  name={"category-radio"}
+                  value={"input"}
+                  checked={categoryInput === "input"}
+                  onChange={toggleCategoryInput}
+              />
+              {" "}Create new category
+            </Label>
+          </FormGroup>
+        </Col>
+
+        <Col xs={12} sm={4}>
+          <FormGroup style={{
+            display: categoryInput === "select" ? "block" : "none"
+          }}>
+            <Label>Category</Label>
+            <Select
+                className="react-select-container"
+                classNamePrefix="react-select"
+                options={categories}
+                defaultValue={{
+                  label: keyword.category,
+                  value: keyword.category
+                }}
+                onChange={(selected) => handleUpdate(
+                    {category: selected.value})}
+            />
+          </FormGroup>
+          <FormGroup style={{
+            display: categoryInput === "input" ? "block" : "none"
+          }}>
+            <Label>Category</Label>
+            <Input
+                onChange={(e) => handleUpdate({category: e.target.value})}
+            />
+          </FormGroup>
+        </Col>
+
+        <Col xs={12} sm={4}>
+          <FormGroup>
+            <Label>Keyword</Label>
+            <Input
+                defaultValue={keyword.keyword}
+                onChange={(e) => handleUpdate({keyword: e.target.value})}
+            />
+          </FormGroup>
+        </Col>
+
+      </Row>
+  )
+};
