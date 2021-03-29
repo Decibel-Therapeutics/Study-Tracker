@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
+package com.decibeltx.studytracker.exception;
+
+public class StudyTrackerException extends RuntimeException {
+
+  public StudyTrackerException() {
   }
-};
+
+  public StudyTrackerException(String message) {
+    super(message);
+  }
+
+  public StudyTrackerException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public StudyTrackerException(Throwable cause) {
+    super(cause);
+  }
+
+  public StudyTrackerException(String message, Throwable cause, boolean enableSuppression,
+      boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
+  }
+
+}

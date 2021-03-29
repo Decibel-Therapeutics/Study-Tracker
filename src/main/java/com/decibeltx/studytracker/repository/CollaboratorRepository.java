@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
-  }
-};
+package com.decibeltx.studytracker.repository;
+
+import com.decibeltx.studytracker.model.Collaborator;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface CollaboratorRepository extends MongoRepository<Collaborator, String> {
+
+  Optional<Collaborator> findByLabel(String label);
+
+  List<Collaborator> findByOrganizationName(String name);
+
+  List<Collaborator> findByCode(String code);
+
+}

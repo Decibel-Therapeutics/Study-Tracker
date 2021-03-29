@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
+package com.decibeltx.studytracker.exception;
+
+
+public class RecordNotFoundException extends StudyTrackerException {
+
+  public RecordNotFoundException() {
   }
-};
+
+  public RecordNotFoundException(String message) {
+    super(message);
+  }
+
+  public RecordNotFoundException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public RecordNotFoundException(Throwable cause) {
+    super(cause);
+  }
+
+  public RecordNotFoundException(String message, Throwable cause, boolean enableSuppression,
+      boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
+  }
+
+}

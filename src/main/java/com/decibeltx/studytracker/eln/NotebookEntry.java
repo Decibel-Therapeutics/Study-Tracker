@@ -14,24 +14,30 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
+package com.decibeltx.studytracker.eln;
+
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.Data;
+
+@Data
+public class NotebookEntry {
+
+  private String url;
+
+  private String name;
+
+  private String referenceId;
+
+  private Map<String, Object> attributes = new HashMap<>();
+
+  public void setUrl(URL url) {
+    this.url = url.toString();
   }
-};
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+}

@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
+package com.decibeltx.studytracker.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.net.URL;
+import lombok.Data;
+import org.springframework.data.domain.Persistable;
+
+@Data
+public class ExternalLink implements Persistable<String> {
+
+  private String id;
+  private String label;
+  private URL url;
+
+  @Override
+  @JsonIgnore
+  public boolean isNew() {
+    return id == null;
   }
-};
+}

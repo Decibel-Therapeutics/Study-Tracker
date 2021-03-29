@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
-  }
-};
+package com.decibeltx.studytracker.service;
+
+import com.decibeltx.studytracker.model.ExternalLink;
+import com.decibeltx.studytracker.model.Study;
+import java.util.List;
+import java.util.Optional;
+
+public interface StudyExternalLinkService {
+
+  Optional<ExternalLink> findStudyExternalLinkById(Study study, String id);
+
+  List<ExternalLink> findAllStudyExternalLinks(Study study);
+
+  ExternalLink addStudyExternalLink(Study study, ExternalLink externalLink);
+
+  ExternalLink updateStudyExternalLink(Study study, ExternalLink externalLink);
+
+  void deleteStudyExternalLink(Study study, String id);
+
+}

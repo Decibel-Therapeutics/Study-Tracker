@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
-  }
-};
+package com.decibeltx.studytracker.service;
+
+import com.decibeltx.studytracker.model.Comment;
+import com.decibeltx.studytracker.model.Study;
+import java.util.List;
+import java.util.Optional;
+
+public interface StudyCommentService {
+
+  Optional<Comment> findStudyCommentById(Study study, String id);
+
+  List<Comment> findStudyComments(Study study);
+
+  Comment addStudyComment(Study study, Comment comment);
+
+  Comment updateStudyComment(Study study, Comment comment);
+
+  void deleteStudyComment(Study study, String id);
+
+}

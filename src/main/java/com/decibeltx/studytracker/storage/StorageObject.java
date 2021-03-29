@@ -14,24 +14,42 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
-  }
-};
+package com.decibeltx.studytracker.storage;
+
+import java.net.URL;
+import java.nio.file.Path;
+
+public interface StorageObject {
+
+  /**
+   * Returns a URL that allows linking of the object.
+   *
+   * @return
+   */
+  String getUrl();
+
+  void setUrl(String url);
+
+  void setUrl(URL url);
+
+  /**
+   * Returns the relative path of the object within the storage file system.
+   *
+   * @return
+   */
+  String getPath();
+
+  void setPath(String string);
+
+  void setPath(Path path);
+
+  /**
+   * Returns the object name.
+   *
+   * @return
+   */
+  String getName();
+
+  void setName(String name);
+
+}

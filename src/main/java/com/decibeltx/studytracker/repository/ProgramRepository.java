@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
-  }
-};
+package com.decibeltx.studytracker.repository;
+
+import com.decibeltx.studytracker.model.Program;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface ProgramRepository extends MongoRepository<Program, String> {
+
+  Optional<Program> findByName(String name);
+
+  List<Program> findByCode(String code);
+
+  long countByCreatedAtBefore(Date date);
+
+  long countByCreatedAtAfter(Date date);
+
+  long countByCreatedAtBetween(Date startDate, Date endDate);
+
+}

@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
-  }
-};
+package com.decibeltx.studytracker.service;
+
+import com.decibeltx.studytracker.model.Collaborator;
+import java.util.List;
+import java.util.Optional;
+
+public interface CollaboratorService {
+
+  List<Collaborator> findAll();
+
+  Optional<Collaborator> findById(String id);
+
+  Optional<Collaborator> findByLabel(String name);
+
+  List<Collaborator> findByOrganizationName(String name);
+
+  List<Collaborator> findByCode(String code);
+
+  void create(Collaborator collaborator);
+
+  void update(Collaborator collaborator);
+
+  void delete(Collaborator collaborator);
+
+}

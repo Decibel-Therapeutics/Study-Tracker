@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
+package com.decibeltx.studytracker.storage.exception;
+
+public class StudyStorageException extends Exception {
+
+  public StudyStorageException() {
   }
-};
+
+  public StudyStorageException(String message) {
+    super(message);
+  }
+
+  public StudyStorageException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public StudyStorageException(Throwable cause) {
+    super(cause);
+  }
+
+  public StudyStorageException(String message, Throwable cause, boolean enableSuppression,
+      boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
+  }
+}

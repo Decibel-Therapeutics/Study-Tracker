@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-module.exports = {
-  entry: './react/index.js',
-  output: {
-    path: __dirname + '/src/main/resources/static/js',
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        use: {
-          loader: 'babel-loader'
-        },
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      }
-    ]
+package com.decibeltx.studytracker.config;
+
+import com.decibeltx.studytracker.example.ExampleDataGenerator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+@Configuration
+@Profile({"example"})
+public class ExampleDataConfiguration {
+
+  @Bean
+  public ExampleDataGenerator exampleDataGenerator() {
+    return new ExampleDataGenerator();
   }
-};
+
+}
