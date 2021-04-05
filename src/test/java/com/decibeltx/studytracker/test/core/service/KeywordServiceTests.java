@@ -1,10 +1,10 @@
-package com.decibeltx.studytracker.test.service;
+package com.decibeltx.studytracker.test.core.service;
 
+import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.DuplicateRecordException;
 import com.decibeltx.studytracker.model.Keyword;
 import com.decibeltx.studytracker.service.KeywordService;
-import com.decibeltx.studytracker.test.TestConfiguration;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Assert;
@@ -12,13 +12,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
-@ActiveProfiles({"example"})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles({"test", "example"})
 public class KeywordServiceTests {
 
   private static final int KEYWORD_COUNT = 7;

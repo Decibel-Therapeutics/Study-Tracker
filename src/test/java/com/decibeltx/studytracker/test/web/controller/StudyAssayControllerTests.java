@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Assay;
@@ -38,7 +39,6 @@ import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.AssayRepository;
 import com.decibeltx.studytracker.repository.AssayTypeRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
-import com.decibeltx.studytracker.test.web.TestApplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.Date;
@@ -58,10 +58,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-@SpringBootTest(classes = TestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@ActiveProfiles({"test", "example"})
+@ActiveProfiles({"web-test", "example"})
 public class StudyAssayControllerTests {
 
   private static final int NUM_ASSAYS = ExampleDataGenerator.ASSAY_COUNT;
@@ -200,7 +200,7 @@ public class StudyAssayControllerTests {
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsBytes(assay))
         .with(user(assay.getOwner().getUsername())))
-        .andExpect(status().isCreated())
+        .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasKey("status")))
         .andExpect(jsonPath("$.status", is("COMPLETE")));
 

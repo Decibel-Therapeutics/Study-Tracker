@@ -16,19 +16,21 @@
 
 package com.decibeltx.studytracker.test.egnyte;
 
+import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.egnyte.rest.EgnyteRestApiClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
-@ActiveProfiles({"example"})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles({"egnyte-test", "example"})
 public class EgnyteRestClientFolderCreationTests {
 
   @Autowired

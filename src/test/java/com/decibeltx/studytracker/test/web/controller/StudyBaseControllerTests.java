@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Program;
@@ -37,7 +38,6 @@ import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.ProgramRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
 import com.decibeltx.studytracker.repository.UserRepository;
-import com.decibeltx.studytracker.test.web.TestApplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.Date;
@@ -56,10 +56,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(classes = TestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@ActiveProfiles({"test", "example"})
+@ActiveProfiles({"web-test", "example"})
 public class StudyBaseControllerTests {
 
   @Autowired
@@ -196,7 +196,7 @@ public class StudyBaseControllerTests {
         .with(user(study.getOwner().getUsername()))
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsBytes(study)))
-        .andExpect(status().isCreated());
+        .andExpect(status().isOk());
   }
 
   @Test

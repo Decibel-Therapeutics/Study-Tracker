@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.test.service;
+package com.decibeltx.studytracker.test.core.service;
 
+import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.model.AssayTypeField;
 import com.decibeltx.studytracker.model.AssayTypeField.AssayFieldType;
 import com.decibeltx.studytracker.service.AssayTypeService;
-import com.decibeltx.studytracker.test.TestConfiguration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -30,13 +30,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
-@ActiveProfiles({"example"})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles({"test", "example"})
 public class AssayTypeServiceTests {
 
   private static final int ASSAY_TYPE_COUNT = ExampleDataGenerator.ASSAY_TYPE_COUNT;

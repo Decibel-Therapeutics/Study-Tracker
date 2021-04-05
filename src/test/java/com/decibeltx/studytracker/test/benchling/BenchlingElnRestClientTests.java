@@ -1,5 +1,6 @@
 package com.decibeltx.studytracker.test.benchling;
 
+import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.benchling.eln.BenchlingElnRestClient;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingFolder;
 import com.decibeltx.studytracker.benchling.eln.entities.BenchlingProject;
@@ -16,8 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestApplication.class, webEnvironment = WebEnvironment.NONE)
-@ActiveProfiles({"example"})
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles({"benchling-test", "example"})
 public class BenchlingElnRestClientTests {
 
   @Autowired

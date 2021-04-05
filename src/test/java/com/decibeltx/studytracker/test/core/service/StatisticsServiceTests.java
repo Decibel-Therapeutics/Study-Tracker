@@ -1,9 +1,9 @@
-package com.decibeltx.studytracker.test.service;
+package com.decibeltx.studytracker.test.core.service;
 
+import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.model.Statistics;
 import com.decibeltx.studytracker.service.StatisticsService;
-import com.decibeltx.studytracker.test.TestConfiguration;
 import java.util.Calendar;
 import java.util.Date;
 import org.junit.Assert;
@@ -11,13 +11,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
-@ActiveProfiles({"example"})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles({"test", "example"})
 public class StatisticsServiceTests {
 
   private static final long STUDY_COUNT = 6;
@@ -28,7 +29,7 @@ public class StatisticsServiceTests {
 
   private static final long USER_COUNT = 3;
 
-  private static final long ACTIVITY_COUNT = 13;
+  private static final long ACTIVITY_COUNT = 15;
 
   @Autowired
   private StatisticsService statisticsService;

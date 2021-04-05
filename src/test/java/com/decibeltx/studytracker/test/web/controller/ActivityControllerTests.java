@@ -24,11 +24,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.service.StudyService;
-import com.decibeltx.studytracker.test.web.TestApplication;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,10 +41,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-@SpringBootTest(classes = TestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@ActiveProfiles({"test", "example"})
+@ActiveProfiles({"web-test", "example"})
 public class ActivityControllerTests {
 
   @Autowired
@@ -67,11 +67,11 @@ public class ActivityControllerTests {
 
     mockMvc.perform(get("/api/activity"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$", not(empty())))
-        .andExpect(jsonPath("$[0]", hasKey("id")))
-        .andExpect(jsonPath("$[0]", hasKey("eventType")))
-        .andExpect(jsonPath("$[0]", hasKey("date")))
-        .andExpect(jsonPath("$[0]", hasKey("data")));
+        .andExpect(jsonPath("$.content", not(empty())))
+        .andExpect(jsonPath("$.content[0]", hasKey("id")))
+        .andExpect(jsonPath("$.content[0]", hasKey("eventType")))
+        .andExpect(jsonPath("$.content[0]", hasKey("date")))
+        .andExpect(jsonPath("$.content[0]", hasKey("data")));
 
   }
 
@@ -85,18 +85,19 @@ public class ActivityControllerTests {
     mockMvc.perform(get("/api/activity?sort=date,desc"))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$", not(empty())))
-        .andExpect(jsonPath("$[0]", hasKey("eventType")))
-        .andExpect(jsonPath("$[0].eventType", is("NEW_STUDY")))
-        .andExpect(jsonPath("$[0]", hasKey("data")))
-        .andExpect(jsonPath("$[0].data", hasKey("study")))
-        .andExpect(jsonPath("$[0].data.study", hasKey("code")))
-        .andExpect(jsonPath("$[0].data.study.code", is("TID-10002")))
-        .andExpect(jsonPath("$[1]", hasKey("eventType")))
-        .andExpect(jsonPath("$[1].eventType", is("STUDY_STATUS_CHANGED")))
-        .andExpect(jsonPath("$[1]", hasKey("data")))
-        .andExpect(jsonPath("$[1].data", hasKey("newStatus")))
-        .andExpect(jsonPath("$[1].data.newStatus", is("COMPLETE")));
+        .andExpect(jsonPath("$", hasKey("content")))
+        .andExpect(jsonPath("$.content", not(empty())))
+        .andExpect(jsonPath("$.content[0]", hasKey("eventType")))
+        .andExpect(jsonPath("$.content[0].eventType", is("NEW_STUDY")))
+        .andExpect(jsonPath("$.content[0]", hasKey("data")))
+        .andExpect(jsonPath("$.content[0].data", hasKey("study")))
+        .andExpect(jsonPath("$.content[0].data.study", hasKey("code")))
+        .andExpect(jsonPath("$.content[0].data.study.code", is("TID-10002")))
+        .andExpect(jsonPath("$.content[1]", hasKey("eventType")))
+        .andExpect(jsonPath("$.content[1].eventType", is("STUDY_STATUS_CHANGED")))
+        .andExpect(jsonPath("$.content[1]", hasKey("data")))
+        .andExpect(jsonPath("$.content[1].data", hasKey("newStatus")))
+        .andExpect(jsonPath("$.content[1].data.newStatus", is("COMPLETE")));
 
   }
 

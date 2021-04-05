@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.test.storage;
+package com.decibeltx.studytracker.test.core.storage;
 
+import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Assay;
@@ -34,7 +35,6 @@ import com.decibeltx.studytracker.storage.StorageFile;
 import com.decibeltx.studytracker.storage.StorageFolder;
 import com.decibeltx.studytracker.storage.exception.StudyStorageDuplicateException;
 import com.decibeltx.studytracker.storage.exception.StudyStorageNotFoundException;
-import com.decibeltx.studytracker.test.TestConfiguration;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
@@ -43,16 +43,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
-@ActiveProfiles({"example"})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles({"test", "example"})
 public class LocalStorageStudyStorageServiceTests {
 
   private static final Resource TEST_FILE = new ClassPathResource("test.txt");

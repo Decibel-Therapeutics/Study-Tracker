@@ -677,8 +677,8 @@ public class ExampleDataGenerator {
       createProgramFolders();
       keywordRepository.insert(generateExampleKeywords());
       collaboratorRepository.insert(generateExampleCollaborators());
-      generateExampleStudies();
       entryTemplateRepository.insert(generateExampleEntryTemplates(userRepository.findAll()));
+      generateExampleStudies();
 
       for (Assay assay : generateExampleAssays(studyRepository.findAll())) {
         assayRepository.insert(assay);

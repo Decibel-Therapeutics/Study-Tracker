@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.test.service;
+package com.decibeltx.studytracker.test.core.service;
 
+import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Assay;
@@ -23,20 +24,20 @@ import com.decibeltx.studytracker.model.Task;
 import com.decibeltx.studytracker.model.Task.TaskStatus;
 import com.decibeltx.studytracker.repository.AssayRepository;
 import com.decibeltx.studytracker.service.AssayTaskService;
-import com.decibeltx.studytracker.test.TestConfiguration;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
-@ActiveProfiles({"example"})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles({"test", "example"})
 public class AssayTaskServiceTests {
 
   @Autowired
