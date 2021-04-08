@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,6 +33,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @Configuration
@@ -79,23 +80,20 @@ public class WebSecurityConfiguration {
     protected void configure(HttpSecurity http) throws Exception {
       http
           .antMatcher("/api/**")
-          .authorizeRequests()
-          .antMatchers(HttpMethod.POST).fullyAuthenticated()
-          .antMatchers(HttpMethod.PUT).fullyAuthenticated()
-          .antMatchers(HttpMethod.DELETE).fullyAuthenticated()
-          .anyRequest().permitAll()
-          .and()
+            .authorizeRequests().anyRequest().fullyAuthenticated()
+            .and()
           .httpBasic()
-          .authenticationEntryPoint(apiAuthenticationEntryPoint())
-          .and()
+            .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+//          .authenticationEntryPoint(apiAuthenticationEntryPoint())
+            .and()
           .cors()
-          .and()
+            .and()
           .exceptionHandling()
-          .and()
+            .and()
           .headers()
-          .frameOptions().disable()
-          .httpStrictTransportSecurity().disable()
-          .and()
+            .frameOptions().disable()
+            .httpStrictTransportSecurity().disable()
+            .and()
           .csrf().disable();
     }
 
@@ -118,33 +116,28 @@ public class WebSecurityConfiguration {
     protected void configure(HttpSecurity http) throws Exception {
       http
           .authorizeRequests()
-          .antMatchers("/studies/new", "/study/*/assays/new", "study/*/edit",
-              "study/*/assays/*/edit", "/programs/new", "/users/new", "/admin",
-              "/assaytypes/new", "/assaytypes/*/edit")
-          .fullyAuthenticated()
-          .antMatchers("/", "/study/**", "/studies", "/assays", "/assay/**", "/assaytypes",
-              "/assaytype/**")
-          .permitAll()
-          .anyRequest()
-          .permitAll()
-          .and()
+            .antMatchers("/static/**").permitAll()
+            .antMatchers("/error").permitAll()
+            .antMatchers("/login").permitAll()
+           .anyRequest().fullyAuthenticated()
+            .and()
           .formLogin()
-          .loginPage("/login")
-          //.loginProcessingUrl("/authenticate")
-          //.failureUrl("/login?error=true")
-          //.successHandler(userAuthenticationSuccessHandler)
-          .defaultSuccessUrl("/")
-          .permitAll()
-          .and()
+            .loginPage("/login")
+            //.loginProcessingUrl("/authenticate")
+            //.failureUrl("/login?error=true")
+            //.successHandler(userAuthenticationSuccessHandler)
+            .defaultSuccessUrl("/")
+             .permitAll()
+           .and()
           .logout()
-          .logoutUrl("/logout")
-          .logoutSuccessUrl("/")
-          .invalidateHttpSession(true)
-          .and()
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/")
+            .invalidateHttpSession(true)
+            .and()
           .headers()
-          .frameOptions().disable()
-          .httpStrictTransportSecurity().disable()
-          .and()
+            .frameOptions().disable()
+            .httpStrictTransportSecurity().disable()
+            .and()
           .csrf().disable();
     }
 
