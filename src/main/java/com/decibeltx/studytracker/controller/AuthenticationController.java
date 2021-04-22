@@ -88,19 +88,19 @@ public class AuthenticationController {
       Object principal = authentication.getPrincipal();
       if (principal instanceof User) {
         user = (User) principal;
-        LOGGER.info("Loaded user from principal: {}", user.getUsername());
+        LOGGER.debug("Loaded user from principal: {}", user.getUsername());
       } else if (principal instanceof AppUserDetails) {
         AppUserDetails userDetails = (AppUserDetails) principal;
         user = userDetails.getUser();
-        LOGGER.info("Loaded uder from userDetails: {}", userDetails.getUsername());
+        LOGGER.debug("Loaded user from userDetails: {}", userDetails.getUsername());
       } else {
         String username = principal.toString();
         user = userService.findByUsername(username)
             .orElseThrow(UnknownUserException::new);
-        LOGGER.info("Loaded user from username: {}", username);
+        LOGGER.debug("Loaded user from username: {}", username);
       }
     } else {
-      LOGGER.info("User is anonymous");
+      LOGGER.debug("User is anonymous");
     }
     Map<String, Object> payload = new HashMap<>();
     payload.put("user", user);
