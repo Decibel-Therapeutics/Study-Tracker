@@ -143,7 +143,7 @@ public class StudyBaseControllerTests {
     study.setLastModifiedBy(user);
     study.setStartDate(new Date());
     study.setOwner(user);
-    study.setUsers(Collections.singletonList(user));
+    study.setUsers(Collections.singleton(user));
 
     mockMvc.perform(post("/api/study/")
         .with(user(user.getUsername()))
@@ -174,7 +174,7 @@ public class StudyBaseControllerTests {
     study.setLastModifiedBy(user);
     study.setStartDate(new Date());
     study.setOwner(user);
-    study.setUsers(Collections.singletonList(user));
+    study.setUsers(Collections.singleton(user));
 
     mockMvc.perform(post("/api/study/")
         .contentType(MediaType.APPLICATION_JSON)

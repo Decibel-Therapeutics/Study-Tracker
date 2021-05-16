@@ -65,12 +65,12 @@ public class StudyCommentServiceTests {
     studyCommentService.addStudyComment(study, comment);
     Assert.assertNotNull(comment.getId());
     Assert.assertNotNull(comment.getCreatedAt());
-    String id = comment.getId();
+    Long id = comment.getId();
 
     study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
     Assert.assertFalse(study.getComments().isEmpty());
 
-    Optional<Comment> optional = studyCommentService.findStudyCommentById(study, id);
+    Optional<Comment> optional = studyCommentService.findStudyCommentById(id);
     Assert.assertTrue(optional.isPresent());
     comment = optional.get();
     Assert.assertEquals("This is a test", comment.getText());
@@ -81,15 +81,15 @@ public class StudyCommentServiceTests {
   public void updateCommentTest() {
     addCommentTest();
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
-    Comment comment = study.getComments().get(0);
-    String id = comment.getId();
+    Comment comment = study.getComments().stream().findFirst().get();
+    Long id = comment.getId();
     Date firstDate = comment.getCreatedAt();
     Assert.assertNull(comment.getUpdatedAt());
     comment.setText("Different text");
-    studyCommentService.updateStudyComment(study, comment);
+    studyCommentService.updateStudyComment(comment);
     Assert.assertNotNull(comment.getUpdatedAt());
     Assert.assertNotEquals(firstDate, comment.getUpdatedAt());
-    comment = studyCommentService.findStudyCommentById(study, id)
+    comment = studyCommentService.findStudyCommentById(id)
         .orElseThrow(RecordNotFoundException::new);
     Assert.assertEquals("Different text", comment.getText());
   }
@@ -98,12 +98,12 @@ public class StudyCommentServiceTests {
   public void deleteCommentTest() {
     addCommentTest();
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
-    Comment comment = study.getComments().get(0);
-    String id = comment.getId();
-    studyCommentService.deleteStudyComment(study, comment.getId());
+    Comment comment = study.getComments().stream().findFirst().get();
+    Long id = comment.getId();
+    studyCommentService.deleteStudyComment(comment.getId());
     Exception exception = null;
     try {
-      comment = studyCommentService.findStudyCommentById(study, id)
+      comment = studyCommentService.findStudyCommentById(id)
           .orElseThrow(RecordNotFoundException::new);
     } catch (Exception e) {
       exception = e;

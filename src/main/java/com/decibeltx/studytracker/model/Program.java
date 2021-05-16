@@ -16,70 +16,82 @@
 
 package com.decibeltx.studytracker.model;
 
-import com.decibeltx.studytracker.eln.NotebookFolder;
-import com.decibeltx.studytracker.storage.StorageFolder;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedBy;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Document(collection = "programs")
+@Entity
+@Table(name = "programs")
 @Data
-public class Program implements Persistable<String> {
+@EntityListeners(AuditingEntityListener.class)
+public class Program {
 
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
+  @Column(name = "code", nullable = false)
   @NotNull(message = "Program code must not be empty")
   private String code;
 
-  @Indexed(unique = true)
+  @Column(name = "name", nullable = false, unique = true)
   @NotNull(message = "Program name must not be empty")
   private String name;
 
+  @Column(name = "description")
   private String description;
 
-  @CreatedBy
-  @Linked(model = User.class)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "created_by", nullable = false)
   @NotNull
-  @DBRef
   private User createdBy;
 
-  @LastModifiedBy
-  @Linked(model = User.class)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "last_modified_by")
   @NotNull
-  @DBRef
   private User lastModifiedBy;
 
   @CreatedDate
+  @Column(name = "created_at", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   private Date createdAt;
 
   @LastModifiedDate
+  @Column(name = "updated_at")
+  @Temporal(TemporalType.TIMESTAMP)
   private Date updatedAt;
 
-  private NotebookFolder notebookFolder;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "notebook_folder_id")
+  private ELNFolder notebookFolder;
 
-  private StorageFolder storageFolder;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "storage_folder_id")
+  private FileStoreFolder storageFolder;
 
+  @Column(name = "active", nullable = false)
   private boolean active = true;
 
-  private Map<String, Object> attributes = new LinkedHashMap<>();
-
-  @Override
-  @JsonIgnore
-  public boolean isNew() {
-    return id == null;
-  }
+  @Type(type = "json")
+  @Column(name = "attributes", columnDefinition = "json")
+  private Map<String, String> attributes = new LinkedHashMap<>();
 
 }

@@ -20,9 +20,9 @@ import com.decibeltx.studytracker.model.Program;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProgramRepository extends MongoRepository<Program, String> {
+public interface ProgramRepository extends JpaRepository<Program, Long> {
 
   Optional<Program> findByName(String name);
 

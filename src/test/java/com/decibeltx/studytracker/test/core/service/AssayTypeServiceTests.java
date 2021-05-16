@@ -20,9 +20,10 @@ import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.model.AssayTypeField;
-import com.decibeltx.studytracker.model.AssayTypeField.AssayFieldType;
+import com.decibeltx.studytracker.model.CustomEntityField.CustomEntityFieldType;
 import com.decibeltx.studytracker.service.AssayTypeService;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Assert;
@@ -82,8 +83,8 @@ public class AssayTypeServiceTests {
     field.setDisplayName("Name");
     field.setFieldName("name");
     field.setRequired(true);
-    field.setType(AssayFieldType.STRING);
-    assayType.setFields(Arrays.asList(field));
+    field.setType(CustomEntityFieldType.STRING);
+    assayType.setFields(new HashSet<>(Arrays.asList(field)));
     assayTypeService.create(assayType);
     Assert.assertEquals(ASSAY_TYPE_COUNT + 1, assayTypeService.count());
 
@@ -105,8 +106,8 @@ public class AssayTypeServiceTests {
     field.setDisplayName("Name");
     field.setFieldName("name");
     field.setRequired(true);
-    field.setType(AssayFieldType.STRING);
-    assayType.setFields(Arrays.asList(field));
+    field.setType(CustomEntityFieldType.STRING);
+    assayType.setFields(new HashSet<>(Arrays.asList(field)));
     assayTypeService.create(assayType);
     Assert.assertEquals(ASSAY_TYPE_COUNT + 1, assayTypeService.count());
 
@@ -121,7 +122,7 @@ public class AssayTypeServiceTests {
     field.setDisplayName("Description");
     field.setFieldName("description");
     field.setRequired(false);
-    field.setType(AssayFieldType.TEXT);
+    field.setType(CustomEntityFieldType.TEXT);
     assayType.getFields().add(field);
     assayTypeService.update(assayType);
 
@@ -143,8 +144,8 @@ public class AssayTypeServiceTests {
     field.setDisplayName("Name");
     field.setFieldName("name");
     field.setRequired(true);
-    field.setType(AssayFieldType.STRING);
-    assayType.setFields(Arrays.asList(field));
+    field.setType(CustomEntityFieldType.STRING);
+    assayType.setFields(new HashSet<>(Arrays.asList(field)));
     assayTypeService.create(assayType);
     Assert.assertEquals(ASSAY_TYPE_COUNT + 1, assayTypeService.count());
 

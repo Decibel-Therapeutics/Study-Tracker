@@ -39,18 +39,13 @@ public abstract class AbstractAssayController {
    * @param id
    * @return
    */
-  protected Assay getAssayFromIdentifier(String id) {
+  protected Assay getAssayFromIdentifier(Long id) {
     Assay assay;
     Optional<Assay> optional = assayService.findById(id);
     if (optional.isPresent()) {
       assay = optional.get();
     } else {
-      optional = assayService.findByCode(id);
-      if (optional.isPresent()) {
-        assay = optional.get();
-      } else {
-        throw new RecordNotFoundException("Cannot identify assay: " + id);
-      }
+      throw new RecordNotFoundException("Cannot identify assay: " + id);
     }
     return assay;
   }
@@ -61,18 +56,13 @@ public abstract class AbstractAssayController {
    * @param id
    * @return
    */
-  protected Study getStudyFromIdentifier(String id) {
+  protected Study getStudyFromIdentifier(Long id) {
     Study study;
     Optional<Study> optional = studyService.findById(id);
     if (optional.isPresent()) {
       study = optional.get();
     } else {
-      optional = studyService.findByCode(id);
-      if (optional.isPresent()) {
-        study = optional.get();
-      } else {
-        throw new RecordNotFoundException("Cannot identify study: " + id);
-      }
+      throw new RecordNotFoundException("Cannot identify study: " + id);
     }
     return study;
   }
@@ -155,7 +145,7 @@ public abstract class AbstractAssayController {
    * @param id
    * @param user
    */
-  protected void deleteAssay(String id, User user) {
+  protected void deleteAssay(Long id, User user) {
 
     Assay assay = this.getAssayFromIdentifier(id);
     assay.setLastModifiedBy(user);
@@ -174,7 +164,7 @@ public abstract class AbstractAssayController {
    * @param status
    * @param user
    */
-  protected void updateAssayStatus(String assayId, Status status, User user) {
+  protected void updateAssayStatus(Long assayId, Status status, User user) {
 
     Assay assay = assayService.findById(assayId).orElseThrow(RecordNotFoundException::new);
     assay.setLastModifiedBy(user);

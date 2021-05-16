@@ -1,55 +1,55 @@
 package com.decibeltx.studytracker.model;
 
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.Data;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@Entity
+@Table(name = "assay_type_fields")
 @Data
-public class AssayTypeField {
+@EntityListeners(AuditingEntityListener.class)
+public class AssayTypeField extends CustomEntityField {
 
-  private String displayName;
-
-  private String fieldName;
-
-  private AssayFieldType type;
-
-  private boolean required;
-
-  private String description;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "assay_type_id")
+  private AssayType assayType;
 
   public AssayTypeField() {
+    super();
   }
 
   public AssayTypeField(String displayName, String fieldName,
-      AssayFieldType type) {
-    this.displayName = displayName;
-    this.fieldName = fieldName;
-    this.type = type;
-    this.required = false;
+      CustomEntityFieldType type) {
+    super();
+    this.setDisplayName(displayName);
+    this.setFieldName(fieldName);
+    this.setType(type);
+    this.setRequired(false);
+    this.setActive(true);
   }
 
   public AssayTypeField(String displayName, String fieldName,
-      AssayFieldType type, boolean required) {
-    this.displayName = displayName;
-    this.fieldName = fieldName;
-    this.type = type;
-    this.required = required;
+      CustomEntityFieldType type, boolean required) {
+    this.setDisplayName(displayName);
+    this.setFieldName(fieldName);
+    this.setType(type);
+    this.setRequired(required);
+    this.setActive(true);
   }
 
   public AssayTypeField(String displayName, String fieldName,
-      AssayFieldType type, boolean required, String description) {
-    this.displayName = displayName;
-    this.fieldName = fieldName;
-    this.type = type;
-    this.required = required;
-    this.description = description;
-  }
-
-  public enum AssayFieldType {
-    STRING,
-    TEXT,
-    INTEGER,
-    FLOAT,
-    DATE,
-    BOOLEAN
+      CustomEntityFieldType type, boolean required, String description) {
+    this.setDisplayName(displayName);
+    this.setFieldName(fieldName);
+    this.setType(type);
+    this.setRequired(required);
+    this.setActive(true);
+    this.setDescription(description);
   }
 
 }

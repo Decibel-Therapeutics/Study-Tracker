@@ -21,10 +21,10 @@ import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.InvalidConstraintException;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Assay;
+import com.decibeltx.studytracker.model.AssayTask;
 import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
-import com.decibeltx.studytracker.model.Task;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.AssayRepository;
 import com.decibeltx.studytracker.repository.AssayTypeRepository;
@@ -105,7 +105,7 @@ public class AssayServiceTests {
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
-    assay.setTasks(Collections.singletonList(new Task("My task")));
+    assay.setTasks(Collections.singleton(new AssayTask("My task")));
     assayService.create(assay);
     Assert.assertEquals(ASSAY_COUNT + 1, assayRepository.count());
     Assert.assertNotNull(assay.getId());
@@ -116,7 +116,7 @@ public class AssayServiceTests {
     Study updated = studyService.findByCode(study.getCode())
         .orElseThrow(RecordNotFoundException::new);
     Assert.assertTrue(!updated.getAssays().isEmpty());
-    Assert.assertEquals(updated.getAssays().get(0).getCode(), assay.getCode());
+    Assert.assertEquals(updated.getAssays().stream().findFirst().get().getCode(), assay.getCode());
   }
 
   @Test
@@ -160,7 +160,7 @@ public class AssayServiceTests {
     Study updated = studyService.findByCode(study.getCode())
         .orElseThrow(RecordNotFoundException::new);
     Assert.assertTrue(!updated.getAssays().isEmpty());
-    Assert.assertEquals(updated.getAssays().get(0).getCode(), assay.getCode());
+    Assert.assertEquals(updated.getAssays().stream().findFirst().get().getCode(), assay.getCode());
   }
 
   @Test

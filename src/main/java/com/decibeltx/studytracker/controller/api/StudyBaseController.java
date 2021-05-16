@@ -25,12 +25,13 @@ import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.User;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,14 +62,14 @@ public class StudyBaseController extends AbstractStudyController {
   @GetMapping("")
   public List<Study> getAllStudies(
       @RequestParam(value = "code", required = false) String code,
-      @RequestParam(value = "owner", required = false) String owner,
-      @RequestParam(value = "user", required = false) String userId,
+      @RequestParam(value = "owner", required = false) Long owner,
+      @RequestParam(value = "user", required = false) Long userId,
       @RequestParam(value = "active", defaultValue = "false") boolean active,
       @RequestParam(value = "legacy", defaultValue = "false") boolean legacy,
       @RequestParam(value = "external", defaultValue = "false") boolean external,
       @RequestParam(value = "my", defaultValue = "false") boolean my,
       @RequestParam(value = "search", required = false) String search,
-      @RequestParam(value = "program", required = false) String programId
+      @RequestParam(value = "program", required = false) Long programId
   ) {
 
     // Search
@@ -159,7 +160,7 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @GetMapping("/{id}")
-  public Study getStudy(@PathVariable("id") String studyId) throws RecordNotFoundException {
+  public Study getStudy(@PathVariable("id") Long studyId) throws RecordNotFoundException {
     return getStudyFromIdentifier(studyId);
   }
 
@@ -179,7 +180,7 @@ public class StudyBaseController extends AbstractStudyController {
     study.setCreatedBy(user);
 
     // Study team
-    List<User> team = new ArrayList<>();
+    Set<User> team = new HashSet<>();
     for (User u : study.getUsers()) {
       team.add(getUserService().findByUsername(u.getUsername())
           .orElseThrow(RecordNotFoundException::new));
@@ -215,7 +216,7 @@ public class StudyBaseController extends AbstractStudyController {
     study.setLastModifiedBy(user);
 
     // Study team
-    List<User> team = new ArrayList<>();
+    Set<User> team = new HashSet<>();
     for (User u : study.getUsers()) {
       team.add(getUserService().findByUsername(u.getUsername())
           .orElseThrow(RecordNotFoundException::new));
@@ -237,7 +238,7 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @DeleteMapping("/{id}")
-  public HttpEntity<?> deleteStudy(@PathVariable("id") String id) {
+  public HttpEntity<?> deleteStudy(@PathVariable("id") Long id) {
 
     LOGGER.info("Deleting study: " + id);
 
@@ -259,7 +260,7 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @PostMapping("/{id}/status")
-  public void updateStudyStatus(@PathVariable("id") String id,
+  public void updateStudyStatus(@PathVariable("id") Long id,
       @RequestBody Map<String, Object> params) throws StudyTrackerException {
 
     if (!params.containsKey("status")) {

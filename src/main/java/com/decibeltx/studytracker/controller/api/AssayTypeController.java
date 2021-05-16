@@ -51,8 +51,8 @@ public class AssayTypeController {
   }
 
   @GetMapping("/{id}")
-  public AssayType findById(@PathVariable("id") String assayId) throws RecordNotFoundException {
-    Optional<AssayType> optional = assayTypeService.findById(assayId);
+  public AssayType findById(@PathVariable("id") Long assayTypeId) throws RecordNotFoundException {
+    Optional<AssayType> optional = assayTypeService.findById(assayTypeId);
     if (optional.isPresent()) {
       return optional.get();
     } else {
@@ -79,7 +79,7 @@ public class AssayTypeController {
   }
 
   @DeleteMapping("/{id}")
-  public void delete(@PathVariable("id") String id) {
+  public void delete(@PathVariable("id") Long id) {
     LOGGER.info("Deleting assay type: " + id);
     AssayType assayType = assayTypeService.findById(id).orElseThrow(RecordNotFoundException::new);
     assayTypeService.delete(assayType);

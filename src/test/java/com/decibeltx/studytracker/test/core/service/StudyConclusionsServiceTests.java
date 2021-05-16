@@ -19,8 +19,8 @@ package com.decibeltx.studytracker.test.core.service;
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
-import com.decibeltx.studytracker.model.Conclusions;
 import com.decibeltx.studytracker.model.Study;
+import com.decibeltx.studytracker.model.StudyConclusions;
 import com.decibeltx.studytracker.service.StudyConclusionsService;
 import com.decibeltx.studytracker.service.StudyService;
 import java.util.Date;
@@ -59,7 +59,7 @@ public class StudyConclusionsServiceTests {
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
     Assert.assertNull(study.getConclusions());
 
-    Conclusions conclusions = new Conclusions();
+    StudyConclusions conclusions = new StudyConclusions();
     conclusions.setContent("This is a test");
     conclusions.setCreatedBy(study.getCreatedBy());
     studyConclusionsService.addStudyConclusions(study, conclusions);
@@ -69,7 +69,7 @@ public class StudyConclusionsServiceTests {
     study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
     Assert.assertNotNull(study.getConclusions());
 
-    Optional<Conclusions> optional = studyConclusionsService.findStudyConclusions(study);
+    Optional<StudyConclusions> optional = studyConclusionsService.findStudyConclusions(study);
     Assert.assertTrue(optional.isPresent());
     conclusions = optional.get();
     Assert.assertEquals("This is a test", conclusions.getContent());
@@ -81,7 +81,7 @@ public class StudyConclusionsServiceTests {
     addConclusionsTest();
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
     study.setLastModifiedBy(study.getCreatedBy());
-    Conclusions conclusions = study.getConclusions();
+    StudyConclusions conclusions = study.getConclusions();
     Date firstDate = conclusions.getCreatedAt();
     Assert.assertNull(conclusions.getUpdatedAt());
     conclusions.setContent("Different text");

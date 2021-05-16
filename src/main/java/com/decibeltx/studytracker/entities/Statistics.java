@@ -1,4 +1,4 @@
-package com.decibeltx.studytracker.model;
+package com.decibeltx.studytracker.entities;
 
 import java.util.Date;
 import lombok.Data;

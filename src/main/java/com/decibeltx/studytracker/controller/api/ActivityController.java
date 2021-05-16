@@ -35,7 +35,7 @@ public class ActivityController {
   private ActivityService activityService;
 
   @GetMapping("/{id}")
-  public Activity findById(@PathVariable String id) {
+  public Activity findById(@PathVariable Long id) {
     return activityService.findById(id).orElseThrow(RecordNotFoundException::new);
   }
 

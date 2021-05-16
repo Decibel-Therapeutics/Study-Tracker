@@ -5,10 +5,10 @@ import com.decibeltx.studytracker.events.util.AssayActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Assay;
-import com.decibeltx.studytracker.model.Task;
+import com.decibeltx.studytracker.model.AssayTask;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.service.AssayTaskService;
-import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +35,13 @@ public class AssayTasksController extends AbstractAssayController {
   private AssayTaskService assayTaskService;
 
   @GetMapping("")
-  public List<Task> fetchTasks(@PathVariable("assayId") String assayId) {
-    return this.getAssayFromIdentifier(assayId).getTasks();
+  public Set<AssayTask> fetchTasks(@PathVariable("assayId") Long assayId) {
+    Assay assay = this.getAssayFromIdentifier(assayId);
+    return assayTaskService.findAssayTasks(assay);
   }
 
   @PostMapping("")
-  public HttpEntity<Task> addTask(@PathVariable("assayId") String assayId, @RequestBody Task task) {
+  public HttpEntity<AssayTask> addTask(@PathVariable("assayId") Long assayId, @RequestBody AssayTask task) {
 
     LOGGER.info("Adding new task to assay: " + task.toString());
     Assay assay = this.getAssayFromIdentifier(assayId);
@@ -62,8 +63,8 @@ public class AssayTasksController extends AbstractAssayController {
   }
 
   @PutMapping("")
-  public HttpEntity<Task> updateTask(@PathVariable("assayId") String assayId,
-      @RequestBody Task task) {
+  public HttpEntity<AssayTask> updateTask(@PathVariable("assayId") Long assayId,
+      @RequestBody AssayTask task) {
 
     LOGGER.info("Updating task: " + task.toString());
 
@@ -86,7 +87,7 @@ public class AssayTasksController extends AbstractAssayController {
   }
 
   @DeleteMapping("")
-  public HttpEntity<?> removeTask(@PathVariable("assayId") String assayId, @RequestBody Task task) {
+  public HttpEntity<?> removeTask(@PathVariable("assayId") Long assayId, @RequestBody AssayTask task) {
 
     LOGGER.info("Deleting task: " + task.toString());
 

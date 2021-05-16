@@ -1,8 +1,8 @@
 package com.decibeltx.studytracker.test.core.service;
 
 import com.decibeltx.studytracker.Application;
+import com.decibeltx.studytracker.entities.Statistics;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
-import com.decibeltx.studytracker.model.Statistics;
 import com.decibeltx.studytracker.service.StatisticsService;
 import java.util.Calendar;
 import java.util.Date;

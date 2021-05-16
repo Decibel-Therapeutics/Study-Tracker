@@ -1,8 +1,8 @@
 package com.decibeltx.studytracker.repository;
 
 import com.decibeltx.studytracker.model.NotebookEntryTemplate;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EntryTemplateRepository extends MongoRepository<NotebookEntryTemplate, String>  {
+public interface EntryTemplateRepository extends JpaRepository<NotebookEntryTemplate, Long> {
 
 }

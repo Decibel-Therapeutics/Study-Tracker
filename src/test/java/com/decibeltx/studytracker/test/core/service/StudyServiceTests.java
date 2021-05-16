@@ -137,7 +137,7 @@ public class StudyServiceTests {
     study.setLastModifiedBy(user);
     study.setStartDate(new Date());
     study.setOwner(user);
-    study.setUsers(Collections.singletonList(user));
+    study.setUsers(Collections.singleton(user));
     studyService.create(study);
     Assert.assertEquals(STUDY_COUNT + 1, studyRepository.count());
     List<Study> studies = studyService.findByName("Study X");

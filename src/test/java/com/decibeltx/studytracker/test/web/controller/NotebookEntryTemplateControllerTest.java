@@ -148,7 +148,7 @@ public class NotebookEntryTemplateControllerTest {
                 .orElseThrow(RecordNotFoundException::new);
         List<NotebookEntryTemplate> templates = entryTemplateRepository.findAll();
         NotebookEntryTemplate testTemplate = templates.get(0);
-        testTemplate.setId("badId");
+        testTemplate.setId(999999L);
         mockMvc.perform(put("/api/entryTemplate")
                 .with(user(user.getUsername()))
                 .contentType(MediaType.APPLICATION_JSON)

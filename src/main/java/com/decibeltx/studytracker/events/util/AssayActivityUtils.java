@@ -1,11 +1,11 @@
 package com.decibeltx.studytracker.events.util;
 
+import com.decibeltx.studytracker.events.EventType;
 import com.decibeltx.studytracker.events.dto.AssayView;
 import com.decibeltx.studytracker.events.dto.StorageFileView;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Activity.Reference;
 import com.decibeltx.studytracker.model.Assay;
-import com.decibeltx.studytracker.model.EventType;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Task;
 import com.decibeltx.studytracker.model.User;

@@ -16,132 +16,153 @@
 
 package com.decibeltx.studytracker.model;
 
-import com.decibeltx.studytracker.eln.NotebookFolder;
-import com.decibeltx.studytracker.storage.StorageFolder;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import javax.validation.constraints.NotEmpty;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Document(collection = "studies")
+@Entity
+@Table(name = "studies")
 @Data
-public class Study implements Persistable<String> {
+@EntityListeners(AuditingEntityListener.class)
+public class Study {
 
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-  @Indexed(unique = true)
+  @Column(name = "code", nullable = false, unique = true)
   @NotNull
   private String code;
 
+  @Column(name = "external_code")
   private String externalCode;
 
+  @Column(name = "status", nullable = false)
+  @Enumerated(EnumType.STRING)
   @NotNull
   private Status status;
 
+  @Column(name = "name", nullable = false)
   @NotNull
   private String name;
 
-  @Linked(model = Program.class)
-  @NotNull
-  @DBRef
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "program_id")
   private Program program;
 
+  @Column(name = "description", nullable = false)
   @NotNull
   private String description;
 
-  @Linked(model = Collaborator.class)
-  @DBRef
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "collaborator_id")
   private Collaborator collaborator;
 
+  @Column(name = "legacy", nullable = false)
   private boolean legacy = false;
 
+  @Column(name = "active", nullable = false)
   private boolean active = true;
 
-  private NotebookFolder notebookFolder;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "notebook_folder_id")
+  private ELNFolder notebookFolder;
 
-  private StorageFolder storageFolder;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "storage_folder_id")
+  private FileStoreFolder storageFolder;
 
   @CreatedBy
-  @Linked(model = User.class)
-  @NotNull
-  @DBRef
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "created_by", nullable = false)
   private User createdBy;
 
   @LastModifiedBy
-  @Linked(model = User.class)
-  @NotNull
-  @DBRef
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "collaborator_id", nullable = false)
   private User lastModifiedBy;
 
+  @Column(name = "start_date", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   @NotNull
   private Date startDate;
 
+  @Column(name = "end_date")
+  @Temporal(TemporalType.TIMESTAMP)
   private Date endDate;
 
   @CreatedDate
+  @Column(name = "created_at", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   private Date createdAt;
 
   @LastModifiedDate
+  @Column(name = "updated_at")
+  @Temporal(TemporalType.TIMESTAMP)
   private Date updatedAt;
 
-  @Linked(model = User.class)
-  @NotNull
-  @DBRef
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "owner")
   private User owner;
 
-  @Linked(model = User.class)
-  @NotEmpty
-  @DBRef
-  private List<User> users = new ArrayList<>();
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "study_users",
+      joinColumns = @JoinColumn(name = "study_id"),
+      inverseJoinColumns = @JoinColumn(name = "user_id"))
+  private Set<User> users = new HashSet<>();
 
-  @Linked(model = Keyword.class)
-  @DBRef
-  private List<Keyword> keywords = new ArrayList<>();
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "study_keywords",
+      joinColumns = @JoinColumn(name = "study_id"),
+      inverseJoinColumns = @JoinColumn(name = "keyword_id"))
+  private Set<Keyword> keywords = new HashSet<>();
 
-  @Linked(model = Assay.class)
-  @DBRef(lazy = true)
-  @JsonIgnore
-  private List<Assay> assays = new ArrayList<>();
+  @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
+  private Set<Assay> assays = new HashSet<>();
 
-  private Map<String, Object> attributes = new LinkedHashMap<>();
+  @Type(type = "json")
+  @Column(name = "attributes", columnDefinition = "json")
+  private Map<String, String> attributes = new LinkedHashMap<>();
 
-  private List<ExternalLink> externalLinks = new ArrayList<>();
+  @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Set<ExternalLink> externalLinks = new HashSet<>();
 
-  private List<StudyRelationship> studyRelationships = new ArrayList<>();
+  @OneToMany(mappedBy = "sourceStudy", fetch = FetchType.LAZY)
+  private Set<StudyRelationship> studyRelationships = new HashSet<>();
 
-  private Conclusions conclusions;
+  @OneToOne(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private StudyConclusions conclusions;
 
-  private List<Comment> comments = new ArrayList<>();
-
-  @Override
-  @JsonIgnore
-  public boolean isNew() {
-    return id == null;
-  }
-
-  public Optional<ExternalLink> getExternalLink(String name) {
-    return externalLinks.stream().filter(l -> l.getLabel().equals(name)).findFirst();
-  }
-
-  public Optional<ExternalLink> getExternalLink(URL url) {
-    return externalLinks.stream().filter(l -> l.getUrl().equals(url)).findFirst();
-  }
+  @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Set<Comment> comments = new HashSet<>();
 
 }

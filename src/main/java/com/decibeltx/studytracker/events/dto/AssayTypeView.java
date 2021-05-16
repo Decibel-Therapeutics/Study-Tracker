@@ -2,23 +2,23 @@ package com.decibeltx.studytracker.events.dto;
 
 import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.model.AssayTypeField;
-import com.decibeltx.studytracker.model.Task;
-import java.util.ArrayList;
+import com.decibeltx.studytracker.model.AssayTypeTask;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public final class AssayTypeView {
 
-  private String id;
+  private Long id;
 
   private String name;
 
   private boolean active;
 
-  private List<AssayTypeField> fields = new ArrayList<>();
+  private Set<AssayTypeField> fields = new HashSet<>();
 
-  private List<Task> tasks = new ArrayList<>();
+  private Set<AssayTypeTask> tasks = new HashSet<>();
 
   private Map<String, String> attributes = new HashMap<>();
 
@@ -36,11 +36,11 @@ public final class AssayTypeView {
     return view;
   }
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -60,19 +60,19 @@ public final class AssayTypeView {
     this.active = active;
   }
 
-  public List<AssayTypeField> getFields() {
+  public Set<AssayTypeField> getFields() {
     return fields;
   }
 
-  public void setFields(List<AssayTypeField> fields) {
+  public void setFields(Set<AssayTypeField> fields) {
     this.fields = fields;
   }
 
-  public List<Task> getTasks() {
+  public Set<AssayTypeTask> getTasks() {
     return tasks;
   }
 
-  public void setTasks(List<Task> tasks) {
+  public void setTasks(Set<AssayTypeTask> tasks) {
     this.tasks = tasks;
   }
 

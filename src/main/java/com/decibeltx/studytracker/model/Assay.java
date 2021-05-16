@@ -16,103 +16,138 @@
 
 package com.decibeltx.studytracker.model;
 
-import com.decibeltx.studytracker.eln.NotebookFolder;
-import com.decibeltx.studytracker.storage.StorageFolder;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Document(collection = "assays")
+@Entity
+@Table(name = "assays")
 @Data
-public class Assay implements Persistable<String> {
+@EntityListeners(AuditingEntityListener.class)
+public class Assay {
 
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
+  @Column(name = "status", nullable = false)
+  @Enumerated(EnumType.STRING)
   @NotNull
   private Status status;
 
-  @DBRef
-  @Linked(model = AssayType.class)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "assay_type_id", nullable = false)
   private AssayType assayType;
 
-  @Linked(model = Study.class)
-  @DBRef
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "study_id", nullable = false)
   private Study study;
 
+  @Column(name = "name", nullable = false)
   @NotNull
   private String name;
 
-  @Indexed(unique = true)
+  @Column(name = "code", nullable = false, unique = true)
   @NotNull
   private String code;
 
+  @Column(name = "description", nullable = false)
   @NotNull
   private String description;
 
   @CreatedBy
-  @Linked(model = User.class)
-  @DBRef
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "created_by", nullable = false)
   private User createdBy;
 
   @LastModifiedBy
-  @Linked(model = User.class)
-  @DBRef
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "collaborator_id", nullable = false)
   private User lastModifiedBy;
 
-  @Linked(model = User.class)
-  @DBRef
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "owner")
   private User owner;
 
+  @Column(name = "start_date", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   @NotNull
   private Date startDate;
 
+  @Column(name = "end_date")
+  @Temporal(TemporalType.TIMESTAMP)
   private Date endDate;
 
-  private NotebookFolder notebookFolder;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "notebook_folder_id")
+  private ELNFolder notebookFolder;
 
-  private StorageFolder storageFolder;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "storage_folder_id")
+  private FileStoreFolder storageFolder;
 
+  @Column(name = "active", nullable = false)
   private boolean active;
 
   @Transient
   private String entryTemplateId;
 
+  @Column(name = "created_at", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   @CreatedDate
   private Date createdAt;
 
+  @Column(name = "updated_at", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   @LastModifiedDate
   private Date updatedAt;
 
-  @Linked(model = User.class)
-  @DBRef
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "assay_users",
+      joinColumns = @JoinColumn(name = "assay_id"),
+      inverseJoinColumns = @JoinColumn(name = "user_id"))
   private List<User> users = new ArrayList<>();
 
+  @Type(type = "json")
+  @Column(name = "fields", columnDefinition = "json")
   private Map<String, Object> fields = new LinkedHashMap<>();
 
+  @Type(type = "json")
+  @Column(name = "attributes", columnDefinition = "json")
   private Map<String, String> attributes = new LinkedHashMap<>();
 
-  private List<Task> tasks = new ArrayList<>();
-
-  @Override
-  @JsonIgnore
-  public boolean isNew() {
-    return id == null;
-  }
+  @OneToMany(mappedBy = "assay", fetch = FetchType.LAZY)
+  private Set<AssayTask> tasks = new HashSet<>();
 
 }

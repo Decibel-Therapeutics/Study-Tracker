@@ -23,7 +23,7 @@ public class AssayNotebookController extends AbstractAssayController {
   private StudyNotebookService studyNotebookService;
 
   @GetMapping("")
-  public NotebookFolder getNotebookFolder(@PathVariable("assayId") String assayId)
+  public NotebookFolder getNotebookFolder(@PathVariable("assayId") Long assayId)
           throws RecordNotFoundException {
     LOGGER.info("Fetching notebook folder for assay: " + assayId);
     Assay assay = getAssayFromIdentifier(assayId);

@@ -104,7 +104,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
   private String getNotebookFolderPath(Study study) {
     StringBuilder path = new StringBuilder("/");
-    NotebookFolder studyFolder = study.getNotebookFolder();
+    NotebookFolder studyFolder = NotebookFolder.from(study.getNotebookFolder());
     path.append(getProjectPath(studyFolder));
     path.append(study.getProgram().getName()).append("/").append(study.getName());
     return path.toString();
@@ -112,7 +112,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
   private String getNotebookFolderPath(Assay assay) {
     StringBuilder path = new StringBuilder("/");
-    NotebookFolder assayFolder = assay.getNotebookFolder();
+    NotebookFolder assayFolder = NotebookFolder.from(assay.getNotebookFolder());
     path.append(getProjectPath(assayFolder));
     Study study = assay.getStudy();
     Program program = study.getProgram();
@@ -161,7 +161,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
     // Does the study have the folder object set?
     if (study.getNotebookFolder() != null) {
-      NotebookFolder studyFolder = study.getNotebookFolder();
+      NotebookFolder studyFolder = NotebookFolder.from(study.getNotebookFolder());
       Optional<BenchlingFolder> optional = client.findFolderById(studyFolder.getReferenceId());
       return optional.flatMap(folder -> {
           if (includeContents) {
@@ -183,7 +183,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     LOGGER.info("Fetching notebook entry for assay: " + assay.getCode());
 
     if (assay.getNotebookFolder() != null) {
-      NotebookFolder assayFolder = assay.getNotebookFolder();
+      NotebookFolder assayFolder = NotebookFolder.from(assay.getNotebookFolder());
       Optional<BenchlingFolder> optional = client.findFolderById(assayFolder.getReferenceId());
       return optional.flatMap(folder -> Optional.of(getContentFullNotebookFolder(folder, assay)));
     } else {
@@ -258,7 +258,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
   @Override
   public NotebookEntry createAssayNotebookEntry(Assay assay, String templateId, String benchlingUserId) throws NotebookException {
-    NotebookFolder assayFolder = assay.getNotebookFolder();
+    NotebookFolder assayFolder = NotebookFolder.from(assay.getNotebookFolder());
     BenchlingEntryRequest request = new BenchlingEntryRequest();
     request.setFolderId(assayFolder.getReferenceId());
     request.setName(assay.getName());

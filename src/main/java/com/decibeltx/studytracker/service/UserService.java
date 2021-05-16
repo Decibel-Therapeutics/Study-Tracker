@@ -16,40 +16,76 @@
 
 package com.decibeltx.studytracker.service;
 
+import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.User;
+import com.decibeltx.studytracker.repository.UserRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface UserService {
+@Service
+public class UserService {
 
-  Optional<User> findById(String id);
+  @Autowired
+  private UserRepository userRepository;
 
-  List<User> findAll();
+  public Optional<User> findById(Long id) {
+    return userRepository.findById(id);
+  }
 
-  Optional<User> findByEmail(String email);
+  public List<User> findAll() {
+    return userRepository.findAll();
+  }
 
-  Optional<User> findByUsername(String username);
+  public Optional<User> findByEmail(String email) {
+    return userRepository.findByEmail(email);
+  }
 
-  List<User> search(String keyword);
+  public Optional<User> findByUsername(String username) {
+    return userRepository.findByUsername(username);
+  }
 
-  void create(User user);
+  public List<User> search(String keyword) {
+    return userRepository.findByDisplayNameLike(keyword);
+  }
 
-  void update(User user);
+  public long count() {
+    return userRepository.count();
+  }
 
-  void delete(User user);
+  @Transactional
+  public void create(User user) {
+    userRepository.save(user);
+  }
 
-  /**
-   * Counting number of users created before/after/between given dates.
-   */
-  long count();
+  @Transactional
+  public void update(User user) {
+    userRepository.findById(user.getId()).orElseThrow(RecordNotFoundException::new);
+    userRepository.save(user);
+  }
 
-  long countFromDate(Date startDate);
+  @Transactional
+  public void delete(User user) {
+    userRepository.delete(user);
+  }
 
-  long countBeforeDate(Date endDate);
+  public long countFromDate(Date startDate) {
+    return userRepository.countByCreatedAtAfter(startDate);
+  }
 
-  long countBetweenDates(Date startDate, Date endDate);
+  public long countBeforeDate(Date endDate) {
+    return userRepository.countByCreatedAtBefore(endDate);
+  }
 
-  long countActiveUsers();
+  public long countBetweenDates(Date startDate, Date endDate) {
+    return userRepository.countByCreatedAtBetween(startDate, endDate);
+  }
+
+  public long countActiveUsers() {
+    return userRepository.countByActive(true);
+  }
 
 }

@@ -1,4 +1,4 @@
-package com.decibeltx.studytracker.model;
+package com.decibeltx.studytracker.events;
 
 public enum EventType {
 

@@ -3,16 +3,16 @@ package com.decibeltx.studytracker.events.dto;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.User;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class StudyView {
 
-  private String id;
+  private Long id;
 
   private String name;
 
@@ -46,11 +46,11 @@ public final class StudyView {
 
   private boolean active;
 
-  private List<KeywordView> keywords = new ArrayList<>();
+  private Set<KeywordView> keywords = new HashSet<>();
 
-  private List<String> users = new ArrayList<>();
+  private Set<String> users = new HashSet<>();
 
-  private Map<String, Object> attributes = new HashMap<>();
+  private Map<String, String> attributes = new HashMap<>();
 
   private StudyView() {
   }
@@ -73,12 +73,12 @@ public final class StudyView {
     view.setActive(study.isActive());
     view.setKeywords(study.getKeywords().stream()
         .map(KeywordView::from)
-        .collect(Collectors.toList()));
+        .collect(Collectors.toSet()));
     view.setStartDate(study.getStartDate());
     view.setEndDate(study.getEndDate());
     view.setUsers(study.getUsers().stream()
         .map(User::getDisplayName)
-        .collect(Collectors.toList()));
+        .collect(Collectors.toSet()));
     view.setAttributes(study.getAttributes());
     if (study.getCollaborator() != null) {
       view.setCollaborator(study.getCollaborator().getLabel());
@@ -86,11 +86,11 @@ public final class StudyView {
     return view;
   }
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 
-  private void setId(String id) {
+  private void setId(Long id) {
     this.id = id;
   }
 
@@ -198,27 +198,27 @@ public final class StudyView {
     this.active = active;
   }
 
-  public List<KeywordView> getKeywords() {
+  public Set<KeywordView> getKeywords() {
     return keywords;
   }
 
-  private void setKeywords(List<KeywordView> keywords) {
+  private void setKeywords(Set<KeywordView> keywords) {
     this.keywords = keywords;
   }
 
-  public List<String> getUsers() {
+  public Set<String> getUsers() {
     return users;
   }
 
-  private void setUsers(List<String> users) {
+  private void setUsers(Set<String> users) {
     this.users = users;
   }
 
-  public Map<String, Object> getAttributes() {
+  public Map<String, String> getAttributes() {
     return attributes;
   }
 
-  private void setAttributes(Map<String, Object> attributes) {
+  private void setAttributes(Map<String, String> attributes) {
     this.attributes = attributes;
   }
 

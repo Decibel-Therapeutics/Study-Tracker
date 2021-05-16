@@ -48,20 +48,19 @@ public class StudyExternalLinksController extends AbstractStudyController {
   private StudyExternalLinkService studyExternalLinkService;
 
   @GetMapping("")
-  public List<ExternalLink> getStudyExternalLinks(@PathVariable("id") String studyId) {
+  public List<ExternalLink> getStudyExternalLinks(@PathVariable("id") Long studyId) {
     Study study = getStudyFromIdentifier(studyId);
-    return study.getExternalLinks();
+    return studyExternalLinkService.findAllStudyExternalLinks(study);
   }
 
   @PostMapping("")
-  public HttpEntity<ExternalLink> addExternalLink(@PathVariable("id") String studyId,
+  public HttpEntity<ExternalLink> addExternalLink(@PathVariable("id") Long studyId,
       @RequestBody ExternalLink externalLink) {
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
-    study.setLastModifiedBy(user);
     studyExternalLinkService.addStudyExternalLink(study, externalLink);
 
     // Publish events
@@ -73,16 +72,15 @@ public class StudyExternalLinksController extends AbstractStudyController {
   }
 
   @PutMapping("/{linkId}")
-  public HttpEntity<ExternalLink> editExternalLink(@PathVariable("id") String studyId,
-      @PathVariable("linkId") String linkId, @RequestBody ExternalLink externalLink) {
+  public HttpEntity<ExternalLink> editExternalLink(@PathVariable("id") Long studyId,
+      @PathVariable("linkId") Long linkId, @RequestBody ExternalLink externalLink) {
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
-    study.setLastModifiedBy(user);
     Optional<ExternalLink> optional = studyExternalLinkService
-        .findStudyExternalLinkById(study, linkId);
+        .findById(linkId);
     if (!optional.isPresent()) {
       throw new RecordNotFoundException("Cannot find external link with ID: " + linkId);
     }
@@ -97,8 +95,8 @@ public class StudyExternalLinksController extends AbstractStudyController {
   }
 
   @DeleteMapping("/{linkId}")
-  public HttpEntity<?> removeExternalLink(@PathVariable("id") String studyId,
-      @PathVariable("linkId") String linkId) {
+  public HttpEntity<?> removeExternalLink(@PathVariable("id") Long studyId,
+      @PathVariable("linkId") Long linkId) {
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());

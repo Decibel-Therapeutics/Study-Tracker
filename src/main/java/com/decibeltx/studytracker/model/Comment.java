@@ -16,33 +16,51 @@
 
 package com.decibeltx.studytracker.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@Entity
+@Table(name = "comments")
 @Data
-public class Comment implements Persistable<String> {
+@EntityListeners(AuditingEntityListener.class)
+public class Comment {
 
-  private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "study_id")
+  private Study study;
+
+  @Column(name = "text", nullable = false)
   @NotNull
   private String text;
 
-  @Linked(model = User.class)
-  @NotNull
-  @DBRef
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "created_by")
   private User createdBy;
 
+  @Column(name = "created_at", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   private Date createdAt;
 
+  @Column(name = "updated_at")
+  @Temporal(TemporalType.TIMESTAMP)
   private Date updatedAt;
 
-  @Override
-  @JsonIgnore
-  public boolean isNew() {
-    return id == null;
-  }
 }

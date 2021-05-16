@@ -16,21 +16,35 @@
 
 package com.decibeltx.studytracker.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.net.URL;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.Data;
-import org.springframework.data.domain.Persistable;
 
+@Entity
+@Table(name = "external_links")
 @Data
-public class ExternalLink implements Persistable<String> {
+public class ExternalLink {
 
-  private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
+
+  @Column(name = "label", nullable = false)
   private String label;
+
+  @Column(name = "url", nullable = false)
   private URL url;
 
-  @Override
-  @JsonIgnore
-  public boolean isNew() {
-    return id == null;
-  }
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "study_id")
+  private Study study;
+
 }

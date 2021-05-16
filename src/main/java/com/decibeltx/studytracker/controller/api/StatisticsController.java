@@ -1,6 +1,6 @@
 package com.decibeltx.studytracker.controller.api;
 
-import com.decibeltx.studytracker.model.Statistics;
+import com.decibeltx.studytracker.entities.Statistics;
 import com.decibeltx.studytracker.service.StatisticsService;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;

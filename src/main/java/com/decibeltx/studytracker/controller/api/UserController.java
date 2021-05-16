@@ -51,23 +51,14 @@ public class UserController {
   @Autowired
   private ActivityService activityService;
 
-  private Optional<User> findByIdentifier(String id) {
-    Optional<User> optional = userService.findById(id);
-    if (optional.isPresent()) {
-      return optional;
-    } else {
-      return userService.findByUsername(id);
-    }
-  }
-
   @GetMapping("")
   public List<User> getAllUsers() throws Exception {
     return userService.findAll();
   }
 
   @GetMapping("/{id}")
-  public User getUser(@PathVariable("id") String id) throws Exception {
-    Optional<User> optional = this.findByIdentifier(id);
+  public User getUser(@PathVariable("id") Long id) throws Exception {
+    Optional<User> optional = userService.findById(id);
     if (optional.isPresent()) {
       return optional.get();
     } else {
@@ -76,7 +67,7 @@ public class UserController {
   }
 
   @PostMapping("/{id}/status")
-  public HttpEntity<?> updateUserStatus(@PathVariable("id") String userId,
+  public HttpEntity<?> updateUserStatus(@PathVariable("id") Long userId,
       @RequestParam("active") boolean active) {
     Optional<User> optional = userService.findById(userId);
     if (!optional.isPresent()) {
@@ -89,7 +80,7 @@ public class UserController {
   }
 
   @GetMapping("/{id}/activity")
-  public List<Activity> getUserActivity(@PathVariable("id") String userId) {
+  public List<Activity> getUserActivity(@PathVariable("id") Long userId) {
     Optional<User> optional = userService.findById(userId);
     if (!optional.isPresent()) {
       throw new RecordNotFoundException("User not found: " + userId);
@@ -106,7 +97,7 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
-  public HttpEntity<User> updateUser(@PathVariable("id") String userId,
+  public HttpEntity<User> updateUser(@PathVariable("id") Long userId,
       @RequestBody User updatedUser) {
 
     Optional<User> optional = userService.findById(userId);

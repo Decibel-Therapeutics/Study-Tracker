@@ -56,7 +56,7 @@ public class EntryTemplateController {
                 .orElseThrow(RecordNotFoundException::new);
     }
 
-    private NotebookEntryTemplate getTemplateById(String id) throws RecordNotFoundException {
+    private NotebookEntryTemplate getTemplateById(Long id) throws RecordNotFoundException {
         return entryTemplateService
                 .findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Template not found: " + id));
@@ -88,7 +88,7 @@ public class EntryTemplateController {
     }
 
     @PostMapping("/{id}/status")
-    public HttpEntity<NotebookEntryTemplate> updateTemplateStatus(@PathVariable("id") String id,
+    public HttpEntity<NotebookEntryTemplate> updateTemplateStatus(@PathVariable("id") Long id,
                                                                   @RequestParam("active") boolean active)
             throws RecordNotFoundException {
         LOGGER.info("Updating template with id: " + id);

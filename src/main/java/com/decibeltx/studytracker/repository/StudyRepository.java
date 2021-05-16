@@ -20,22 +20,22 @@ import com.decibeltx.studytracker.model.Study;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface StudyRepository extends MongoRepository<Study, String> {
+public interface StudyRepository extends JpaRepository<Study, Long> {
 
   Optional<Study> findByCode(String code);
 
   Optional<Study> findByExternalCode(String code);
 
-  @Query("{ 'program.id': ?0 }")
-  List<Study> findByProgramId(String programId);
+  @Query("select s from Study s where s.program.id = ?1")
+  List<Study> findByProgramId(Long programId);
 
   List<Study> findByName(String name);
 
-  @Query("{ 'program.id': ?0, 'legacy': false }")
-  List<Study> findActiveProgramStudies(String programId);
+  @Query("select s from Study s where s.program.id = ?1 and s.legacy = false")
+  List<Study> findActiveProgramStudies(Long programId);
 
   /**
    * Fetches all studies that have an {@code externalCode} value that starts with the provided
@@ -44,10 +44,10 @@ public interface StudyRepository extends MongoRepository<Study, String> {
    * @param prefix
    * @return
    */
-  @Query("{ 'externalCode': { '$regex': ?0, '$options': 'i' } }")
+  @Query("select s from Study s where lower(s.externalCode) like lower(concat(?1, '%'))")
   List<Study> findByExternalCodePrefix(String prefix);
 
-  @Query("{ $or: [{ name: { '$regex': ?0, '$options': 'i'  }}, { code: { '$regex': ?0, '$options': 'i'  }} ] }")
+  @Query("select s from Study s where lower(s.name) like lower(concat('%', ?1, '%')) or lower(s.code) like lower(concat('%', ?1, '%'))")
   List<Study> findByNameOrCodeLike(String keyword);
 
   long countByCreatedAtBefore(Date date);

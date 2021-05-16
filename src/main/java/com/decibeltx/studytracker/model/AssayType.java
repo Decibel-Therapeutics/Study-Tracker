@@ -16,43 +16,34 @@
 
 package com.decibeltx.studytracker.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
-import javax.validation.constraints.NotNull;
+import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Document(collection = "assay_types")
+@Entity
+@Table(name = "assay_types")
 @Data
-public class AssayType implements Persistable<String> {
+@EntityListeners(AuditingEntityListener.class)
+public class AssayType extends CustomEntity {
 
-  @Id
-  private String id;
+  @OneToMany(mappedBy = "assayType", fetch = FetchType.LAZY)
+  private Set<AssayTypeField> fields = new HashSet<>();
 
-  @NotNull
-  @Indexed(unique = true)
-  private String name;
+  @OneToMany(mappedBy = "assayType")
+  private Set<AssayTypeTask> tasks = new HashSet<>();
 
-  @NotNull
-  private String description;
-
-  private boolean active;
-
-  private List<AssayTypeField> fields = new ArrayList<>();
-
-  private List<Task> tasks = new ArrayList<>();
-
+  @Type(type = "json")
+  @Column(name = "attributes", columnDefinition = "json")
   private Map<String, String> attributes = new HashMap<>();
 
-  @Override
-  @JsonIgnore
-  public boolean isNew() {
-    return id == null;
-  }
 }

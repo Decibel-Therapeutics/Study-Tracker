@@ -74,11 +74,11 @@ public class StudyRelationshipServiceTests {
     Assert.assertEquals(1, updatedSource.getStudyRelationships().size());
     Assert.assertEquals(1, updatedTarget.getStudyRelationships().size());
     Assert.assertEquals(updatedTarget.getCode(),
-        updatedSource.getStudyRelationships().get(0).getStudy().getCode());
-    Assert.assertEquals(Type.IS_BLOCKING, updatedSource.getStudyRelationships().get(0).getType());
+        updatedSource.getStudyRelationships().stream().findFirst().get().getTargetStudy().getCode());
+    Assert.assertEquals(Type.IS_BLOCKING, updatedSource.getStudyRelationships().stream().findFirst().get().getType());
     Assert.assertEquals(updatedSource.getCode(),
-        updatedTarget.getStudyRelationships().get(0).getStudy().getCode());
-    Assert.assertEquals(Type.IS_BLOCKED_BY, updatedTarget.getStudyRelationships().get(0).getType());
+        updatedTarget.getStudyRelationships().stream().findFirst().get().getTargetStudy().getCode());
+    Assert.assertEquals(Type.IS_BLOCKED_BY, updatedTarget.getStudyRelationships().stream().findFirst().get().getType());
 
     studyRelationshipService.addStudyRelationship(updatedSource, updatedTarget, Type.IS_RELATED_TO);
 
@@ -88,11 +88,11 @@ public class StudyRelationshipServiceTests {
     Assert.assertEquals(1, updatedSource.getStudyRelationships().size());
     Assert.assertEquals(1, updatedTarget.getStudyRelationships().size());
     Assert.assertEquals(updatedTarget.getCode(),
-        updatedSource.getStudyRelationships().get(0).getStudy().getCode());
-    Assert.assertEquals(Type.IS_RELATED_TO, updatedSource.getStudyRelationships().get(0).getType());
+        updatedSource.getStudyRelationships().stream().findFirst().get().getTargetStudy().getCode());
+    Assert.assertEquals(Type.IS_RELATED_TO, updatedSource.getStudyRelationships().stream().findFirst().get().getType());
     Assert.assertEquals(updatedSource.getCode(),
-        updatedTarget.getStudyRelationships().get(0).getStudy().getCode());
-    Assert.assertEquals(Type.IS_RELATED_TO, updatedTarget.getStudyRelationships().get(0).getType());
+        updatedTarget.getStudyRelationships().stream().findFirst().get().getTargetStudy().getCode());
+    Assert.assertEquals(Type.IS_RELATED_TO, updatedTarget.getStudyRelationships().stream().findFirst().get().getType());
 
   }
 

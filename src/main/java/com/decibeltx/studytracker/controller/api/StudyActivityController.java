@@ -34,7 +34,7 @@ public class StudyActivityController extends AbstractStudyController {
   private ActivityService activityService;
 
   @GetMapping("")
-  public List<Activity> getStudyActivity(@PathVariable("studyId") String studyId) {
+  public List<Activity> getStudyActivity(@PathVariable("studyId") Long studyId) {
     Study study = this.getStudyFromIdentifier(studyId);
     return activityService.findByStudy(study);
   }

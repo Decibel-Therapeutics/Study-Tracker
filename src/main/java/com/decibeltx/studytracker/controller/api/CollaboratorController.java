@@ -66,7 +66,7 @@ public class CollaboratorController {
   }
 
   @GetMapping("/{id}")
-  public Collaborator getExternalContact(@PathVariable("id") String id) throws Exception {
+  public Collaborator getExternalContact(@PathVariable("id") Long id) throws Exception {
     Optional<Collaborator> optional = collaboratorService.findById(id);
     if (optional.isPresent()) {
       return optional.get();

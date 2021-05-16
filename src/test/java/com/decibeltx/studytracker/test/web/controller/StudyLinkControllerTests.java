@@ -137,7 +137,7 @@ public class StudyLinkControllerTests {
         .orElseThrow(RecordNotFoundException::new);
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
     Assert.assertFalse(study.getExternalLinks().isEmpty());
-    ExternalLink link = study.getExternalLinks().get(0);
+    ExternalLink link = study.getExternalLinks().stream().findFirst().get();
 
     mockMvc.perform(delete("/api/study/CPA-10001/links/" + link.getId())
         .contentType(MediaType.APPLICATION_JSON)

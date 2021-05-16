@@ -16,18 +16,53 @@
 
 package com.decibeltx.studytracker.service;
 
+import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Conclusions;
 import com.decibeltx.studytracker.model.Study;
+import com.decibeltx.studytracker.model.StudyConclusions;
+import com.decibeltx.studytracker.repository.StudyConclusionsRepository;
+import com.decibeltx.studytracker.repository.StudyRepository;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface StudyConclusionsService {
+@Service
+public class StudyConclusionsService {
 
-  Optional<Conclusions> findStudyConclusions(Study study);
+  @Autowired
+  private StudyConclusionsRepository studyConclusionsRepository;
 
-  Conclusions addStudyConclusions(Study study, Conclusions conclusions);
+  @Autowired
+  private StudyRepository studyRepository;
 
-  Conclusions updateStudyConclusions(Study study, Conclusions conclusions);
+  public Optional<StudyConclusions> findStudyConclusions(Study study) {
+    return studyConclusionsRepository.findByStudyId(study.getId());
+  }
 
-  void deleteStudyConclusions(Study study);
+  @Transactional
+  public Conclusions addStudyConclusions(Study study, StudyConclusions conclusions) {
+    conclusions.setStudy(study);
+    studyConclusionsRepository.save(conclusions);
+    studyRepository.save(study);
+    return conclusions;
+  }
+
+  @Transactional
+  public Conclusions updateStudyConclusions(Study study, StudyConclusions conclusions) {
+    studyConclusionsRepository.save(conclusions);
+    studyRepository.save(study);
+    return conclusions;
+  }
+
+  @Transactional
+  public void deleteStudyConclusions(Study study) {
+    Optional<StudyConclusions> optional = studyConclusionsRepository.findByStudyId(study.getId());
+    if (!optional.isPresent()) {
+        throw new RecordNotFoundException(String.format("Conclusions not found for study: %s", study.getCode()));
+    }
+    studyConclusionsRepository.deleteById(optional.get().getId());
+    studyRepository.save(study);
+  }
 
 }

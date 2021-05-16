@@ -23,56 +23,77 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 
-@Document(collection = "users")
+@Entity
+@Table(name = "users")
 @Data
-public class User implements Persistable<String> {
+@EntityListeners(AuditingEntityListener.class)
+public class User {
 
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-  @Indexed(unique = true)
+  @Column(name = "username", unique = true, nullable = false)
   @NotNull
   private String username;
 
+  @Column(name = "password")
   private String password;
 
+  @Column(name = "department")
   private String department;
 
+  @Column(name = "title")
   private String title;
 
+  @Column(name = "display_name", nullable = false)
   @NotNull
   private String displayName;
 
+  @Column(name = "email", unique = true, nullable = false)
   @NotNull
-  @Indexed(unique = true)
   private String email;
 
+  @Column(name = "created_at", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   @CreatedDate
   private Date createdAt;
 
+  @Column(name = "updated_at")
   @LastModifiedDate
   private Date updatedAt;
 
   private Map<String, String> attributes = new LinkedHashMap<>();
 
+  @Column(name = "admin", nullable = false)
   private boolean admin = false;
 
+  @Column(name = "active", nullable = false)
   private boolean active = true;
 
+  @Column(name = "locked", nullable = false)
   private boolean locked = false;
 
+  @Column(name = "expired", nullable = false)
   private boolean expired = false;
 
+  @Column(name = "credentials_expired", nullable = false)
   private boolean credentialsExpired = false;
 
   private List<GrantedAuthority> authorities = new ArrayList<>();
@@ -85,12 +106,6 @@ public class User implements Persistable<String> {
   @JsonProperty
   public void setPassword(String password) {
     this.password = password;
-  }
-
-  @Override
-  @JsonIgnore
-  public boolean isNew() {
-    return id == null;
   }
 
 }

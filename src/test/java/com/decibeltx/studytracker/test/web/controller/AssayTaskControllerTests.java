@@ -31,6 +31,7 @@ import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Assay;
+import com.decibeltx.studytracker.model.AssayTask;
 import com.decibeltx.studytracker.model.Task;
 import com.decibeltx.studytracker.model.Task.TaskStatus;
 import com.decibeltx.studytracker.model.User;
@@ -103,7 +104,7 @@ public class AssayTaskControllerTests {
         .orElseThrow(RecordNotFoundException::new);
     User user = assay.getOwner();
 
-    Task task = new Task();
+    AssayTask task = new AssayTask();
     task.setLabel("New task");
     task.setStatus(TaskStatus.TODO);
 
@@ -140,7 +141,7 @@ public class AssayTaskControllerTests {
         .orElseThrow(RecordNotFoundException::new);
     User user = assay.getOwner();
 
-    Task task = assay.getTasks().get(0);
+    AssayTask task = assay.getTasks().stream().findFirst().get();
     task.setStatus(TaskStatus.COMPLETE);
 
     mockMvc.perform(put("/api/assay/xxxxxxx/tasks")
@@ -179,7 +180,7 @@ public class AssayTaskControllerTests {
         .orElseThrow(RecordNotFoundException::new);
     User user = assay.getOwner();
 
-    Task task = assay.getTasks().get(0);
+    Task task = assay.getTasks().stream().findFirst().get();
 
     mockMvc.perform(delete("/api/assay/xxxxxxx/tasks")
         .with(user(user.getUsername()))

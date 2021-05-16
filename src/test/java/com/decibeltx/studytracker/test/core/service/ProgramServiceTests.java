@@ -104,7 +104,7 @@ public class ProgramServiceTests {
     program.setName("Test Program");
     program.setCreatedBy(user);
     program.setLastModifiedBy(user);
-    programRepository.insert(program);
+    programRepository.save(program);
     Assert.assertEquals(6, programRepository.count());
     Assert.assertNotNull(program.getId());
     System.out.println(program.toString());
@@ -121,7 +121,7 @@ public class ProgramServiceTests {
     program.setLastModifiedBy(user);
     Exception exception = null;
     try {
-      programRepository.insert(program);
+      programRepository.save(program);
     } catch (Exception e) {
       exception = e;
       e.printStackTrace();
@@ -135,7 +135,7 @@ public class ProgramServiceTests {
     Exception exception = null;
     Program program = new Program();
     try {
-      programRepository.insert(program);
+      programRepository.save(program);
     } catch (Exception e) {
       exception = e;
       e.printStackTrace();

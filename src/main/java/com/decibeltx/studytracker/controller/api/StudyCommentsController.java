@@ -52,13 +52,13 @@ public class StudyCommentsController extends AbstractStudyController {
   private StudyCommentService studyCommentService;
 
   @GetMapping("")
-  public List<Comment> getStudyComments(@PathVariable("studyId") String studyId) {
+  public List<Comment> getStudyComments(@PathVariable("studyId") Long studyId) {
     Study study = getStudyFromIdentifier(studyId);
-    return study.getComments();
+    return studyCommentService.findStudyComments(study);
   }
 
   @PostMapping("")
-  public HttpEntity<Comment> addStudyComment(@PathVariable("studyId") String studyId,
+  public HttpEntity<Comment> addStudyComment(@PathVariable("studyId") Long studyId,
       @RequestBody Comment comment) {
 
     LOGGER
@@ -82,8 +82,8 @@ public class StudyCommentsController extends AbstractStudyController {
   }
 
   @PutMapping("/{commentId}")
-  public HttpEntity<Comment> editedStudyComment(@PathVariable("studyId") String studyId,
-      @PathVariable("commentId") String commentId, @RequestBody Comment updated) {
+  public HttpEntity<Comment> editedStudyComment(@PathVariable("studyId") Long studyId,
+      @PathVariable("commentId") Long commentId, @RequestBody Comment updated) {
 
     LOGGER.info(String.format("Editing comment for study %s: %s", studyId, updated.toString()));
 
@@ -93,7 +93,7 @@ public class StudyCommentsController extends AbstractStudyController {
         .orElseThrow(RecordNotFoundException::new);
 
     Study study = getStudyFromIdentifier(studyId);
-    Optional<Comment> optional = studyCommentService.findStudyCommentById(study, commentId);
+    Optional<Comment> optional = studyCommentService.findStudyCommentById(commentId);
     if (!optional.isPresent()) {
       throw new RecordNotFoundException(String.format("No comment with ID %s found for study %s",
           commentId, study.getCode()));
@@ -103,7 +103,7 @@ public class StudyCommentsController extends AbstractStudyController {
     comment.setText(updated.getText());
     study.setLastModifiedBy(user);
 
-    studyCommentService.updateStudyComment(study, comment);
+    studyCommentService.updateStudyComment(comment);
 
     // Publish events
     Activity activity = StudyActivityUtils.fromEditiedComment(study, user, comment);
@@ -114,8 +114,8 @@ public class StudyCommentsController extends AbstractStudyController {
   }
 
   @DeleteMapping("/{commentId}")
-  public HttpEntity<?> deleteStudyComment(@PathVariable("studyId") String studyId,
-      @PathVariable("commentId") String commentId) {
+  public HttpEntity<?> deleteStudyComment(@PathVariable("studyId") Long studyId,
+      @PathVariable("commentId") Long commentId) {
 
     LOGGER.info(String.format("Removing comment %s for study %s", commentId, studyId));
 
@@ -126,13 +126,13 @@ public class StudyCommentsController extends AbstractStudyController {
         .orElseThrow(RecordNotFoundException::new);
 
     study.setLastModifiedBy(user);
-    Optional<Comment> optional = studyCommentService.findStudyCommentById(study, commentId);
+    Optional<Comment> optional = studyCommentService.findStudyCommentById(commentId);
     if (!optional.isPresent()) {
       throw new RecordNotFoundException(String.format("No comment with ID %s found for study %s",
           commentId, study.getCode()));
     }
 
-    studyCommentService.deleteStudyComment(study, commentId);
+    studyCommentService.deleteStudyComment(commentId);
 
     // Publish events
     Activity activity = StudyActivityUtils.fromDeletedComment(study, user);

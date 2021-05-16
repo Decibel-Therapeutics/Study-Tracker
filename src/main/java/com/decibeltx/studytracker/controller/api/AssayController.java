@@ -57,12 +57,12 @@ public class AssayController extends AbstractAssayController {
   }
 
   @GetMapping("/{id}")
-  public Assay findById(@PathVariable("id") String assayId) throws RecordNotFoundException {
+  public Assay findById(@PathVariable("id") Long assayId) throws RecordNotFoundException {
     return getAssayFromIdentifier(assayId);
   }
 
   @PutMapping("/{id}")
-  public HttpEntity<Assay> update(@PathVariable("id") String id, @RequestBody Assay assay) {
+  public HttpEntity<Assay> update(@PathVariable("id") Long id, @RequestBody Assay assay) {
 
     LOGGER.info("Updating assay with id: " + id);
     LOGGER.info(assay.toString());
@@ -80,7 +80,7 @@ public class AssayController extends AbstractAssayController {
   }
 
   @DeleteMapping("/{id}")
-  public HttpEntity<?> delete(@PathVariable("id") String id) {
+  public HttpEntity<?> delete(@PathVariable("id") Long id) {
 
     LOGGER.info("Deleting assay: " + id);
 
@@ -97,12 +97,14 @@ public class AssayController extends AbstractAssayController {
   }
 
   @PostMapping("/{id}/status")
-  public HttpEntity<?> updateStatus(@PathVariable("id") String id,
+  public HttpEntity<?> updateStatus(@PathVariable("id") Long id,
       @RequestBody Map<String, Object> params) throws StudyTrackerException {
 
     if (!params.containsKey("status")) {
       throw new StudyTrackerException("No status label provided.");
     }
+
+    Assay assay = this.getAssayFromIdentifier(id);
 
     // Get authenticated user
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -114,14 +116,14 @@ public class AssayController extends AbstractAssayController {
     Status status = Status.valueOf(label);
     LOGGER.info(String.format("Setting status of assay %s to %s", id, label));
 
-    this.updateAssayStatus(id, status, user);
+    this.updateAssayStatus(assay.getId(), status, user);
 
     return new ResponseEntity<>(HttpStatus.OK);
 
   }
 
   @GetMapping("/{assayId}/activity")
-  public List<Activity> getAssayActivity(@PathVariable("assayId") String assayId) {
+  public List<Activity> getAssayActivity(@PathVariable("assayId") Long assayId) {
     Assay assay = this.getAssayFromIdentifier(assayId);
     return getActivityService().findByAssay(assay);
   }

@@ -16,93 +16,63 @@
 
 package com.decibeltx.studytracker.model;
 
+import com.decibeltx.studytracker.events.EventType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Data;
+import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Document(collection = "activity")
+@Entity
+@Data
+@Table(name = "activity")
+@EntityListeners(AuditingEntityListener.class)
 public class Activity {
 
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
+  @Column(name = "reference", nullable = false)
+  @Enumerated(EnumType.STRING)
   private Reference reference;
 
-  private String referenceId;
+  @Column(name = "reference_id", nullable = false)
+  private Long referenceId;
 
+  @Column(name = "event_type", nullable = false)
+  @Enumerated(EnumType.STRING)
   private EventType eventType;
 
+  @Type(type = "json")
+  @Column(name = "data", columnDefinition = "json")
   private Map<String, Object> data = new HashMap<>();
 
-  @Linked(model = User.class)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
   @NotNull
-  @DBRef
   private User user;
 
+  @Column(name = "date", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   private Date date;
-
-  /* Getters and Setters */
-
-  public User getUser() {
-    return user;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public Reference getReference() {
-    return reference;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
-  }
-
-  public void setReference(Reference reference) {
-    this.reference = reference;
-  }
-
-  public String getReferenceId() {
-    return referenceId;
-  }
-
-  public void setReferenceId(String referenceId) {
-    this.referenceId = referenceId;
-  }
-
-  public EventType getEventType() {
-    return eventType;
-  }
-
-  public void setEventType(EventType eventType) {
-    this.eventType = eventType;
-  }
-
-  public Date getDate() {
-    return date;
-  }
-
-  public Map<String, Object> getData() {
-    return data;
-  }
-
-  public void setDate(Date date) {
-    this.date = date;
-  }
-
-  public void setData(Map<String, Object> data) {
-    this.data = data;
-  }
 
   @JsonProperty("triggeredBy")
   public String triggeredBy() {

@@ -17,19 +17,44 @@
 package com.decibeltx.studytracker.model;
 
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import lombok.Data;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@MappedSuperclass
 @Data
-public class Task {
+@EntityListeners(AuditingEntityListener.class)
+public abstract class Task {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
+
+  @Column(name = "status", nullable = false)
+  @Enumerated(EnumType.STRING)
   private TaskStatus status;
 
+  @Column(name = "label", nullable = false)
   private String label;
 
+  @Column(name = "order", nullable = false)
   private Integer order;
 
+  @Column(name = "created_at", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   private Date createdAt = new Date();
 
+  @Column(name = "updated_at", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
   private Date updatedAt = new Date();
 
   public enum TaskStatus {

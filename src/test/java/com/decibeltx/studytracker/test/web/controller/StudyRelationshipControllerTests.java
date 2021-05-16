@@ -92,7 +92,7 @@ public class StudyRelationshipControllerTests {
         .orElseThrow(RecordNotFoundException::new);
     Assert.assertEquals(0, targetStudy.getStudyRelationships().size());
 
-    StudyRelationship studyRelationship = new StudyRelationship(Type.IS_BLOCKING, targetStudy);
+    StudyRelationship studyRelationship = new StudyRelationship(Type.IS_BLOCKING, sourceStudy, targetStudy);
     mockMvc.perform(post("/api/study/CPA-10001/relationships")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsBytes(studyRelationship))
@@ -104,14 +104,14 @@ public class StudyRelationshipControllerTests {
     targetStudy = studyRepository.findByCode("PPB-10001")
         .orElseThrow(RecordNotFoundException::new);
     Assert.assertEquals(1, targetStudy.getStudyRelationships().size());
-    Assert.assertEquals(Type.IS_BLOCKING, sourceStudy.getStudyRelationships().get(0).getType());
+    Assert.assertEquals(Type.IS_BLOCKING, sourceStudy.getStudyRelationships().stream().findFirst().get().getType());
     Assert.assertEquals(targetStudy.getId(),
-        sourceStudy.getStudyRelationships().get(0).getStudy().getId());
+        sourceStudy.getStudyRelationships().stream().findFirst().get().getTargetStudy().getId());
     targetStudy = studyRepository.findByCode("PPB-10001")
         .orElseThrow(RecordNotFoundException::new);
-    Assert.assertEquals(Type.IS_BLOCKED_BY, targetStudy.getStudyRelationships().get(0).getType());
+    Assert.assertEquals(Type.IS_BLOCKED_BY, targetStudy.getStudyRelationships().stream().findFirst().get().getType());
     Assert.assertEquals(sourceStudy.getId(),
-        targetStudy.getStudyRelationships().get(0).getStudy().getId());
+        targetStudy.getStudyRelationships().stream().findFirst().get().getTargetStudy().getId());
 
   }
 
@@ -132,15 +132,16 @@ public class StudyRelationshipControllerTests {
     this.createStudyRelationshipTest();
     Study targetStudy = studyRepository.findByCode("PPB-10001")
         .orElseThrow(RecordNotFoundException::new);
-    StudyRelationship studyRelationship = new StudyRelationship(Type.IS_BLOCKING, targetStudy);
+    Study sourceStudy = studyRepository.findByCode("CPA-10001")
+        .orElseThrow(RecordNotFoundException::new);
+    StudyRelationship studyRelationship = new StudyRelationship(Type.IS_BLOCKING, sourceStudy, targetStudy);
     mockMvc.perform(delete("/api/study/CPA-10001/relationships")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsBytes(studyRelationship))
         .with(user("jsmith")))
         .andExpect(status().isOk());
 
-    Study sourceStudy = studyRepository.findByCode("CPA-10001")
-        .orElseThrow(RecordNotFoundException::new);
+
     Assert.assertEquals(0, sourceStudy.getStudyRelationships().size());
     targetStudy = studyRepository.findByCode("PPB-10001")
         .orElseThrow(RecordNotFoundException::new);

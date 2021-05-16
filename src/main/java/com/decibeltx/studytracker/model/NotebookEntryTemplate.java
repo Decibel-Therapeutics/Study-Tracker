@@ -1,52 +1,67 @@
 package com.decibeltx.studytracker.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Document(collection = "notebook_entry_templates")
+@Entity
+@Table(name = "notebook_entry_templates")
 @Data
-public class NotebookEntryTemplate implements Persistable<String> {
+@EntityListeners(AuditingEntityListener.class)
+public class NotebookEntryTemplate {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    @Indexed(unique = true)
+    @Column(name = "name", nullable = false, unique = true)
     @NotNull(message = "Template name must not be empty")
     private String name;
 
-    @Indexed(unique = true)
+    @Column(name = "template_id", nullable = false, unique = true)
     @NotNull(message = "Template id must not be empty")
     private String templateId;
 
     @CreatedBy
-    @Linked(model = NotebookEntryTemplate.class)
     @NotNull
-    @DBRef
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
     @LastModifiedBy
-    @Linked(model = NotebookEntryTemplate.class)
     @NotNull
-    @DBRef
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_modified_by", nullable = false)
     private User lastModifiedBy;
 
+    @Column(name = "created_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Date createdAt;
 
+    @Column(name = "updated_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     private Date updatedAt;
 
+    @Column(name = "active", nullable = false)
     private boolean active = true;
 
     public static NotebookEntryTemplate of(User user, String templateId,
@@ -61,9 +76,4 @@ public class NotebookEntryTemplate implements Persistable<String> {
         return notebookEntryTemplate;
     }
 
-    @Override
-    @JsonIgnore
-    public boolean isNew() {
-        return id == null;
-    }
 }

@@ -64,12 +64,12 @@ public class StudyExternalLinkServiceTests {
     link.setLabel("Google");
     externalLinkService.addStudyExternalLink(study, link);
     Assert.assertNotNull(link.getId());
-    String id = link.getId();
+    Long id = link.getId();
 
     study = studyService.findByCode("PPB-10001").orElseThrow(RecordNotFoundException::new);
     Assert.assertFalse(study.getComments().isEmpty());
 
-    Optional<ExternalLink> optional = externalLinkService.findStudyExternalLinkById(study, id);
+    Optional<ExternalLink> optional = externalLinkService.findById(id);
     Assert.assertTrue(optional.isPresent());
     link = optional.get();
     Assert.assertEquals("Google", link.getLabel());
@@ -80,12 +80,12 @@ public class StudyExternalLinkServiceTests {
   public void updateExternalLinkTest() throws Exception {
     addExternalLinkTest();
     Study study = studyService.findByCode("PPB-10001").orElseThrow(RecordNotFoundException::new);
-    ExternalLink link = study.getExternalLinks().get(0);
-    String id = link.getId();
+    ExternalLink link = study.getExternalLinks().stream().findFirst().get();
+    Long id = link.getId();
     String url = link.getUrl().toString();
     link.setUrl(new URL("https://maps.google.com"));
     externalLinkService.updateStudyExternalLink(study, link);
-    link = externalLinkService.findStudyExternalLinkById(study, id)
+    link = externalLinkService.findById(id)
         .orElseThrow(RecordNotFoundException::new);
     Assert.assertNotEquals(url, link.getUrl().toString());
   }
@@ -94,12 +94,12 @@ public class StudyExternalLinkServiceTests {
   public void deleteExternalLinkTest() throws Exception {
     addExternalLinkTest();
     Study study = studyService.findByCode("PPB-10001").orElseThrow(RecordNotFoundException::new);
-    ExternalLink link = study.getExternalLinks().get(0);
-    String id = link.getId();
+    ExternalLink link = study.getExternalLinks().stream().findFirst().get();
+    Long id = link.getId();
     externalLinkService.deleteStudyExternalLink(study, link.getId());
     Exception exception = null;
     try {
-      link = externalLinkService.findStudyExternalLinkById(study, id)
+      link = externalLinkService.findById(id)
           .orElseThrow(RecordNotFoundException::new);
     } catch (Exception e) {
       exception = e;

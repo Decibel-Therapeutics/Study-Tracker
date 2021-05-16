@@ -63,8 +63,8 @@ public class KeywordController {
   }
 
   @GetMapping("/{id}")
-  public Keyword findById(@PathVariable("id") String assayId) throws RecordNotFoundException {
-    Optional<Keyword> optional = keywordService.findById(assayId);
+  public Keyword findById(@PathVariable("id") Long keywordId) throws RecordNotFoundException {
+    Optional<Keyword> optional = keywordService.findById(keywordId);
     if (optional.isPresent()) {
       return optional.get();
     } else {
@@ -92,7 +92,7 @@ public class KeywordController {
   }
 
   @PutMapping("/{id}")
-  public HttpEntity<Keyword> update(@PathVariable("id") String id, @RequestBody Keyword updated) {
+  public HttpEntity<Keyword> update(@PathVariable("id") Long id, @RequestBody Keyword updated) {
     LOGGER.info("Updating keyword");
     LOGGER.info(updated.toString());
     Optional<Keyword> optional = keywordService
@@ -109,7 +109,7 @@ public class KeywordController {
   }
 
   @DeleteMapping("/{id}")
-  public HttpEntity<?> delete(@PathVariable("id") String id) {
+  public HttpEntity<?> delete(@PathVariable("id") Long id) {
     LOGGER.info("Deleting assay type: " + id);
     Keyword keyword = keywordService.findById(id).orElseThrow(RecordNotFoundException::new);
     keywordService.delete(keyword);

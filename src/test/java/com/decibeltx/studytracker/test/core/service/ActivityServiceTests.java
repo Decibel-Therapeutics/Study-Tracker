@@ -17,12 +17,12 @@
 package com.decibeltx.studytracker.test.core.service;
 
 import com.decibeltx.studytracker.Application;
+import com.decibeltx.studytracker.events.EventType;
 import com.decibeltx.studytracker.events.dto.StudyView;
 import com.decibeltx.studytracker.events.util.StudyActivityUtils;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Activity;
-import com.decibeltx.studytracker.model.EventType;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.repository.StudyRepository;

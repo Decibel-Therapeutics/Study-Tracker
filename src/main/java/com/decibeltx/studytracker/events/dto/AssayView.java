@@ -1,19 +1,19 @@
 package com.decibeltx.studytracker.events.dto;
 
 import com.decibeltx.studytracker.model.Assay;
+import com.decibeltx.studytracker.model.AssayTask;
 import com.decibeltx.studytracker.model.Status;
-import com.decibeltx.studytracker.model.Task;
 import com.decibeltx.studytracker.model.User;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class AssayView {
 
-  private String id;
+  private Long id;
 
   private Status status;
 
@@ -43,13 +43,13 @@ public final class AssayView {
 
   private Date updatedAt;
 
-  private List<String> users = new ArrayList<>();
+  private Set<String> users = new HashSet<>();
 
   private Map<String, Object> fields = new LinkedHashMap<>();
 
   private Map<String, String> attributes = new LinkedHashMap<>();
 
-  private List<Task> tasks = new ArrayList<>();
+  private Set<AssayTask> tasks = new HashSet<>();
 
   private AssayView() {
   }
@@ -72,7 +72,7 @@ public final class AssayView {
     view.setEndDate(assay.getEndDate());
     view.setUsers(assay.getUsers().stream()
         .map(User::getDisplayName)
-        .collect(Collectors.toList()));
+        .collect(Collectors.toSet()));
     view.setFields(assay.getFields());
     view.setTasks(assay.getTasks());
     view.setAttributes(assay.getAttributes());
@@ -81,11 +81,11 @@ public final class AssayView {
   }
 
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -201,11 +201,11 @@ public final class AssayView {
     this.updatedAt = updatedAt;
   }
 
-  public List<String> getUsers() {
+  public Set<String> getUsers() {
     return users;
   }
 
-  public void setUsers(List<String> users) {
+  public void setUsers(Set<String> users) {
     this.users = users;
   }
 
@@ -225,11 +225,11 @@ public final class AssayView {
     this.attributes = attributes;
   }
 
-  public List<Task> getTasks() {
+  public Set<AssayTask> getTasks() {
     return tasks;
   }
 
-  public void setTasks(List<Task> tasks) {
+  public void setTasks(Set<AssayTask> tasks) {
     this.tasks = tasks;
   }
 }

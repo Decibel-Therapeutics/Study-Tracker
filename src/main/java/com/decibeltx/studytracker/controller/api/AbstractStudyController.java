@@ -42,34 +42,24 @@ public abstract class AbstractStudyController {
 
   private EventsService eventsService;
 
-  protected Study getStudyFromIdentifier(String id) {
+  protected Study getStudyFromIdentifier(Long id) {
     Study study;
     Optional<Study> optional = studyService.findById(id);
     if (optional.isPresent()) {
       study = optional.get();
     } else {
-      optional = studyService.findByCode(id);
-      if (optional.isPresent()) {
-        study = optional.get();
-      } else {
-        throw new RecordNotFoundException();
-      }
+      throw new RecordNotFoundException();
     }
     return study;
   }
 
-  protected Assay getAssayFromIdentifier(String id) {
+  protected Assay getAssayFromIdentifier(Long id) {
     Assay assay;
     Optional<Assay> optional = assayService.findById(id);
     if (optional.isPresent()) {
       assay = optional.get();
     } else {
-      optional = assayService.findByCode(id);
-      if (optional.isPresent()) {
-        assay = optional.get();
-      } else {
-        throw new RecordNotFoundException();
-      }
+      throw new RecordNotFoundException();
     }
     return assay;
   }

@@ -16,28 +16,28 @@
 
 package com.decibeltx.studytracker.repository;
 
+import com.decibeltx.studytracker.events.EventType;
 import com.decibeltx.studytracker.model.Activity;
-import com.decibeltx.studytracker.model.EventType;
 import java.util.Date;
 import java.util.List;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface ActivityRepository extends MongoRepository<Activity, String> {
+public interface ActivityRepository extends JpaRepository<Activity, Long> {
 
   List<Activity> findByEventType(EventType eventType);
 
-  @Query("{ 'reference': 'STUDY', 'referenceId': ?0 }")
-  List<Activity> findByStudyId(String studyId);
+  @Query("select a from Activity a where a.reference = 'STUDY' and a.referenceId = ?1 ")
+  List<Activity> findByStudyId(Long studyId);
 
-  @Query("{ 'reference': 'ASSAY', 'referenceId': ?0 }")
-  List<Activity> findByAssayId(String assayId);
+  @Query("select a from Activity a where a.reference = 'ASSAY' and a.referenceId = ?1 ")
+  List<Activity> findByAssayId(Long assayId);
 
-  @Query("{ 'reference': 'PROGRAM', 'referenceId': ?0 }")
-  List<Activity> findByProgramId(String programId);
+  @Query("select a from Activity a where a.reference = 'PROGRAM' and a.referenceId = ?1 ")
+  List<Activity> findByProgramId(Long programId);
 
-  @Query("{ 'user.id': ?0 }")
-  List<Activity> findByUserId(String userId);
+  @Query("select a from Activity a where a.user = ?1 ")
+  List<Activity> findByUserId(Long userId);
 
   long countByDateAfter(Date date);
 
@@ -45,7 +45,7 @@ public interface ActivityRepository extends MongoRepository<Activity, String> {
 
   long countByDateBetween(Date startDate, Date endDate);
 
-  @Query("{'reference': 'STUDY', 'eventType': 'STUDY_STATUS_CHANGED', 'data.newStatus': 'COMPLETE', 'date': {'$gte': ?0} }")
+  @Query("select a from Activity a where a.reference = 'STUDY' and a.eventType = 'STUDY_STATUS_CHANGED' and a.data -> 'newStatus' = 'COMPLETE' and a.date >= ?1")
   List<Activity> findCompletedStudiesAfterDate(Date date);
 
 }

@@ -18,19 +18,56 @@ package com.decibeltx.studytracker.service;
 
 import com.decibeltx.studytracker.model.ExternalLink;
 import com.decibeltx.studytracker.model.Study;
+import com.decibeltx.studytracker.repository.ExternalLinkRepository;
+import com.decibeltx.studytracker.repository.StudyRepository;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface StudyExternalLinkService {
+@Service
+public class StudyExternalLinkService {
 
-  Optional<ExternalLink> findStudyExternalLinkById(Study study, String id);
+  private static final Logger LOGGER = LoggerFactory.getLogger(StudyExternalLinkService.class);
 
-  List<ExternalLink> findAllStudyExternalLinks(Study study);
+  @Autowired
+  private StudyRepository studyRepository;
 
-  ExternalLink addStudyExternalLink(Study study, ExternalLink externalLink);
+  @Autowired
+  private ExternalLinkRepository externalLinkRepository;
 
-  ExternalLink updateStudyExternalLink(Study study, ExternalLink externalLink);
+  public List<ExternalLink> findAllStudyExternalLinks(Study study) {
+    return externalLinkRepository.findByStudyId(study.getId());
+  }
 
-  void deleteStudyExternalLink(Study study, String id);
+  public Optional<ExternalLink> findById(Long id) {
+    return externalLinkRepository.findById(id);
+  }
+
+  @Transactional
+  public ExternalLink addStudyExternalLink(Study study, ExternalLink externalLink) {
+    LOGGER.info(String.format("Adding new external link for study %s: %s",
+        study.getCode(), externalLink));
+    externalLink.setStudy(study);
+    externalLinkRepository.save(externalLink);
+    studyRepository.save(study);
+    return externalLink;
+  }
+
+  @Transactional
+  public ExternalLink updateStudyExternalLink(Study study, ExternalLink externalLink) {
+    externalLinkRepository.save(externalLink);
+    studyRepository.save(study);
+    return externalLink;
+  }
+
+  @Transactional
+  public void deleteStudyExternalLink(Study study, Long linkId) {
+    externalLinkRepository.deleteById(linkId);
+    studyRepository.save(study);
+  }
 
 }

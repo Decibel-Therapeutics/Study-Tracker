@@ -55,19 +55,19 @@ public class StudyAssayController extends AbstractAssayController {
   private StudyNotebookService studyNotebookService;
 
   @GetMapping("")
-  public List<Assay> findStudyAssays(@PathVariable("studyId") String studyId) {
+  public List<Assay> findStudyAssays(@PathVariable("studyId") Long studyId) {
     return getStudyFromIdentifier(studyId).getAssays().stream()
         .filter(Assay::isActive)
         .collect(Collectors.toList());
   }
 
   @GetMapping("/{assayId}")
-  public Assay findById(@PathVariable("assayId") String assayId) throws RecordNotFoundException {
+  public Assay findById(@PathVariable("assayId") Long assayId) throws RecordNotFoundException {
     return getAssayFromIdentifier(assayId);
   }
 
   @PostMapping("")
-  public HttpEntity<Assay> create(@PathVariable("studyId") String studyId,
+  public HttpEntity<Assay> create(@PathVariable("studyId") Long studyId,
       @RequestBody Assay assay)
           throws RecordNotFoundException, NotebookException {
     LOGGER.info("Creating assay");
@@ -107,7 +107,7 @@ public class StudyAssayController extends AbstractAssayController {
   }
 
   @DeleteMapping("/{assayId}")
-  public HttpEntity<?> delete(@PathVariable("assayId") String id) {
+  public HttpEntity<?> delete(@PathVariable("assayId") Long id) {
     LOGGER.info("Deleting assay: " + id);
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
@@ -118,12 +118,14 @@ public class StudyAssayController extends AbstractAssayController {
   }
 
   @PostMapping("/{id}/status")
-  public HttpEntity<?> updateStatus(@PathVariable("id") String id,
+  public HttpEntity<?> updateStatus(@PathVariable("id") Long id,
       @RequestBody Map<String, Object> params) throws StudyTrackerException {
 
     if (!params.containsKey("status")) {
       throw new StudyTrackerException("No status label provided.");
     }
+
+    Assay assay = this.getAssayFromIdentifier(id);
 
     // Get authenticated user
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -135,7 +137,7 @@ public class StudyAssayController extends AbstractAssayController {
     Status status = Status.valueOf(label);
     LOGGER.info(String.format("Setting status of assay %s to %s", id, label));
 
-    this.updateAssayStatus(id, status, user);
+    this.updateAssayStatus(assay.getId(), status, user);
 
     return new ResponseEntity<>(HttpStatus.OK);
 

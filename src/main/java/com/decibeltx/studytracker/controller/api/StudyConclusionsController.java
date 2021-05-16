@@ -21,8 +21,8 @@ import com.decibeltx.studytracker.events.util.StudyActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.exception.StudyTrackerException;
 import com.decibeltx.studytracker.model.Activity;
-import com.decibeltx.studytracker.model.Conclusions;
 import com.decibeltx.studytracker.model.Study;
+import com.decibeltx.studytracker.model.StudyConclusions;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.service.StudyConclusionsService;
 import java.util.Optional;
@@ -52,9 +52,9 @@ public class StudyConclusionsController extends AbstractStudyController {
   private StudyConclusionsService studyConclusionsService;
 
   @GetMapping("")
-  public Conclusions getStudyConclusions(@PathVariable("studyId") String studyId) {
+  public StudyConclusions getStudyConclusions(@PathVariable("studyId") Long studyId) {
     Study study = getStudyFromIdentifier(studyId);
-    Optional<Conclusions> optional = studyConclusionsService.findStudyConclusions(study);
+    Optional<StudyConclusions> optional = studyConclusionsService.findStudyConclusions(study);
     if (optional.isPresent()) {
       return optional.get();
     }
@@ -62,8 +62,8 @@ public class StudyConclusionsController extends AbstractStudyController {
   }
 
   @PostMapping("")
-  public HttpEntity<Conclusions> newStudyConclusions(@PathVariable("studyId") String studyId,
-      @RequestBody Conclusions conclusions) {
+  public HttpEntity<StudyConclusions> newStudyConclusions(@PathVariable("studyId") Long studyId,
+      @RequestBody StudyConclusions conclusions) {
     Study study = getStudyFromIdentifier(studyId);
     if (conclusions.getId() != null || study.getConclusions() != null) {
       throw new StudyTrackerException("Study conclusions object already exists.");
@@ -75,8 +75,7 @@ public class StudyConclusionsController extends AbstractStudyController {
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
-    study.setLastModifiedBy(user);
-    conclusions.setCreatedBy(user);
+
     studyConclusionsService.addStudyConclusions(study, conclusions);
 
     // Publish events
@@ -88,8 +87,8 @@ public class StudyConclusionsController extends AbstractStudyController {
   }
 
   @PutMapping("")
-  public HttpEntity<Conclusions> editStudyConclusions(@PathVariable("studyId") String studyId,
-      @RequestBody Conclusions conclusions) {
+  public HttpEntity<StudyConclusions> editStudyConclusions(@PathVariable("studyId") Long studyId,
+      @RequestBody StudyConclusions conclusions) {
     LOGGER.info(
         String.format("Updating conclusions for study %s: %s", studyId, conclusions.toString()));
     Study study = getStudyFromIdentifier(studyId);
@@ -97,8 +96,7 @@ public class StudyConclusionsController extends AbstractStudyController {
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
-    study.setLastModifiedBy(user);
-    conclusions.setLastModifiedBy(user);
+
     studyConclusionsService.updateStudyConclusions(study, conclusions);
 
     Activity activity = StudyActivityUtils.fromUpdatedConclusions(study, user, conclusions);
@@ -109,7 +107,7 @@ public class StudyConclusionsController extends AbstractStudyController {
   }
 
   @DeleteMapping("")
-  public HttpEntity<?> deleteStudyConclusions(@PathVariable("studyId") String studyId) {
+  public HttpEntity<?> deleteStudyConclusions(@PathVariable("studyId") Long studyId) {
     LOGGER.info(String.format("Deleting conclusions for study %s", studyId));
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils
@@ -117,6 +115,7 @@ public class StudyConclusionsController extends AbstractStudyController {
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
     study.setLastModifiedBy(user);
+
     studyConclusionsService.deleteStudyConclusions(study);
 
     Activity activity = StudyActivityUtils.fromDeletedConclusions(study, user);

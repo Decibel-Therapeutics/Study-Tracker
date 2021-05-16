@@ -4,7 +4,7 @@ import com.decibeltx.studytracker.model.Keyword;
 
 public final class KeywordView {
 
-  private String id;
+  private Long id;
 
   private String category;
 
@@ -21,11 +21,11 @@ public final class KeywordView {
     return view;
   }
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 
-  private void setId(String id) {
+  private void setId(Long id) {
     this.id = id;
   }
 

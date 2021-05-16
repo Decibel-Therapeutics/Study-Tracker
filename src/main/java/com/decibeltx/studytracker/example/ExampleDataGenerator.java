@@ -16,26 +16,28 @@
 
 package com.decibeltx.studytracker.example;
 
-import com.decibeltx.studytracker.eln.NotebookFolder;
 import com.decibeltx.studytracker.events.util.EntryTemplateActivityUtils;
 import com.decibeltx.studytracker.events.util.StudyActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.exception.StudyTrackerException;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Assay;
+import com.decibeltx.studytracker.model.AssayTask;
 import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.model.AssayTypeField;
-import com.decibeltx.studytracker.model.AssayTypeField.AssayFieldType;
+import com.decibeltx.studytracker.model.AssayTypeTask;
 import com.decibeltx.studytracker.model.Collaborator;
 import com.decibeltx.studytracker.model.Comment;
-import com.decibeltx.studytracker.model.Conclusions;
+import com.decibeltx.studytracker.model.CustomEntityField.CustomEntityFieldType;
+import com.decibeltx.studytracker.model.ELNFolder;
 import com.decibeltx.studytracker.model.ExternalLink;
+import com.decibeltx.studytracker.model.FileStoreFolder;
 import com.decibeltx.studytracker.model.Keyword;
 import com.decibeltx.studytracker.model.NotebookEntryTemplate;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
-import com.decibeltx.studytracker.model.Task;
+import com.decibeltx.studytracker.model.StudyConclusions;
 import com.decibeltx.studytracker.model.Task.TaskStatus;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.ActivityRepository;
@@ -59,8 +61,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +143,7 @@ public class ExampleDataGenerator {
     NotebookEntryTemplate notebookEntryTemplate = NotebookEntryTemplate.of(user, templateId, name, timeStamp);
     Activity activity = EntryTemplateActivityUtils
             .fromNewEntryTemplate(notebookEntryTemplate, user);
-    activityRepository.insert(activity);
+    activityRepository.save(activity);
     templates.add(notebookEntryTemplate);
   }
 
@@ -312,7 +315,7 @@ public class ExampleDataGenerator {
 
   public void generateExampleStudies() throws Exception {
 
-    List<Keyword> keywords = new ArrayList<>();
+    Set<Keyword> keywords = new HashSet<>();
     keywords.add(keywordRepository.findByKeywordAndCategory("AKT1", "Gene")
         .orElseThrow(RecordNotFoundException::new));
     keywords.add(keywordRepository.findByKeywordAndCategory("MCF7", "Cell Line")
@@ -338,12 +341,12 @@ public class ExampleDataGenerator {
     study.setLastModifiedBy(user);
     study.setStartDate(new Date());
     study.setOwner(user);
-    study.setUsers(Collections.singletonList(user));
+    study.setUsers(Collections.singleton(user));
     study.setCollaborator(collaborator);
     study.setExternalCode(collaborator.getCode() + "-00001");
     study.setKeywords(keywords);
 
-    NotebookFolder notebookEntry = new NotebookFolder();
+    ELNFolder notebookEntry = new ELNFolder();
     notebookEntry.setName("IDBS ELN");
     notebookEntry.setUrl(
         "https://decibel.idbs-eworkbook.com:8443/EWorkbookWebApp/#entity/displayEntity?entityId=603e68c0e01411e7acd000000a0000a2&v=y");
@@ -352,15 +355,14 @@ public class ExampleDataGenerator {
 
     studyService.create(study);
 
-    activityRepository.insert(StudyActivityUtils.fromNewStudy(study, user));
+    activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
     ExternalLink link = new ExternalLink();
-    link.setId(UUID.randomUUID().toString());
     link.setLabel("Google");
     link.setUrl(new URL("https://google.com"));
     externalLinkService.addStudyExternalLink(study, link);
 
-    activityRepository.insert(StudyActivityUtils.fromNewExternalLink(study, user, link));
+    activityRepository.save(StudyActivityUtils.fromNewExternalLink(study, user, link));
 
     // Study 2
     program = programRepository.findByName("Preclinical Project B")
@@ -379,10 +381,10 @@ public class ExampleDataGenerator {
     study.setLastModifiedBy(user);
     study.setStartDate(new Date());
     study.setOwner(user);
-    study.setUsers(Collections.singletonList(user));
+    study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
 
-    notebookEntry = new NotebookFolder();
+    notebookEntry = new ELNFolder();
     notebookEntry.setName("ELN");
     notebookEntry.setUrl("https://google.com");
     notebookEntry.setReferenceId("12345");
@@ -390,32 +392,30 @@ public class ExampleDataGenerator {
 
     studyService.create(study);
 
-    activityRepository.insert(StudyActivityUtils.fromNewStudy(study, user));
+    activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
     studyService.updateStatus(study, Status.ACTIVE);
 
-    activityRepository.insert(
+    activityRepository.save(
         StudyActivityUtils.fromStudyStatusChange(study, user, Status.IN_PLANNING, Status.ACTIVE));
 
     Comment comment = new Comment();
-    comment.setId(UUID.randomUUID().toString());
     comment.setCreatedAt(new Date());
     comment.setCreatedBy(user);
     comment.setText(
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
     commentService.addStudyComment(study, comment);
 
-    activityRepository.insert(StudyActivityUtils.fromNewComment(study, user, comment));
+    activityRepository.save(StudyActivityUtils.fromNewComment(study, user, comment));
 
-    Conclusions conclusions = new Conclusions();
-    conclusions.setId(UUID.randomUUID().toString());
+    StudyConclusions conclusions = new StudyConclusions();
     conclusions.setCreatedAt(new Date());
     conclusions.setCreatedBy(user);
     conclusions.setContent(
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
     conclusionsService.addStudyConclusions(study, conclusions);
 
-    activityRepository.insert(StudyActivityUtils.fromNewConclusions(study, user, conclusions));
+    activityRepository.save(StudyActivityUtils.fromNewConclusions(study, user, conclusions));
 
     // Study 3
     program = programRepository.findByName("Preclinical Project B")
@@ -435,20 +435,20 @@ public class ExampleDataGenerator {
     study.setStartDate(new Date());
     study.setEndDate(new Date());
     study.setOwner(user);
-    study.setUsers(Collections.singletonList(user));
+    study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
-    notebookEntry = new NotebookFolder();
+    notebookEntry = new ELNFolder();
     notebookEntry.setName("ELN");
     notebookEntry.setUrl(
         "https://google.com");
     study.setNotebookFolder(notebookEntry);
     studyService.create(study);
 
-    activityRepository.insert(StudyActivityUtils.fromNewStudy(study, user));
+    activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
     studyService.updateStatus(study, Status.COMPLETE);
 
-    activityRepository.insert(
+    activityRepository.save(
         StudyActivityUtils.fromStudyStatusChange(study, user, Status.IN_PLANNING, Status.COMPLETE));
 
     // Study 4
@@ -468,15 +468,15 @@ public class ExampleDataGenerator {
     study.setLastModifiedBy(user);
     study.setStartDate(new Date());
     study.setOwner(user);
-    study.setUsers(Collections.singletonList(user));
+    study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
     studyService.create(study);
 
-    activityRepository.insert(StudyActivityUtils.fromNewStudy(study, user));
+    activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
     studyService.updateStatus(study, Status.ON_HOLD);
 
-    activityRepository.insert(
+    activityRepository.save(
         StudyActivityUtils.fromStudyStatusChange(study, user, Status.IN_PLANNING, Status.ON_HOLD));
 
     // Study 5
@@ -497,12 +497,12 @@ public class ExampleDataGenerator {
     study.setStartDate(new Date());
     study.setEndDate(new Date());
     study.setOwner(user);
-    study.setUsers(Collections.singletonList(user));
+    study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
     studyService.create(study);
-    activityRepository.insert(StudyActivityUtils.fromNewStudy(study, user));
+    activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
     studyService.updateStatus(study, Status.COMPLETE);
-    activityRepository.insert(
+    activityRepository.save(
         StudyActivityUtils.fromStudyStatusChange(study, user, Status.IN_PLANNING, Status.COMPLETE));
 
     // Study 6
@@ -523,10 +523,10 @@ public class ExampleDataGenerator {
     study.setStartDate(new Date());
     study.setEndDate(new Date());
     study.setOwner(user);
-    study.setUsers(Collections.singletonList(user));
+    study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
     studyService.create(study);
-    activityRepository.insert(StudyActivityUtils.fromNewStudy(study, user));
+    activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
   }
 
@@ -539,7 +539,7 @@ public class ExampleDataGenerator {
         } catch (Exception e) {
           folder = studyStorageService.createStudyFolder(study);
         }
-        study.setStorageFolder(folder);
+        study.setStorageFolder(FileStoreFolder.from(folder));
         study.setUpdatedAt(new Date());
         studyRepository.save(study);
       } catch (Exception ex) {
@@ -562,19 +562,19 @@ public class ExampleDataGenerator {
     assayType.setName("Histology");
     assayType.setDescription("Histological analysis assays");
     assayType.setActive(true);
-    assayType.setFields(Arrays.asList(
-        new AssayTypeField("No. Slides", "number_of_slides", AssayFieldType.INTEGER, true),
-        new AssayTypeField("Antibodies", "antibodies", AssayFieldType.TEXT),
-        new AssayTypeField("Concentration (ul/mg)", "concentration", AssayFieldType.FLOAT),
-        new AssayTypeField("Date", "date", AssayFieldType.DATE),
-        new AssayTypeField("External", "external", AssayFieldType.BOOLEAN, true),
-        new AssayTypeField("Stain", "stain", AssayFieldType.STRING)
-    ));
-    assayType.setTasks(Arrays.asList(
-        new Task("Embed tissue", TaskStatus.TODO, 0),
-        new Task("Cut slides", TaskStatus.TODO, 1),
-        new Task("Stain slides", TaskStatus.TODO, 2)
-    ));
+    assayType.setFields(new HashSet<>(Arrays.asList(
+        new AssayTypeField("No. Slides", "number_of_slides", CustomEntityFieldType.INTEGER, true),
+        new AssayTypeField("Antibodies", "antibodies", CustomEntityFieldType.TEXT),
+        new AssayTypeField("Concentration (ul/mg)", "concentration", CustomEntityFieldType.FLOAT),
+        new AssayTypeField("Date", "date", CustomEntityFieldType.DATE),
+        new AssayTypeField("External", "external", CustomEntityFieldType.BOOLEAN, true),
+        new AssayTypeField("Stain", "stain", CustomEntityFieldType.STRING)
+    )));
+    assayType.setTasks(new HashSet<>(Arrays.asList(
+        new AssayTypeTask("Embed tissue", TaskStatus.TODO, 0),
+        new AssayTypeTask("Cut slides", TaskStatus.TODO, 1),
+        new AssayTypeTask("Stain slides", TaskStatus.TODO, 2)
+    )));
     assayTypes.add(assayType);
 
     return assayTypes;
@@ -608,7 +608,7 @@ public class ExampleDataGenerator {
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
-    assay.setTasks(Collections.singletonList(new Task("My task")));
+    assay.setTasks(Collections.singleton(new AssayTask("My task")));
     assays.add(assay);
 
     assay = new Assay();
@@ -628,7 +628,7 @@ public class ExampleDataGenerator {
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
-    assay.setTasks(Collections.singletonList(new Task("My task")));
+    assay.setTasks(Collections.singleton(new AssayTask("My task")));
     assays.add(assay);
 
     return assays;
@@ -644,7 +644,7 @@ public class ExampleDataGenerator {
         } catch (Exception e) {
           folder = studyStorageService.createAssayFolder(assay);
         }
-        assay.setStorageFolder(folder);
+        assay.setStorageFolder(FileStoreFolder.from(folder));
         assayRepository.save(assay);
       } catch (Exception ex) {
         throw new RuntimeException(ex);
@@ -663,6 +663,7 @@ public class ExampleDataGenerator {
     assayRepository.deleteAll();
     activityRepository.deleteAll();
     assayTypeRepository.deleteAll();
+
   }
 
   public void populateDatabase() {
@@ -671,17 +672,17 @@ public class ExampleDataGenerator {
       LOGGER.info("Preparing to populate database with example data...");
       this.clearDatabase();
       LOGGER.info("Inserting example data...");
-      userRepository.insert(generateExampleUsers());
-      programRepository.insert(generateExamplePrograms(userRepository.findAll()));
-      assayTypeRepository.insert(generateExampleAssayTypes());
+      userRepository.saveAll(generateExampleUsers());
+      programRepository.saveAll(generateExamplePrograms(userRepository.findAll()));
+      assayTypeRepository.saveAll(generateExampleAssayTypes());
       createProgramFolders();
-      keywordRepository.insert(generateExampleKeywords());
-      collaboratorRepository.insert(generateExampleCollaborators());
-      entryTemplateRepository.insert(generateExampleEntryTemplates(userRepository.findAll()));
+      keywordRepository.saveAll(generateExampleKeywords());
+      collaboratorRepository.saveAll(generateExampleCollaborators());
+      entryTemplateRepository.saveAll(generateExampleEntryTemplates(userRepository.findAll()));
       generateExampleStudies();
 
       for (Assay assay : generateExampleAssays(studyRepository.findAll())) {
-        assayRepository.insert(assay);
+        assayRepository.save(assay);
         Study study = assay.getStudy();
         study.getAssays().add(assay);
         studyRepository.save(study);

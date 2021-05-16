@@ -23,7 +23,7 @@ public class StudyNotebookController extends AbstractStudyController {
   private StudyNotebookService studyNotebookService;
 
   @GetMapping("")
-  public NotebookFolder getStudyNotebookFolder(@PathVariable("studyId") String studyId)
+  public NotebookFolder getStudyNotebookFolder(@PathVariable("studyId") Long studyId)
           throws RecordNotFoundException {
     LOGGER.info("Fetching notebook folder for study: " + studyId);
     Study study = getStudyFromIdentifier(studyId);

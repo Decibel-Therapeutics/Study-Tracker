@@ -70,7 +70,7 @@ public class ProgramController {
   }
 
   @GetMapping("/{id}")
-  public Program getProgram(@PathVariable("id") String programId) throws Exception {
+  public Program getProgram(@PathVariable("id") Long programId) throws Exception {
     Optional<Program> optional = programService.findById(programId);
     if (optional.isPresent()) {
       return optional.get();
@@ -104,7 +104,7 @@ public class ProgramController {
   }
 
   @PutMapping("/{id}")
-  public HttpEntity<Program> updateProgram(@PathVariable("id") String programId,
+  public HttpEntity<Program> updateProgram(@PathVariable("id") Long programId,
       @RequestBody Program program) {
 
     Optional<Program> optional = programService.findById(programId);
@@ -130,7 +130,7 @@ public class ProgramController {
   }
 
   @DeleteMapping("/{id}")
-  public HttpEntity<?> deleteProgram(@PathVariable("id") String programId) {
+  public HttpEntity<?> deleteProgram(@PathVariable("id") Long programId) {
     Optional<Program> optional = programService.findById(programId);
     if (!optional.isPresent()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -155,7 +155,7 @@ public class ProgramController {
   }
 
   @PostMapping("/{id}/status")
-  public HttpEntity<?> updateProgramStatus(@PathVariable("id") String programId,
+  public HttpEntity<?> updateProgramStatus(@PathVariable("id") Long programId,
       @RequestParam("active") boolean active) {
     Optional<Program> optional = programService.findById(programId);
     if (!optional.isPresent()) {
@@ -180,7 +180,7 @@ public class ProgramController {
   }
 
   @GetMapping("/{id}/activity")
-  public HttpEntity<List<Activity>> getProgramActivity(@PathVariable("id") String programId) {
+  public HttpEntity<List<Activity>> getProgramActivity(@PathVariable("id") Long programId) {
     Optional<Program> optional = programService.findById(programId);
     if (!optional.isPresent()) {
       throw new RecordNotFoundException("Program not found: " + programId);

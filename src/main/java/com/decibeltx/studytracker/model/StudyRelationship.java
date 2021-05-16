@@ -16,45 +16,47 @@
 
 package com.decibeltx.studytracker.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.PersistenceConstructor;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import lombok.Data;
 
-@Getter
-@Setter
+@Entity
+@Table(name = "study_relationships")
+@Data
 public class StudyRelationship {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
+
+  @Column(name = "type", nullable = false)
+  @Enumerated(EnumType.STRING)
   private Type type;
 
-  @DBRef(lazy = true)
-  @JsonIgnore
-  private Study study;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "source_study_id")
+  private Study sourceStudy;
 
-  @Transient
-  private String studyId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "target_study_id")
+  private Study targetStudy;
 
   public StudyRelationship() {
   }
 
-  @PersistenceConstructor
-  public StudyRelationship(Type type, Study study) {
+  public StudyRelationship(Type type, Study sourceStudy, Study targetStudy) {
     this.type = type;
-    this.study = study;
-    this.studyId = study.getCode();
-  }
-
-  public StudyRelationship(Type type, String studyId) {
-    this.type = type;
-    this.studyId = studyId;
-  }
-
-  public StudyRelationship(Type type, Study study, String studyId) {
-    this.type = type;
-    this.study = study;
-    this.studyId = studyId;
+    this.sourceStudy = sourceStudy;
+    this.targetStudy = targetStudy;
   }
 
   public enum Type {

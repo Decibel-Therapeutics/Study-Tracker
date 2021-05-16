@@ -56,7 +56,7 @@ public class StudyStorageController extends AbstractStudyController {
   private StudyStorageService studyStorageService;
 
   @GetMapping("")
-  public StorageFolder getStudyStorageFolder(@PathVariable("studyId") String studyId)
+  public StorageFolder getStudyStorageFolder(@PathVariable("studyId") Long studyId)
       throws Exception {
     LOGGER.info("Fetching storage folder for study: " + studyId);
     Study study = getStudyFromIdentifier(studyId);
@@ -64,7 +64,7 @@ public class StudyStorageController extends AbstractStudyController {
   }
 
   @PostMapping("")
-  public HttpEntity<StorageFile> uploadStudyFile(@PathVariable("studyId") String studyId,
+  public HttpEntity<StorageFile> uploadStudyFile(@PathVariable("studyId") Long studyId,
       @RequestParam("file") MultipartFile file) throws Exception {
     LOGGER.info("Uploaded file: " + file.getOriginalFilename());
     String username = UserAuthenticationUtils

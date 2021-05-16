@@ -1,5 +1,6 @@
 package com.decibeltx.studytracker.events.util;
 
+import com.decibeltx.studytracker.events.EventType;
 import com.decibeltx.studytracker.events.dto.CommentView;
 import com.decibeltx.studytracker.events.dto.ConclusionsView;
 import com.decibeltx.studytracker.events.dto.StorageFileView;
@@ -9,7 +10,6 @@ import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Activity.Reference;
 import com.decibeltx.studytracker.model.Comment;
 import com.decibeltx.studytracker.model.Conclusions;
-import com.decibeltx.studytracker.model.EventType;
 import com.decibeltx.studytracker.model.ExternalLink;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
@@ -195,7 +195,7 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("targetStudy", StudyView.from(relationship.getStudy()));
+    data.put("targetStudy", StudyView.from(relationship.getTargetStudy()));
     data.put("sourceStudy", StudyView.from(study));
     data.put("relationship", relationship);
     activity.setData(data);

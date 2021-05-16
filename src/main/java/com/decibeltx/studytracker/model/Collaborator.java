@@ -16,42 +16,49 @@
 
 package com.decibeltx.studytracker.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Document(collection = "collaborators")
+@Entity
+@Table(name = "collaborators")
 @Data
-public class Collaborator implements Persistable<String> {
+@EntityListeners(AuditingEntityListener.class)
+public class Collaborator {
 
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-  @Indexed(unique = true)
+  @Column(name = "label", unique = true, nullable = false)
   @NotNull
   private String label;
 
+  @Column(name = "organization_name", nullable = false)
   @NotNull
   private String organizationName;
 
+  @Column(name = "organization_location")
   private String organizationLocation;
 
+  @Column(name = "contact_person_name")
   private String contactPersonName;
 
+  @Column(name = "contact_email")
   private String contactEmail;
 
+  @Column(name = "code", nullable = false)
   @NotNull
   private String code;
 
+  @Column(name = "active", nullable = false)
   private boolean active = true;
 
-  @Override
-  @JsonIgnore
-  public boolean isNew() {
-    return id == null;
-  }
 }

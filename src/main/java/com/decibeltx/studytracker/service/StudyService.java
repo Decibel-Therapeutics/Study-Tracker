@@ -16,17 +16,49 @@
 
 package com.decibeltx.studytracker.service;
 
+import com.decibeltx.studytracker.eln.NotebookFolder;
+import com.decibeltx.studytracker.eln.StudyNotebookService;
+import com.decibeltx.studytracker.exception.DuplicateRecordException;
+import com.decibeltx.studytracker.exception.InvalidConstraintException;
+import com.decibeltx.studytracker.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.model.ELNFolder;
+import com.decibeltx.studytracker.model.FileStoreFolder;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
+import com.decibeltx.studytracker.repository.StudyRepository;
+import com.decibeltx.studytracker.storage.StorageFolder;
+import com.decibeltx.studytracker.storage.StudyStorageService;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  * Service class for reading and writing {@link Study} records.
  */
-public interface StudyService {
+@Service
+public class StudyService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
+
+  @Autowired
+  private StudyRepository studyRepository;
+
+  @Autowired
+  private StudyStorageService studyStorageService;
+
+  @Autowired(required = false)
+  private StudyNotebookService notebookService;
+
+  @Autowired
+  private NamingService namingService;
 
   /**
    * Finds a single study, identified by its primary key ID
@@ -34,14 +66,18 @@ public interface StudyService {
    * @param id pkid
    * @return optional study
    */
-  Optional<Study> findById(String id);
+  public Optional<Study> findById(Long id) {
+    return studyRepository.findById(id);
+  }
 
   /**
    * Returns all study records.
    *
    * @return all studies
    */
-  List<Study> findAll();
+  public List<Study> findAll() {
+    return studyRepository.findAll();
+  }
 
   /**
    * Finds all studies associated with a given {@link Program}
@@ -49,7 +85,9 @@ public interface StudyService {
    * @param program program object
    * @return list of studies
    */
-  List<Study> findByProgram(Program program);
+  public List<Study> findByProgram(Program program) {
+    return studyRepository.findByProgramId(program.getId());
+  }
 
   /**
    * Finds a study with the unique given name.
@@ -57,7 +95,9 @@ public interface StudyService {
    * @param name study name, unique
    * @return optional study
    */
-  List<Study> findByName(String name);
+  public List<Study> findByName(String name) {
+    return studyRepository.findByName(name);
+  }
 
   /**
    * Finds a study by its unique internal code.
@@ -65,7 +105,9 @@ public interface StudyService {
    * @param code internal code
    * @return optional study
    */
-  Optional<Study> findByCode(String code);
+  public Optional<Study> findByCode(String code) {
+    return studyRepository.findByCode(code);
+  }
 
   /**
    * Finds a study by its optional, unique internal code.
@@ -73,28 +115,136 @@ public interface StudyService {
    * @param code internal code
    * @return optional study
    */
-  Optional<Study> findByExternalCode(String code);
+  public Optional<Study> findByExternalCode(String code) {
+    return studyRepository.findByExternalCode(code);
+  }
 
   /**
    * Creates a new study record
    *
    * @param study new study
    */
-  void create(Study study);
+  @Transactional
+  public void create(Study study) {
+
+    LOGGER.info("Attempting to create new study with name: " + study.getName());
+
+    // Check for existing studies
+    if (study.getCode() != null) {
+      Optional<Study> optional = studyRepository.findByCode(study.getCode());
+      if (optional.isPresent()) {
+        throw new DuplicateRecordException("Duplicate study code: " + study.getCode());
+      }
+    }
+    if (studyRepository.findByName(study.getName()).size() > 0) {
+      throw new DuplicateRecordException("Duplicate study name: " + study.getName());
+    }
+
+    if (study.getCode() == null) {
+      study.setCode(namingService.generateStudyCode(study));
+    }
+    study.setActive(true);
+
+    // External study
+    if (study.getCollaborator() != null && StringUtils.isEmpty(study.getExternalCode())) {
+      study.setExternalCode(namingService.generateExternalStudyCode(study));
+    }
+
+    try {
+      studyRepository.save(study);
+    } catch (Exception e) {
+      if (e instanceof ConstraintViolationException) {
+        throw new InvalidConstraintException(e);
+      } else {
+        throw e;
+      }
+    }
+
+    // Create the study storage folder
+    try {
+      studyStorageService.createStudyFolder(study);
+      StorageFolder folder = studyStorageService.getStudyFolder(study);
+      study.setStorageFolder(FileStoreFolder.from(folder));
+      study.setUpdatedAt(new Date());
+      studyRepository.save(study);
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOGGER.error("Failed to create storage folder for study: " + study.getCode());
+    }
+
+    // Create the ELN folder
+    LOGGER.warn(String.format("Creating ELN entry for study: %s", study.getCode()));
+    if (study.isLegacy()) {
+      LOGGER.warn(String.format("Legacy Study : %s", study.getCode()));
+      ELNFolder notebookFolder = study.getNotebookFolder();
+      notebookFolder.setName(namingService.getStudyNotebookFolderName(study));
+      study.setNotebookFolder(notebookFolder);
+      study.setUpdatedAt(new Date());
+      studyRepository.save(study);
+    } else {
+      if (notebookService != null) {
+        try {
+          NotebookFolder notebookFolder = notebookService.createStudyFolder(study);
+          study.setNotebookFolder(ELNFolder.from(notebookFolder));
+          study.setUpdatedAt(new Date());
+          studyRepository.save(study);
+        } catch (Exception e) {
+          e.printStackTrace();
+          LOGGER.error("Failed to create notebook entry for study: " + study.getCode());
+        }
+      }
+    }
+
+    LOGGER.info(String.format("Successfully created new study with code %s and ID %s",
+        study.getCode(), study.getId()));
+
+  }
 
   /**
    * Updates an existing study.
    *
-   * @param study existing study
+   * @param updated existing study
    */
-  void update(Study study);
+  @Transactional
+  public void update(Study updated) {
+    LOGGER.info("Attempting to update existing study with code: " + updated.getCode());
+    Study study = studyRepository.findById(updated.getId())
+        .orElseThrow(RecordNotFoundException::new);
+
+    study.setDescription(updated.getDescription());
+    study.setStatus(updated.getStatus());
+    study.setStartDate(updated.getStartDate());
+    study.setEndDate(updated.getEndDate());
+    study.setOwner(updated.getOwner());
+    study.setUsers(updated.getUsers());
+    study.setKeywords(updated.getKeywords());
+
+    // Collaborator changes
+    if (study.getCollaborator() == null && updated.getCollaborator() != null) {
+      study.setCollaborator(updated.getCollaborator());
+      if (StringUtils.isEmpty(updated.getExternalCode())) {
+        study.setExternalCode(namingService.generateExternalStudyCode(study));
+      } else {
+        study.setExternalCode(updated.getExternalCode());
+      }
+    } else if (study.getCollaborator() != null && updated.getCollaborator() == null) {
+      study.setCollaborator(null);
+      study.setExternalCode(null);
+    }
+
+    studyRepository.save(study);
+  }
 
   /**
    * Deletes the given study, identifies by its primary key ID.
    *
    * @param study study to be deleted
    */
-  void delete(Study study);
+  @Transactional
+  public void delete(Study study) {
+    study.setActive(false);
+    studyRepository.save(study);
+  }
 
   /**
    * Updates the status of the study with the provided PKID to the provided status.
@@ -102,7 +252,14 @@ public interface StudyService {
    * @param study  study
    * @param status status to set
    */
-  void updateStatus(Study study, Status status);
+  @Transactional
+  public void updateStatus(Study study, Status status) {
+    study.setStatus(status);
+    if (status.equals(Status.COMPLETE) && study.getEndDate() == null) {
+      study.setEndDate(new Date());
+    }
+    studyRepository.save(study);
+  }
 
   /**
    * Searches the study repository using the provided keyword and returns matching {@link Study}
@@ -111,17 +268,28 @@ public interface StudyService {
    * @param keyword
    * @return
    */
-  List<Study> search(String keyword);
+  @Transactional
+  public List<Study> search(String keyword) {
+    return studyRepository.findByNameOrCodeLike(keyword);
+  }
 
   /**
    * Counting number of studies created before/after/between given dates.
    */
-  long count();
+  public long count() {
+    return studyRepository.count();
+  }
 
-  long countFromDate(Date startDate);
+  public long countFromDate(Date startDate) {
+    return studyRepository.countByCreatedAtAfter(startDate);
+  }
 
-  long countBeforeDate(Date endDate);
+  public long countBeforeDate(Date endDate) {
+    return studyRepository.countByCreatedAtBefore(endDate);
+  }
 
-  long countBetweenDates(Date startDate, Date endDate);
+  public long countBetweenDates(Date startDate, Date endDate) {
+    return studyRepository.countByCreatedAtBetween(startDate, endDate);
+  }
 
 }
