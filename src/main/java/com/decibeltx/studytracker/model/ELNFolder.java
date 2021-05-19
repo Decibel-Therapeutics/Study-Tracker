@@ -18,7 +18,7 @@ public class ELNFolder {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column(name = "url", nullable = false)
+  @Column(name = "url", nullable = false, length = 1024)
   private String url;
 
   @Column(name = "name", nullable = false)

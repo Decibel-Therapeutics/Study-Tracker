@@ -46,7 +46,7 @@ public abstract class Task {
   @Column(name = "label", nullable = false)
   private String label;
 
-  @Column(name = "order", nullable = false)
+  @Column(name = "task_order", nullable = false)
   private Integer order;
 
   @Column(name = "created_at", nullable = false)

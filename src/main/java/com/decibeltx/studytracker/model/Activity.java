@@ -18,6 +18,7 @@ package com.decibeltx.studytracker.model;
 
 import com.decibeltx.studytracker.events.EventType;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,12 +39,18 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Data
 @Table(name = "activity")
 @EntityListeners(AuditingEntityListener.class)
+@TypeDef(name = "json", typeClass = JsonBinaryType.class)
+//@TypeDefs({
+//    @TypeDef(name = "json", typeClass = JsonStringType.class),
+//    @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+//})
 public class Activity {
 
   @Id
@@ -61,8 +68,8 @@ public class Activity {
   @Enumerated(EnumType.STRING)
   private EventType eventType;
 
-  @Type(type = "json")
   @Column(name = "data", columnDefinition = "json")
+  @Type(type = "json")
   private Map<String, Object> data = new HashMap<>();
 
   @ManyToOne(fetch = FetchType.LAZY)

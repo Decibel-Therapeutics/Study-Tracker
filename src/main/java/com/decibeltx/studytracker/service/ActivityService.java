@@ -135,7 +135,10 @@ public class ActivityService {
   }
 
   public long countCompletedStudiesFromDate(Date date) {
-    return activityRepository.findCompletedStudiesAfterDate(date).size();
+    return activityRepository.findStatusChangeStudiesAfterDate(date)
+        .stream()
+        //.filter(a -> a.getData().containsKey("newStatus") && a.getData().get("newStatus").equals("COMPLETE"))
+        .count();
   }
 
 }

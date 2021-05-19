@@ -1,7 +1,6 @@
 package com.decibeltx.studytracker.events.util;
 
 import com.decibeltx.studytracker.events.EventType;
-import com.decibeltx.studytracker.events.dto.AssayTypeView;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Activity.Reference;
 import com.decibeltx.studytracker.model.AssayType;
@@ -18,7 +17,7 @@ public class AssayTypeActivityUtils {
     activity.setReferenceId(assayType.getId());
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
-    activity.setData(Collections.singletonMap("assayType", AssayTypeView.from(assayType)));
+    activity.setData(Collections.singletonMap("assayType", EntityViewUtils.createAssayTypeView(assayType)));
     return activity;
   }
 
@@ -29,7 +28,7 @@ public class AssayTypeActivityUtils {
     activity.setReferenceId(assayType.getId());
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
-    activity.setData(Collections.singletonMap("assayType", AssayTypeView.from(assayType)));
+    activity.setData(Collections.singletonMap("assayType", EntityViewUtils.createAssayTypeView(assayType)));
     return activity;
   }
 
@@ -40,7 +39,7 @@ public class AssayTypeActivityUtils {
     activity.setReferenceId(assayType.getId());
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
-    activity.setData(Collections.singletonMap("assayType", AssayTypeView.from(assayType)));
+    activity.setData(Collections.singletonMap("assayType", EntityViewUtils.createAssayTypeView(assayType)));
     return activity;
   }
 

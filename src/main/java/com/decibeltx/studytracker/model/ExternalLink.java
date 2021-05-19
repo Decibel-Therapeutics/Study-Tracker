@@ -40,7 +40,7 @@ public class ExternalLink {
   @Column(name = "label", nullable = false)
   private String label;
 
-  @Column(name = "url", nullable = false)
+  @Column(name = "url", nullable = false, length = 1024)
   private URL url;
 
   @ManyToOne(fetch = FetchType.LAZY)

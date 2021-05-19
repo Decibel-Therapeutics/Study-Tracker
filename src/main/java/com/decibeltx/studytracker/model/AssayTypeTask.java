@@ -10,7 +10,7 @@ import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "assay_tasks")
+@Table(name = "assay_type_tasks")
 @EntityListeners(AuditingEntityListener.class)
 @Data
 public class AssayTypeTask extends Task {

@@ -16,9 +16,11 @@
 
 package com.decibeltx.studytracker.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -26,22 +28,28 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "programs")
+@Table(name = "programs", indexes = {
+    @Index(name = "idx_program_name", columnList = "name")
+})
 @Data
 @EntityListeners(AuditingEntityListener.class)
+@TypeDef(name = "json", typeClass = JsonType.class)
 public class Program {
 
   @Id
@@ -56,17 +64,16 @@ public class Program {
   @NotNull(message = "Program name must not be empty")
   private String name;
 
-  @Column(name = "description")
+  @Column(name = "description", columnDefinition = "TEXT")
   private String description;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "created_by", nullable = false)
   @NotNull
   private User createdBy;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "last_modified_by")
-  @NotNull
   private User lastModifiedBy;
 
   @CreatedDate
@@ -79,11 +86,11 @@ public class Program {
   @Temporal(TemporalType.TIMESTAMP)
   private Date updatedAt;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "notebook_folder_id")
   private ELNFolder notebookFolder;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "storage_folder_id")
   private FileStoreFolder storageFolder;
 

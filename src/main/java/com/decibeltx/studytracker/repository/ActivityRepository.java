@@ -45,7 +45,7 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
 
   long countByDateBetween(Date startDate, Date endDate);
 
-  @Query("select a from Activity a where a.reference = 'STUDY' and a.eventType = 'STUDY_STATUS_CHANGED' and a.data -> 'newStatus' = 'COMPLETE' and a.date >= ?1")
-  List<Activity> findCompletedStudiesAfterDate(Date date);
+  @Query("select a from Activity a where a.reference = 'STUDY' and a.eventType = 'STUDY_STATUS_CHANGED' and a.date >= ?1")
+  List<Activity> findStatusChangeStudiesAfterDate(Date date);
 
 }

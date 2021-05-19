@@ -1,8 +1,6 @@
 package com.decibeltx.studytracker.events.util;
 
 import com.decibeltx.studytracker.events.EventType;
-import com.decibeltx.studytracker.events.dto.AssayView;
-import com.decibeltx.studytracker.events.dto.StorageFileView;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Activity.Reference;
 import com.decibeltx.studytracker.model.Assay;
@@ -24,7 +22,7 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("assay", AssayView.from(assay));
+    data.put("assay", EntityViewUtils.createAssayView(assay));
     activity.setData(data);
     return activity;
   }
@@ -37,7 +35,7 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("assay", AssayView.from(assay));
+    data.put("assay", EntityViewUtils.createAssayView(assay));
     activity.setData(data);
     return activity;
   }
@@ -50,7 +48,7 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("assay", AssayView.from(assay));
+    data.put("assay", EntityViewUtils.createAssayView(assay));
     activity.setData(data);
     return activity;
   }
@@ -64,9 +62,9 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("assay", AssayView.from(assay));
-    data.put("oldStatus", oldStatus);
-    data.put("newStatus", newStatus);
+    data.put("assay", EntityViewUtils.createAssayView(assay));
+    data.put("oldStatus", oldStatus.toString());
+    data.put("newStatus", newStatus.toString());
     activity.setData(data);
     return activity;
   }
@@ -79,8 +77,8 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("assay", AssayView.from(assay));
-    data.put("file", StorageFileView.from(storageFile));
+    data.put("assay", EntityViewUtils.createAssayView(assay));
+    data.put("file", EntityViewUtils.createStorageFileView(storageFile));
     activity.setData(data);
     return activity;
   }
@@ -93,7 +91,7 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("assay", AssayView.from(assay));
+    data.put("assay", EntityViewUtils.createAssayView(assay));
     data.put("task", task);
     activity.setData(data);
     return activity;
@@ -107,7 +105,7 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("assay", AssayView.from(assay));
+    data.put("assay", EntityViewUtils.createAssayView(assay));
     data.put("task", task);
     activity.setData(data);
     return activity;
@@ -121,7 +119,7 @@ public class AssayActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("assay", AssayView.from(assay));
+    data.put("assay", EntityViewUtils.createAssayView(assay));
     data.put("task", task);
     activity.setData(data);
     return activity;

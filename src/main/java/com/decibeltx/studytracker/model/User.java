@@ -18,6 +18,7 @@ package com.decibeltx.studytracker.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -32,8 +33,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -43,6 +47,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Table(name = "users")
 @Data
 @EntityListeners(AuditingEntityListener.class)
+@TypeDef(name = "json", typeClass = JsonType.class)
 public class User {
 
   @Id
@@ -79,6 +84,8 @@ public class User {
   @LastModifiedDate
   private Date updatedAt;
 
+  @Type(type = "json")
+  @Column(name = "attributes", columnDefinition = "json")
   private Map<String, String> attributes = new LinkedHashMap<>();
 
   @Column(name = "admin", nullable = false)
@@ -96,6 +103,7 @@ public class User {
   @Column(name = "credentials_expired", nullable = false)
   private boolean credentialsExpired = false;
 
+  @Transient
   private List<GrantedAuthority> authorities = new ArrayList<>();
 
   @JsonIgnore

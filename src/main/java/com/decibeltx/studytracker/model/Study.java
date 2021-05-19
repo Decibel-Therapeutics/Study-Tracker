@@ -16,6 +16,7 @@
 
 package com.decibeltx.studytracker.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -31,6 +32,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -43,6 +45,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -50,9 +53,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "studies")
+@Table(name = "studies", indexes = {
+    @Index(name = "idx_study_code", columnList = "code"),
+    @Index(name = "idx_study_name", columnList = "name")
+})
 @Data
 @EntityListeners(AuditingEntityListener.class)
+@TypeDef(name = "json", typeClass = JsonType.class)
 public class Study {
 
   @Id
@@ -75,15 +82,15 @@ public class Study {
   @NotNull
   private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "program_id")
   private Program program;
 
-  @Column(name = "description", nullable = false)
+  @Column(name = "description", nullable = false, columnDefinition = "TEXT")
   @NotNull
   private String description;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "collaborator_id")
   private Collaborator collaborator;
 
@@ -93,22 +100,22 @@ public class Study {
   @Column(name = "active", nullable = false)
   private boolean active = true;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "notebook_folder_id")
   private ELNFolder notebookFolder;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "storage_folder_id")
   private FileStoreFolder storageFolder;
 
   @CreatedBy
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "created_by", nullable = false)
   private User createdBy;
 
   @LastModifiedBy
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "collaborator_id", nullable = false)
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "last_modified_by", nullable = false)
   private User lastModifiedBy;
 
   @Column(name = "start_date", nullable = false)
@@ -130,39 +137,39 @@ public class Study {
   @Temporal(TemporalType.TIMESTAMP)
   private Date updatedAt;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "owner")
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "owner", nullable = false)
   private User owner;
 
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "study_users",
       joinColumns = @JoinColumn(name = "study_id"),
       inverseJoinColumns = @JoinColumn(name = "user_id"))
   private Set<User> users = new HashSet<>();
 
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "study_keywords",
       joinColumns = @JoinColumn(name = "study_id"),
       inverseJoinColumns = @JoinColumn(name = "keyword_id"))
   private Set<Keyword> keywords = new HashSet<>();
 
-  @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Assay> assays = new HashSet<>();
 
   @Type(type = "json")
   @Column(name = "attributes", columnDefinition = "json")
   private Map<String, String> attributes = new LinkedHashMap<>();
 
-  @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "study", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<ExternalLink> externalLinks = new HashSet<>();
 
-  @OneToMany(mappedBy = "sourceStudy", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "sourceStudy", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<StudyRelationship> studyRelationships = new HashSet<>();
 
-  @OneToOne(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   private StudyConclusions conclusions;
 
-  @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "study", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Comment> comments = new HashSet<>();
 
 }

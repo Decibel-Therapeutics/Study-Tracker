@@ -72,7 +72,7 @@ public class AssayService {
     return assayRepository.findByCode(code);
   }
 
-  public List<Assay> findByStudyId(String studyId) {
+  public List<Assay> findByStudyId(Long studyId) {
     return assayRepository.findByStudyId(studyId);
   }
 

@@ -16,6 +16,7 @@
 
 package com.decibeltx.studytracker.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -44,6 +46,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -55,6 +58,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "assays")
 @Data
 @EntityListeners(AuditingEntityListener.class)
+@TypeDef(name = "json", typeClass = JsonType.class)
 public class Assay {
 
   @Id
@@ -66,11 +70,11 @@ public class Assay {
   @NotNull
   private Status status;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "assay_type_id", nullable = false)
   private AssayType assayType;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "study_id", nullable = false)
   private Study study;
 
@@ -82,21 +86,21 @@ public class Assay {
   @NotNull
   private String code;
 
-  @Column(name = "description", nullable = false)
+  @Column(name = "description", nullable = false, columnDefinition = "TEXT")
   @NotNull
   private String description;
 
   @CreatedBy
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "created_by", nullable = false)
   private User createdBy;
 
   @LastModifiedBy
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "collaborator_id", nullable = false)
   private User lastModifiedBy;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "owner")
   private User owner;
 
@@ -109,11 +113,11 @@ public class Assay {
   @Temporal(TemporalType.TIMESTAMP)
   private Date endDate;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "notebook_folder_id")
   private ELNFolder notebookFolder;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "storage_folder_id")
   private FileStoreFolder storageFolder;
 
@@ -133,7 +137,7 @@ public class Assay {
   @LastModifiedDate
   private Date updatedAt;
 
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "assay_users",
       joinColumns = @JoinColumn(name = "assay_id"),
       inverseJoinColumns = @JoinColumn(name = "user_id"))
@@ -147,7 +151,7 @@ public class Assay {
   @Column(name = "attributes", columnDefinition = "json")
   private Map<String, String> attributes = new LinkedHashMap<>();
 
-  @OneToMany(mappedBy = "assay", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "assay", fetch = FetchType.EAGER)
   private Set<AssayTask> tasks = new HashSet<>();
 
 }

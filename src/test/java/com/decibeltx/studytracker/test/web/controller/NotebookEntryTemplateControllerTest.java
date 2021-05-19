@@ -16,7 +16,7 @@ import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.NotebookEntryTemplate;
 import com.decibeltx.studytracker.model.User;
-import com.decibeltx.studytracker.repository.EntryTemplateRepository;
+import com.decibeltx.studytracker.repository.NotebookEntryTemplateRepository;
 import com.decibeltx.studytracker.repository.UserRepository;
 import com.decibeltx.studytracker.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,7 +56,7 @@ public class NotebookEntryTemplateControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private EntryTemplateRepository entryTemplateRepository;
+    private NotebookEntryTemplateRepository notebookEntryTemplateRepository;
 
     @Autowired
     private UserService userService;
@@ -102,7 +102,7 @@ public class NotebookEntryTemplateControllerTest {
     public void updateEntryTemplateStatusTest() throws Exception {
         User user = userRepository.findByUsername("jsmith")
                 .orElseThrow(RecordNotFoundException::new);
-        List<NotebookEntryTemplate> templates = entryTemplateRepository.findAll();
+        List<NotebookEntryTemplate> templates = notebookEntryTemplateRepository.findAll();
         NotebookEntryTemplate testTemplate = templates.get(0);
         boolean previousStatus = testTemplate.isActive();
         mockMvc.perform(post("/api/entryTemplate/" + testTemplate.getId() + "/status/?active=" + !previousStatus)
@@ -125,7 +125,7 @@ public class NotebookEntryTemplateControllerTest {
     public void updateEntryTemplateTest() throws Exception {
         User user = userRepository.findByUsername("jsmith")
                 .orElseThrow(RecordNotFoundException::new);
-        List<NotebookEntryTemplate> templates = entryTemplateRepository.findAll();
+        List<NotebookEntryTemplate> templates = notebookEntryTemplateRepository.findAll();
         NotebookEntryTemplate testTemplate = templates.get(0);
         testTemplate.setName("updated name");
         testTemplate.setTemplateId("updated id");
@@ -146,7 +146,7 @@ public class NotebookEntryTemplateControllerTest {
     public void updateNonExistentEntryTemplateTest() throws Exception {
         User user = userRepository.findByUsername("jsmith")
                 .orElseThrow(RecordNotFoundException::new);
-        List<NotebookEntryTemplate> templates = entryTemplateRepository.findAll();
+        List<NotebookEntryTemplate> templates = notebookEntryTemplateRepository.findAll();
         NotebookEntryTemplate testTemplate = templates.get(0);
         testTemplate.setId(999999L);
         mockMvc.perform(put("/api/entryTemplate")
@@ -160,7 +160,7 @@ public class NotebookEntryTemplateControllerTest {
     public void getActiveTemplatesTest() throws Exception {
         User user = userRepository.findByUsername("jsmith")
                 .orElseThrow(RecordNotFoundException::new);
-        List<NotebookEntryTemplate> templates = entryTemplateRepository.findAll();
+        List<NotebookEntryTemplate> templates = notebookEntryTemplateRepository.findAll();
         NotebookEntryTemplate testTemplate = templates.get(0);
         mockMvc.perform(post("/api/entryTemplate/" + testTemplate.getId() + "/status/?active=" + false)
                 .with(user(user.getUsername()))

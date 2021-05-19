@@ -20,7 +20,7 @@ public abstract class CustomEntity {
   @NotNull
   private String name;
 
-  @Column(name = "description", nullable = false)
+  @Column(name = "description", nullable = false, length = 1024)
   @NotNull
   private String description;
 

@@ -16,10 +16,12 @@
 
 package com.decibeltx.studytracker.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -28,18 +30,20 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "assay_types")
 @Data
 @EntityListeners(AuditingEntityListener.class)
+@TypeDef(name = "json", typeClass = JsonType.class)
 public class AssayType extends CustomEntity {
 
-  @OneToMany(mappedBy = "assayType", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "assayType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<AssayTypeField> fields = new HashSet<>();
 
-  @OneToMany(mappedBy = "assayType")
+  @OneToMany(mappedBy = "assayType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<AssayTypeTask> tasks = new HashSet<>();
 
   @Type(type = "json")

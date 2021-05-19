@@ -1,18 +1,13 @@
 package com.decibeltx.studytracker.events.util;
 
 import com.decibeltx.studytracker.events.EventType;
-import com.decibeltx.studytracker.events.dto.CommentView;
-import com.decibeltx.studytracker.events.dto.ConclusionsView;
-import com.decibeltx.studytracker.events.dto.StorageFileView;
-import com.decibeltx.studytracker.events.dto.StudyRelationshipView;
-import com.decibeltx.studytracker.events.dto.StudyView;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Activity.Reference;
 import com.decibeltx.studytracker.model.Comment;
-import com.decibeltx.studytracker.model.Conclusions;
 import com.decibeltx.studytracker.model.ExternalLink;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
+import com.decibeltx.studytracker.model.StudyConclusions;
 import com.decibeltx.studytracker.model.StudyRelationship;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.storage.StorageFile;
@@ -30,7 +25,7 @@ public class StudyActivityUtils {
     activity.setEventType(EventType.NEW_STUDY);
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
-    activity.setData(Collections.singletonMap("study", StudyView.from(study)));
+    activity.setData(Collections.singletonMap("study", EntityViewUtils.createStudyView(study)));
     return activity;
   }
 
@@ -41,7 +36,7 @@ public class StudyActivityUtils {
     activity.setEventType(EventType.UPDATED_STUDY);
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
-    activity.setData(Collections.singletonMap("study", StudyView.from(study)));
+    activity.setData(Collections.singletonMap("study", EntityViewUtils.createStudyView(study)));
     return activity;
   }
 
@@ -52,7 +47,7 @@ public class StudyActivityUtils {
     activity.setEventType(EventType.DELETED_STUDY);
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
-    activity.setData(Collections.singletonMap("study", StudyView.from(study)));
+    activity.setData(Collections.singletonMap("study", EntityViewUtils.createStudyView(study)));
     return activity;
   }
 
@@ -65,9 +60,9 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
-    data.put("oldStatus", oldStatus);
-    data.put("newStatus", newStatus);
+    data.put("study", EntityViewUtils.createStudyView(study));
+    data.put("oldStatus", oldStatus.toString());
+    data.put("newStatus", newStatus.toString());
     activity.setData(data);
     return activity;
   }
@@ -80,14 +75,14 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
-    data.put("file", StorageFileView.from(storageFile));
+    data.put("study", EntityViewUtils.createStudyView(study));
+    data.put("file", EntityViewUtils.createStorageFileView(storageFile));
     activity.setData(data);
     return activity;
   }
 
   public static Activity fromNewConclusions(Study study, User triggeredBy,
-      Conclusions conclusions) {
+      StudyConclusions conclusions) {
     Activity activity = new Activity();
     activity.setReference(Reference.STUDY);
     activity.setReferenceId(study.getId());
@@ -95,14 +90,14 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
-    data.put("conclusions", ConclusionsView.from(conclusions));
+    data.put("study", EntityViewUtils.createStudyView(study));
+    data.put("conclusions", EntityViewUtils.createStudyConclusionsView(conclusions));
     activity.setData(data);
     return activity;
   }
 
   public static Activity fromUpdatedConclusions(Study study, User triggeredBy,
-      Conclusions conclusions) {
+      StudyConclusions conclusions) {
     Activity activity = new Activity();
     activity.setReference(Reference.STUDY);
     activity.setReferenceId(study.getId());
@@ -110,8 +105,8 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
-    data.put("conclusions", ConclusionsView.from(conclusions));
+    data.put("study", EntityViewUtils.createStudyView(study));
+    data.put("conclusions", EntityViewUtils.createStudyConclusionsView(conclusions));
     activity.setData(data);
     return activity;
   }
@@ -124,7 +119,7 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
+    data.put("study", EntityViewUtils.createStudyView(study));
     activity.setData(data);
     return activity;
   }
@@ -137,8 +132,8 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
-    data.put("comment", CommentView.from(comment));
+    data.put("study", EntityViewUtils.createStudyView(study));
+    data.put("comment", EntityViewUtils.createCommentView(comment));
     activity.setData(data);
     return activity;
   }
@@ -151,8 +146,8 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
-    data.put("comment", CommentView.from(comment));
+    data.put("study", EntityViewUtils.createStudyView(study));
+    data.put("comment", EntityViewUtils.createCommentView(comment));
     activity.setData(data);
     return activity;
   }
@@ -165,7 +160,7 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
+    data.put("study", EntityViewUtils.createStudyView(study));
     activity.setData(data);
     return activity;
   }
@@ -179,9 +174,9 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("targetStudy", StudyView.from(targetStudy));
-    data.put("sourceStudy", StudyView.from(sourceStudy));
-    data.put("relationship", StudyRelationshipView.from(relationship));
+    data.put("targetStudy", EntityViewUtils.createStudyView(targetStudy));
+    data.put("sourceStudy", EntityViewUtils.createStudyView(sourceStudy));
+    data.put("relationship", EntityViewUtils.createStudyRelationshipView(relationship));
     activity.setData(data);
     return activity;
   }
@@ -195,8 +190,8 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("targetStudy", StudyView.from(relationship.getTargetStudy()));
-    data.put("sourceStudy", StudyView.from(study));
+    data.put("targetStudy", EntityViewUtils.createStudyView(relationship.getTargetStudy()));
+    data.put("sourceStudy", EntityViewUtils.createStudyView(study));
     data.put("relationship", relationship);
     activity.setData(data);
     return activity;
@@ -210,7 +205,7 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
+    data.put("study", EntityViewUtils.createStudyView(study));
     activity.setData(data);
     return activity;
   }
@@ -223,7 +218,7 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
+    data.put("study", EntityViewUtils.createStudyView(study));
     data.put("link", link);
     activity.setData(data);
     return activity;
@@ -237,7 +232,7 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
+    data.put("study", EntityViewUtils.createStudyView(study));
     data.put("link", link);
     activity.setData(data);
     return activity;
@@ -251,7 +246,7 @@ public class StudyActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("study", StudyView.from(study));
+    data.put("study", EntityViewUtils.createStudyView(study));
     activity.setData(data);
     return activity;
   }

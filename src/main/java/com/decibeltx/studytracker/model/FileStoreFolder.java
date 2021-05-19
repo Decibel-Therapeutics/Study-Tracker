@@ -18,7 +18,7 @@ public class FileStoreFolder {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column(name = "url")
+  @Column(name = "url", length = 1034)
   private String url;
 
   @Column(name = "name", nullable = false)

@@ -30,7 +30,7 @@ public abstract class CustomEntityField {
   @Column(name = "required", nullable = false)
   private boolean required;
 
-  @Column(name = "description")
+  @Column(name = "description", length = 1024)
   private String description;
 
   @Column(name = "active", nullable = false)

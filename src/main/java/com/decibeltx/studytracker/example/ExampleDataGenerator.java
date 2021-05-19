@@ -44,15 +44,13 @@ import com.decibeltx.studytracker.repository.ActivityRepository;
 import com.decibeltx.studytracker.repository.AssayRepository;
 import com.decibeltx.studytracker.repository.AssayTypeRepository;
 import com.decibeltx.studytracker.repository.CollaboratorRepository;
-import com.decibeltx.studytracker.repository.EntryTemplateRepository;
+import com.decibeltx.studytracker.repository.CommentRepository;
 import com.decibeltx.studytracker.repository.KeywordRepository;
+import com.decibeltx.studytracker.repository.NotebookEntryTemplateRepository;
 import com.decibeltx.studytracker.repository.ProgramRepository;
+import com.decibeltx.studytracker.repository.StudyConclusionsRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
 import com.decibeltx.studytracker.repository.UserRepository;
-import com.decibeltx.studytracker.service.StudyCommentService;
-import com.decibeltx.studytracker.service.StudyConclusionsService;
-import com.decibeltx.studytracker.service.StudyExternalLinkService;
-import com.decibeltx.studytracker.service.StudyService;
 import com.decibeltx.studytracker.storage.StorageFolder;
 import com.decibeltx.studytracker.storage.StudyStorageService;
 import com.decibeltx.studytracker.storage.exception.StudyStorageNotFoundException;
@@ -110,25 +108,19 @@ public class ExampleDataGenerator {
   private StudyStorageService studyStorageService;
 
   @Autowired
-  private StudyService studyService;
-
-  @Autowired
-  private StudyExternalLinkService externalLinkService;
-
-  @Autowired
-  private StudyCommentService commentService;
-
-  @Autowired
-  private StudyConclusionsService conclusionsService;
-
-  @Autowired
   private AssayTypeRepository assayTypeRepository;
 
   @Autowired
   private KeywordRepository keywordRepository;
 
   @Autowired
-  private EntryTemplateRepository entryTemplateRepository;
+  private CommentRepository commentRepository;
+
+  @Autowired
+  private StudyConclusionsRepository studyConclusionsRepository;
+
+  @Autowired
+  private NotebookEntryTemplateRepository notebookEntryTemplateRepository;
 
   public List<NotebookEntryTemplate> generateExampleEntryTemplates(List<User> users) {
     User user = users.get(0);
@@ -141,6 +133,7 @@ public class ExampleDataGenerator {
   private void createEntryTemplate(User user, List<NotebookEntryTemplate> templates,
                                    String templateId, String name, Date timeStamp) {
     NotebookEntryTemplate notebookEntryTemplate = NotebookEntryTemplate.of(user, templateId, name, timeStamp);
+    notebookEntryTemplateRepository.save(notebookEntryTemplate);
     Activity activity = EntryTemplateActivityUtils
             .fromNewEntryTemplate(notebookEntryTemplate, user);
     activityRepository.save(activity);
@@ -331,7 +324,7 @@ public class ExampleDataGenerator {
     Study study = new Study();
     study.setStatus(Status.IN_PLANNING);
     study.setName("Example Collaborator Study");
-    //study.setCode(program.getCode() + "-10001");
+    study.setCode(program.getCode() + "-10001");
     study.setProgram(program);
     study.setDescription(
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
@@ -353,14 +346,15 @@ public class ExampleDataGenerator {
     notebookEntry.setReferenceId("12345");
     study.setNotebookFolder(notebookEntry);
 
-    studyService.create(study);
+    studyRepository.save(study);
 
     activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
     ExternalLink link = new ExternalLink();
     link.setLabel("Google");
     link.setUrl(new URL("https://google.com"));
-    externalLinkService.addStudyExternalLink(study, link);
+    study.getExternalLinks().add(link);
+    studyRepository.save(study);
 
     activityRepository.save(StudyActivityUtils.fromNewExternalLink(study, user, link));
 
@@ -371,7 +365,7 @@ public class ExampleDataGenerator {
     study = new Study();
     study.setStatus(Status.IN_PLANNING);
     study.setName("Example Study");
-    //study.setCode(program.getCode() + "-10001");
+    study.setCode(program.getCode() + "-10001");
     study.setProgram(program);
     study.setDescription(
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
@@ -390,21 +384,23 @@ public class ExampleDataGenerator {
     notebookEntry.setReferenceId("12345");
     study.setNotebookFolder(notebookEntry);
 
-    studyService.create(study);
+    studyRepository.save(study);
 
     activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
-    studyService.updateStatus(study, Status.ACTIVE);
+    study.setStatus(Status.ACTIVE);
+    studyRepository.save(study);
 
-    activityRepository.save(
-        StudyActivityUtils.fromStudyStatusChange(study, user, Status.IN_PLANNING, Status.ACTIVE));
+    Activity activity = StudyActivityUtils.fromStudyStatusChange(study, user, Status.IN_PLANNING, Status.ACTIVE);
+    activityRepository.save(activity);
 
     Comment comment = new Comment();
     comment.setCreatedAt(new Date());
     comment.setCreatedBy(user);
     comment.setText(
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-    commentService.addStudyComment(study, comment);
+    study.getComments().add(comment);
+    studyRepository.save(study);
 
     activityRepository.save(StudyActivityUtils.fromNewComment(study, user, comment));
 
@@ -413,7 +409,8 @@ public class ExampleDataGenerator {
     conclusions.setCreatedBy(user);
     conclusions.setContent(
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-    conclusionsService.addStudyConclusions(study, conclusions);
+    study.setConclusions(conclusions);
+    studyRepository.save(study);
 
     activityRepository.save(StudyActivityUtils.fromNewConclusions(study, user, conclusions));
 
@@ -442,11 +439,12 @@ public class ExampleDataGenerator {
     notebookEntry.setUrl(
         "https://google.com");
     study.setNotebookFolder(notebookEntry);
-    studyService.create(study);
+    studyRepository.save(study);
 
     activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
-    studyService.updateStatus(study, Status.COMPLETE);
+    study.setStatus(Status.COMPLETE);
+    studyRepository.save(study);
 
     activityRepository.save(
         StudyActivityUtils.fromStudyStatusChange(study, user, Status.IN_PLANNING, Status.COMPLETE));
@@ -458,7 +456,7 @@ public class ExampleDataGenerator {
     study = new Study();
     study.setStatus(Status.IN_PLANNING);
     study.setName("Example Inactive Study");
-    //study.setCode(program.getCode() + "-10002");
+    study.setCode(program.getCode() + "-10002");
     study.setProgram(program);
     study.setDescription(
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
@@ -470,11 +468,12 @@ public class ExampleDataGenerator {
     study.setOwner(user);
     study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
-    studyService.create(study);
+    studyRepository.save(study);
 
     activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
-    studyService.updateStatus(study, Status.ON_HOLD);
+    study.setStatus(Status.ON_HOLD);
+    studyRepository.save(study);
 
     activityRepository.save(
         StudyActivityUtils.fromStudyStatusChange(study, user, Status.IN_PLANNING, Status.ON_HOLD));
@@ -486,7 +485,7 @@ public class ExampleDataGenerator {
     study = new Study();
     study.setStatus(Status.IN_PLANNING);
     study.setName("Example Target ID Study 1");
-    //study.setCode(program.getCode() + "-10001");
+    study.setCode(program.getCode() + "-10001");
     study.setProgram(program);
     study.setDescription(
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
@@ -499,9 +498,11 @@ public class ExampleDataGenerator {
     study.setOwner(user);
     study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
-    studyService.create(study);
+    studyRepository.save(study);
     activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
-    studyService.updateStatus(study, Status.COMPLETE);
+
+    study.setStatus(Status.COMPLETE);
+    studyRepository.save(study);
     activityRepository.save(
         StudyActivityUtils.fromStudyStatusChange(study, user, Status.IN_PLANNING, Status.COMPLETE));
 
@@ -525,7 +526,7 @@ public class ExampleDataGenerator {
     study.setOwner(user);
     study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
-    studyService.create(study);
+    studyRepository.save(study);
     activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
   }
@@ -540,7 +541,6 @@ public class ExampleDataGenerator {
           folder = studyStorageService.createStudyFolder(study);
         }
         study.setStorageFolder(FileStoreFolder.from(folder));
-        study.setUpdatedAt(new Date());
         studyRepository.save(study);
       } catch (Exception ex) {
         throw new RuntimeException(ex);
@@ -654,16 +654,17 @@ public class ExampleDataGenerator {
 
   public void clearDatabase() {
     LOGGER.info("Wiping collections...");
-    entryTemplateRepository.deleteAll();
-    programRepository.deleteAll();
-    userRepository.deleteAll();
+    commentRepository.deleteAll();
+    studyConclusionsRepository.deleteAll();
+    activityRepository.deleteAll();
+    assayRepository.deleteAll();
+    studyRepository.deleteAll();
+    notebookEntryTemplateRepository.deleteAll();
+    assayTypeRepository.deleteAll();
     collaboratorRepository.deleteAll();
     keywordRepository.deleteAll();
-    studyRepository.deleteAll();
-    assayRepository.deleteAll();
-    activityRepository.deleteAll();
-    assayTypeRepository.deleteAll();
-
+    programRepository.deleteAll();
+    userRepository.deleteAll();
   }
 
   public void populateDatabase() {
@@ -678,14 +679,12 @@ public class ExampleDataGenerator {
       createProgramFolders();
       keywordRepository.saveAll(generateExampleKeywords());
       collaboratorRepository.saveAll(generateExampleCollaborators());
-      entryTemplateRepository.saveAll(generateExampleEntryTemplates(userRepository.findAll()));
+      notebookEntryTemplateRepository.saveAll(generateExampleEntryTemplates(userRepository.findAll()));
       generateExampleStudies();
+      createStudyFolders();
 
       for (Assay assay : generateExampleAssays(studyRepository.findAll())) {
         assayRepository.save(assay);
-        Study study = assay.getStudy();
-        study.getAssays().add(assay);
-        studyRepository.save(study);
       }
       createAssayFolders();
 

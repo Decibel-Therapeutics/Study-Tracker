@@ -165,7 +165,6 @@ public class StudyService {
       studyStorageService.createStudyFolder(study);
       StorageFolder folder = studyStorageService.getStudyFolder(study);
       study.setStorageFolder(FileStoreFolder.from(folder));
-      study.setUpdatedAt(new Date());
       studyRepository.save(study);
     } catch (Exception e) {
       e.printStackTrace();

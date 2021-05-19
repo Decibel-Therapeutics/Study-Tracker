@@ -19,7 +19,7 @@ public class ProgramActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("program", program);
+    data.put("program", EntityViewUtils.createProgramView(program));
     activity.setData(data);
     return activity;
   }
@@ -32,7 +32,7 @@ public class ProgramActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("program", program);
+    data.put("program", EntityViewUtils.createProgramView(program));
     activity.setData(data);
     return activity;
   }
@@ -45,7 +45,7 @@ public class ProgramActivityUtils {
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
-    data.put("program", program);
+    data.put("program", EntityViewUtils.createProgramView(program));
     activity.setData(data);
     return activity;
   }

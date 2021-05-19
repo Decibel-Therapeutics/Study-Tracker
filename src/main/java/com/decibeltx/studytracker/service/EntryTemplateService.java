@@ -2,7 +2,7 @@ package com.decibeltx.studytracker.service;
 
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.NotebookEntryTemplate;
-import com.decibeltx.studytracker.repository.EntryTemplateRepository;
+import com.decibeltx.studytracker.repository.NotebookEntryTemplateRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,14 +18,14 @@ public class EntryTemplateService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EntryTemplateService.class);
 
     @Autowired
-    private EntryTemplateRepository entryTemplateRepository;
+    private NotebookEntryTemplateRepository notebookEntryTemplateRepository;
 
     public Optional<NotebookEntryTemplate> findById(Long id) {
-        return entryTemplateRepository.findById(id);
+        return notebookEntryTemplateRepository.findById(id);
     }
 
     public List<NotebookEntryTemplate> findAll() {
-        return entryTemplateRepository.findAll();
+        return notebookEntryTemplateRepository.findAll();
     }
 
     public List<NotebookEntryTemplate> findAllActive() {
@@ -38,15 +38,15 @@ public class EntryTemplateService {
         Date now = new Date();
         notebookEntryTemplate.setCreatedAt(now);
         notebookEntryTemplate.setUpdatedAt(now);
-        entryTemplateRepository.save(notebookEntryTemplate);
+        notebookEntryTemplateRepository.save(notebookEntryTemplate);
     }
 
     public void update(NotebookEntryTemplate notebookEntryTemplate) {
         LOGGER.info("Updating entry template with name: " + notebookEntryTemplate.getName());
 
         assert notebookEntryTemplate.getId() != null;
-        entryTemplateRepository.findById(notebookEntryTemplate.getId()).orElseThrow(
+        notebookEntryTemplateRepository.findById(notebookEntryTemplate.getId()).orElseThrow(
             RecordNotFoundException::new);
-        entryTemplateRepository.save(notebookEntryTemplate);
+        notebookEntryTemplateRepository.save(notebookEntryTemplate);
     }
 }

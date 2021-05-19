@@ -27,7 +27,7 @@ public interface AssayRepository extends JpaRepository<Assay, Long> {
 
   Optional<Assay> findByCode(String code);
 
-  List<Assay> findByStudyId(String studyId);
+  List<Assay> findByStudyId(Long studyId);
 
   @Query("select a from Assay a where lower(a.code) like lower(concat('%', ?1, '%'))")
   List<Assay> findByCodePrefix(String prefix);
