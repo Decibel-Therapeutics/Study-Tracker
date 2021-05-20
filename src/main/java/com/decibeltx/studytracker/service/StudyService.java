@@ -150,6 +150,35 @@ public class StudyService {
       study.setExternalCode(namingService.generateExternalStudyCode(study));
     }
 
+    // Create the study storage folder
+    try {
+      studyStorageService.createStudyFolder(study);
+      StorageFolder folder = studyStorageService.getStudyFolder(study);
+      study.setStorageFolder(FileStoreFolder.from(folder));
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOGGER.warn("Failed to create storage folder for study: " + study.getCode());
+    }
+
+    // Create the ELN folder
+    LOGGER.info(String.format("Creating ELN entry for study: %s", study.getCode()));
+    if (study.isLegacy()) {
+      LOGGER.info(String.format("Legacy Study : %s", study.getCode()));
+      ELNFolder notebookFolder = study.getNotebookFolder();
+      notebookFolder.setName(namingService.getStudyNotebookFolderName(study));
+      study.setNotebookFolder(notebookFolder);
+    } else {
+      if (notebookService != null) {
+        try {
+          NotebookFolder notebookFolder = notebookService.createStudyFolder(study);
+          study.setNotebookFolder(ELNFolder.from(notebookFolder));
+        } catch (Exception e) {
+          e.printStackTrace();
+          LOGGER.warn("Failed to create notebook entry for study: " + study.getCode());
+        }
+      }
+    }
+
     try {
       studyRepository.save(study);
     } catch (Exception e) {
@@ -157,40 +186,6 @@ public class StudyService {
         throw new InvalidConstraintException(e);
       } else {
         throw e;
-      }
-    }
-
-    // Create the study storage folder
-    try {
-      studyStorageService.createStudyFolder(study);
-      StorageFolder folder = studyStorageService.getStudyFolder(study);
-      study.setStorageFolder(FileStoreFolder.from(folder));
-      studyRepository.save(study);
-    } catch (Exception e) {
-      e.printStackTrace();
-      LOGGER.error("Failed to create storage folder for study: " + study.getCode());
-    }
-
-    // Create the ELN folder
-    LOGGER.warn(String.format("Creating ELN entry for study: %s", study.getCode()));
-    if (study.isLegacy()) {
-      LOGGER.warn(String.format("Legacy Study : %s", study.getCode()));
-      ELNFolder notebookFolder = study.getNotebookFolder();
-      notebookFolder.setName(namingService.getStudyNotebookFolderName(study));
-      study.setNotebookFolder(notebookFolder);
-      study.setUpdatedAt(new Date());
-      studyRepository.save(study);
-    } else {
-      if (notebookService != null) {
-        try {
-          NotebookFolder notebookFolder = notebookService.createStudyFolder(study);
-          study.setNotebookFolder(ELNFolder.from(notebookFolder));
-          study.setUpdatedAt(new Date());
-          studyRepository.save(study);
-        } catch (Exception e) {
-          e.printStackTrace();
-          LOGGER.error("Failed to create notebook entry for study: " + study.getCode());
-        }
       }
     }
 

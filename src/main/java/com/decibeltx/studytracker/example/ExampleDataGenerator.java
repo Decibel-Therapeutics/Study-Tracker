@@ -67,6 +67,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.Assert;
 
 public class ExampleDataGenerator {
 
@@ -151,6 +152,7 @@ public class ExampleDataGenerator {
     program.setCreatedBy(user);
     program.setLastModifiedBy(user);
     program.setCreatedAt(new Date());
+    program.setStorageFolder(createProgramFolder(program));
     programs.add(program);
 
     program = new Program();
@@ -160,6 +162,7 @@ public class ExampleDataGenerator {
     program.setCreatedBy(user);
     program.setLastModifiedBy(user);
     program.setCreatedAt(new Date());
+    program.setStorageFolder(createProgramFolder(program));
     programs.add(program);
 
     program = new Program();
@@ -169,6 +172,7 @@ public class ExampleDataGenerator {
     program.setCreatedBy(user);
     program.setLastModifiedBy(user);
     program.setCreatedAt(new Date());
+    program.setStorageFolder(createProgramFolder(program));
     programs.add(program);
 
     program = new Program();
@@ -178,6 +182,7 @@ public class ExampleDataGenerator {
     program.setCreatedBy(user);
     program.setLastModifiedBy(user);
     program.setCreatedAt(new Date());
+    program.setStorageFolder(createProgramFolder(program));
     programs.add(program);
 
     program = new Program();
@@ -187,9 +192,25 @@ public class ExampleDataGenerator {
     program.setCreatedBy(user);
     program.setLastModifiedBy(user);
     program.setCreatedAt(new Date());
+    program.setStorageFolder(createProgramFolder(program));
     programs.add(program);
 
     return programs;
+  }
+
+  public FileStoreFolder createProgramFolder(Program program) {
+    try {
+      StorageFolder folder;
+      try {
+        folder = studyStorageService.getProgramFolder(program);
+      } catch (Exception e) {
+        folder = studyStorageService.createProgramFolder(program);
+      }
+      Assert.notNull(folder, "Program folder must not be null");
+      return FileStoreFolder.from(folder);
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
   public void createProgramFolders() {
@@ -338,6 +359,7 @@ public class ExampleDataGenerator {
     study.setCollaborator(collaborator);
     study.setExternalCode(collaborator.getCode() + "-00001");
     study.setKeywords(keywords);
+    study.setStorageFolder(createStudyFolder(study));
 
     ELNFolder notebookEntry = new ELNFolder();
     notebookEntry.setName("IDBS ELN");
@@ -377,6 +399,7 @@ public class ExampleDataGenerator {
     study.setOwner(user);
     study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
+    study.setStorageFolder(createStudyFolder(study));
 
     notebookEntry = new ELNFolder();
     notebookEntry.setName("ELN");
@@ -439,6 +462,7 @@ public class ExampleDataGenerator {
     notebookEntry.setUrl(
         "https://google.com");
     study.setNotebookFolder(notebookEntry);
+    study.setStorageFolder(createStudyFolder(study));
     studyRepository.save(study);
 
     activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
@@ -468,6 +492,7 @@ public class ExampleDataGenerator {
     study.setOwner(user);
     study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
+    study.setStorageFolder(createStudyFolder(study));
     studyRepository.save(study);
 
     activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
@@ -498,6 +523,7 @@ public class ExampleDataGenerator {
     study.setOwner(user);
     study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
+    study.setStorageFolder(createStudyFolder(study));
     studyRepository.save(study);
     activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
@@ -526,27 +552,43 @@ public class ExampleDataGenerator {
     study.setOwner(user);
     study.setUsers(Collections.singleton(user));
     study.setKeywords(keywords);
+    study.setStorageFolder(createStudyFolder(study));
     studyRepository.save(study);
     activityRepository.save(StudyActivityUtils.fromNewStudy(study, user));
 
   }
 
-  public void createStudyFolders() {
-    for (Study study : studyRepository.findAll()) {
+  public FileStoreFolder createStudyFolder(Study study) {
+    try {
+      StorageFolder folder;
       try {
-        StorageFolder folder;
-        try {
-          folder = studyStorageService.getStudyFolder(study);
-        } catch (Exception e) {
-          folder = studyStorageService.createStudyFolder(study);
-        }
-        study.setStorageFolder(FileStoreFolder.from(folder));
-        studyRepository.save(study);
-      } catch (Exception ex) {
-        throw new RuntimeException(ex);
+        folder = studyStorageService.getStudyFolder(study);
+      } catch (Exception e) {
+        folder = studyStorageService.createStudyFolder(study);
       }
+      Assert.notNull(folder, "Study folder must not be null");
+      return FileStoreFolder.from(folder);
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
     }
   }
+
+//  public void createStudyFolders() {
+//    for (Study study : studyRepository.findAll()) {
+//      try {
+//        StorageFolder folder;
+//        try {
+//          folder = studyStorageService.getStudyFolder(study);
+//        } catch (Exception e) {
+//          folder = studyStorageService.createStudyFolder(study);
+//        }
+//        study.setStorageFolder(FileStoreFolder.from(folder));
+//        studyRepository.save(study);
+//      } catch (Exception ex) {
+//        throw new RuntimeException(ex);
+//      }
+//    }
+//  }
 
   public List<AssayType> generateExampleAssayTypes() {
 
@@ -581,9 +623,8 @@ public class ExampleDataGenerator {
 
   }
 
-  public List<Assay> generateExampleAssays(List<Study> studies) {
+  public void generateExampleAssays(List<Study> studies) {
 
-    List<Assay> assays = new ArrayList<>();
     AssayType assayType = assayTypeRepository.findByName("Generic")
         .orElseThrow(RecordNotFoundException::new);
 
@@ -609,7 +650,8 @@ public class ExampleDataGenerator {
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
     assay.setTasks(Collections.singleton(new AssayTask("My task")));
-    assays.add(assay);
+    assay.setStorageFolder(createAssayFolder(assay));
+    assayRepository.save(assay);
 
     assay = new Assay();
     assay.setStudy(study);
@@ -629,26 +671,23 @@ public class ExampleDataGenerator {
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
     assay.setTasks(Collections.singleton(new AssayTask("My task")));
-    assays.add(assay);
-
-    return assays;
+    assay.setStorageFolder(createAssayFolder(assay));
+    assayRepository.save(assay);
 
   }
 
-  public void createAssayFolders() {
-    for (Assay assay : assayRepository.findAll()) {
+  public FileStoreFolder createAssayFolder(Assay assay) {
+    try {
+      StorageFolder folder;
       try {
-        StorageFolder folder;
-        try {
-          folder = studyStorageService.getAssayFolder(assay);
-        } catch (Exception e) {
-          folder = studyStorageService.createAssayFolder(assay);
-        }
-        assay.setStorageFolder(FileStoreFolder.from(folder));
-        assayRepository.save(assay);
-      } catch (Exception ex) {
-        throw new RuntimeException(ex);
+        folder = studyStorageService.getAssayFolder(assay);
+      } catch (Exception e) {
+        folder = studyStorageService.createAssayFolder(assay);
       }
+      Assert.notNull(folder, "Assay folder must not be null");
+      return FileStoreFolder.from(folder);
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
     }
   }
 
@@ -676,18 +715,11 @@ public class ExampleDataGenerator {
       userRepository.saveAll(generateExampleUsers());
       programRepository.saveAll(generateExamplePrograms(userRepository.findAll()));
       assayTypeRepository.saveAll(generateExampleAssayTypes());
-      createProgramFolders();
       keywordRepository.saveAll(generateExampleKeywords());
       collaboratorRepository.saveAll(generateExampleCollaborators());
       notebookEntryTemplateRepository.saveAll(generateExampleEntryTemplates(userRepository.findAll()));
       generateExampleStudies();
-      createStudyFolders();
-
-      for (Assay assay : generateExampleAssays(studyRepository.findAll())) {
-        assayRepository.save(assay);
-      }
-      createAssayFolders();
-
+      generateExampleAssays(studyRepository.findAll());
       LOGGER.info("Done.");
 
     } catch (Exception e) {

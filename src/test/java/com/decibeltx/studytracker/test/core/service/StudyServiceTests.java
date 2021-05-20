@@ -147,7 +147,6 @@ public class StudyServiceTests {
     Assert.assertNotNull(created.getCode());
     Assert.assertNotNull(created.getCreatedAt());
     Assert.assertNotNull(created.getUpdatedAt());
-    System.out.println(created.toString());
   }
 
   @Test
