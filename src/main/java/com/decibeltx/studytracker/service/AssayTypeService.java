@@ -3,6 +3,7 @@ package com.decibeltx.studytracker.service;
 import com.decibeltx.studytracker.exception.InvalidConstraintException;
 import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.model.AssayTypeField;
+import com.decibeltx.studytracker.model.AssayTypeTask;
 import com.decibeltx.studytracker.repository.AssayTypeRepository;
 import java.util.HashSet;
 import java.util.List;
@@ -63,12 +64,24 @@ public class AssayTypeService {
   @Transactional
   public void create(AssayType assayType) {
     validateFields(assayType);
+    for (AssayTypeField field: assayType.getFields()) {
+      field.setAssayType(assayType);
+    }
+    for (AssayTypeTask task: assayType.getTasks()) {
+      task.setAssayType(assayType);
+    }
     assayTypeRepository.save(assayType);
   }
 
   @Transactional
   public void update(AssayType assayType) {
     validateFields(assayType);
+    for (AssayTypeField field: assayType.getFields()) {
+      field.setAssayType(assayType);
+    }
+    for (AssayTypeTask task: assayType.getTasks()) {
+      task.setAssayType(assayType);
+    }
     assayTypeRepository.save(assayType);
   }
 

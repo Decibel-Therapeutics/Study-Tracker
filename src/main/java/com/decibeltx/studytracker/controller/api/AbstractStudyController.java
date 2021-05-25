@@ -42,26 +42,41 @@ public abstract class AbstractStudyController {
 
   private EventsService eventsService;
 
-  protected Study getStudyFromIdentifier(Long id) {
-    Study study;
-    Optional<Study> optional = studyService.findById(id);
-    if (optional.isPresent()) {
-      study = optional.get();
-    } else {
-      throw new RecordNotFoundException();
+  private boolean isLong(String value) {
+    try {
+      Long.parseLong(value);
+      return true;
+    } catch (NumberFormatException e) {
+      return false;
     }
-    return study;
   }
 
-  protected Assay getAssayFromIdentifier(Long id) {
-    Assay assay;
-    Optional<Assay> optional = assayService.findById(id);
+  protected Study getStudyFromIdentifier(String id) {
+    Optional<Study> optional;
+    if (isLong(id)) {
+      optional = studyService.findById(Long.parseLong(id));
+    } else {
+      optional = studyService.findByCode(id);
+    }
     if (optional.isPresent()) {
-      assay = optional.get();
+      return optional.get();
     } else {
       throw new RecordNotFoundException();
     }
-    return assay;
+  }
+
+  protected Assay getAssayFromIdentifier(String id) {
+    Optional<Assay> optional;
+    if (isLong(id)) {
+      optional = assayService.findById(Long.parseLong(id));
+    } else {
+      optional = assayService.findByCode(id);
+    }
+    if (optional.isPresent()) {
+      return optional.get();
+    } else {
+      throw new RecordNotFoundException();
+    }
   }
 
   public StudyService getStudyService() {

@@ -160,7 +160,7 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @GetMapping("/{id}")
-  public Study getStudy(@PathVariable("id") Long studyId) throws RecordNotFoundException {
+  public Study getStudy(@PathVariable("id") String studyId) throws RecordNotFoundException {
     return getStudyFromIdentifier(studyId);
   }
 
@@ -238,7 +238,7 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @DeleteMapping("/{id}")
-  public HttpEntity<?> deleteStudy(@PathVariable("id") Long id) {
+  public HttpEntity<?> deleteStudy(@PathVariable("id") String id) {
 
     LOGGER.info("Deleting study: " + id);
 
@@ -260,7 +260,7 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @PostMapping("/{id}/status")
-  public void updateStudyStatus(@PathVariable("id") Long id,
+  public void updateStudyStatus(@PathVariable("id") String id,
       @RequestBody Map<String, Object> params) throws StudyTrackerException {
 
     if (!params.containsKey("status")) {

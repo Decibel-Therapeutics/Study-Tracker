@@ -2,7 +2,7 @@ package com.decibeltx.studytracker.events.util;
 
 import com.decibeltx.studytracker.events.EventType;
 import com.decibeltx.studytracker.model.Activity;
-import com.decibeltx.studytracker.model.Activity.Reference;
+import com.decibeltx.studytracker.model.ActivityReference;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Task;
@@ -16,7 +16,7 @@ public class AssayActivityUtils {
 
   public static Activity fromNewAssay(Assay assay, User triggeredBy) {
     Activity activity = new Activity();
-    activity.setReference(Reference.ASSAY);
+    activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
     activity.setEventType(EventType.NEW_ASSAY);
     activity.setDate(new Date());
@@ -29,7 +29,7 @@ public class AssayActivityUtils {
 
   public static Activity fromUpdatedAssay(Assay assay, User triggeredBy) {
     Activity activity = new Activity();
-    activity.setReference(Reference.ASSAY);
+    activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
     activity.setEventType(EventType.UPDATED_ASSAY);
     activity.setDate(new Date());
@@ -42,7 +42,7 @@ public class AssayActivityUtils {
 
   public static Activity fromDeletedAssay(Assay assay, User triggeredBy) {
     Activity activity = new Activity();
-    activity.setReference(Reference.ASSAY);
+    activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
     activity.setEventType(EventType.DELETED_ASSAY);
     activity.setDate(new Date());
@@ -56,7 +56,7 @@ public class AssayActivityUtils {
   public static Activity fromChangedAssayStatus(Assay assay, User triggeredBy, Status oldStatus,
       Status newStatus) {
     Activity activity = new Activity();
-    activity.setReference(Reference.ASSAY);
+    activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
     activity.setEventType(EventType.ASSAY_STATUS_CHANGED);
     activity.setDate(new Date());
@@ -71,7 +71,7 @@ public class AssayActivityUtils {
 
   public static Activity fromFileUpload(Assay assay, User triggeredBy, StorageFile storageFile) {
     Activity activity = new Activity();
-    activity.setReference(Reference.ASSAY);
+    activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
     activity.setEventType(EventType.FILE_UPLOADED);
     activity.setDate(new Date());
@@ -85,7 +85,7 @@ public class AssayActivityUtils {
 
   public static Activity fromTaskAdded(Assay assay, User triggeredBy, Task task) {
     Activity activity = new Activity();
-    activity.setReference(Reference.ASSAY);
+    activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
     activity.setEventType(EventType.ASSAY_TASK_ADDED);
     activity.setDate(new Date());
@@ -99,7 +99,7 @@ public class AssayActivityUtils {
 
   public static Activity fromTaskUpdate(Assay assay, User triggeredBy, Task task) {
     Activity activity = new Activity();
-    activity.setReference(Reference.ASSAY);
+    activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
     activity.setEventType(EventType.ASSAY_TASK_UPDATED);
     activity.setDate(new Date());
@@ -113,7 +113,7 @@ public class AssayActivityUtils {
 
   public static Activity fromTaskDeleted(Assay assay, User triggeredBy, Task task) {
     Activity activity = new Activity();
-    activity.setReference(Reference.ASSAY);
+    activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
     activity.setEventType(EventType.ASSAY_TASK_DELETED);
     activity.setDate(new Date());

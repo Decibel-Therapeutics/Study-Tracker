@@ -44,7 +44,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedBy;
@@ -56,7 +55,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "assays")
-@Data
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class Assay {
@@ -97,11 +95,11 @@ public class Assay {
 
   @LastModifiedBy
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "collaborator_id", nullable = false)
+  @JoinColumn(name = "last_modified_by", nullable = false)
   private User lastModifiedBy;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "owner")
+  @JoinColumn(name = "owner", nullable = false)
   private User owner;
 
   @Column(name = "start_date", nullable = false)
@@ -139,8 +137,8 @@ public class Assay {
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "assay_users",
-      joinColumns = @JoinColumn(name = "assay_id"),
-      inverseJoinColumns = @JoinColumn(name = "user_id"))
+      joinColumns = @JoinColumn(name = "assay_id", nullable = false),
+      inverseJoinColumns = @JoinColumn(name = "user_id", nullable = false))
   private List<User> users = new ArrayList<>();
 
   @Type(type = "json")
@@ -151,7 +149,222 @@ public class Assay {
   @Column(name = "attributes", columnDefinition = "json")
   private Map<String, String> attributes = new LinkedHashMap<>();
 
-  @OneToMany(mappedBy = "assay", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "assay", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<AssayTask> tasks = new HashSet<>();
 
+  public void addTask(AssayTask task) {
+    this.tasks.add(task);
+  }
+
+  public void removeTask(AssayTask task) {
+    this.tasks.remove(task);
+  }
+
+  public void removeTask(Long id) {
+    this.tasks.removeIf(t -> t.getId().equals(id));
+  }
+
+  public void addField(String key, Object value) {
+    this.fields.put(key, value);
+  }
+
+  public void removeField(String key) {
+    this.fields.remove(key);
+  }
+
+  public void addAttribute(String key, String value) {
+    this.attributes.put(key, value);
+  }
+
+  public void removeAttribute(String key) {
+    this.attributes.remove(key);
+  }
+
+  public void addUser(User user) {
+    this.users.add(user);
+  }
+
+  public void removeUser(User user) {
+    this.users.remove(user);
+  }
+
+  public void removeUser(Long id) {
+    this.users.removeIf(u -> u.getId().equals(id));
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public Status getStatus() {
+    return status;
+  }
+
+  public void setStatus(Status status) {
+    this.status = status;
+  }
+
+  public AssayType getAssayType() {
+    return assayType;
+  }
+
+  public void setAssayType(AssayType assayType) {
+    this.assayType = assayType;
+  }
+
+  public Study getStudy() {
+    return study;
+  }
+
+  public void setStudy(Study study) {
+    this.study = study;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public User getCreatedBy() {
+    return createdBy;
+  }
+
+  public void setCreatedBy(User createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  public User getLastModifiedBy() {
+    return lastModifiedBy;
+  }
+
+  public void setLastModifiedBy(User lastModifiedBy) {
+    this.lastModifiedBy = lastModifiedBy;
+  }
+
+  public User getOwner() {
+    return owner;
+  }
+
+  public void setOwner(User owner) {
+    this.owner = owner;
+  }
+
+  public Date getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+
+  public Date getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
+  }
+
+  public ELNFolder getNotebookFolder() {
+    return notebookFolder;
+  }
+
+  public void setNotebookFolder(ELNFolder notebookFolder) {
+    this.notebookFolder = notebookFolder;
+  }
+
+  public FileStoreFolder getStorageFolder() {
+    return storageFolder;
+  }
+
+  public void setStorageFolder(FileStoreFolder storageFolder) {
+    this.storageFolder = storageFolder;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  public String getEntryTemplateId() {
+    return entryTemplateId;
+  }
+
+  public void setEntryTemplateId(String entryTemplateId) {
+    this.entryTemplateId = entryTemplateId;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Date getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Date updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  public List<User> getUsers() {
+    return users;
+  }
+
+  public void setUsers(List<User> users) {
+    this.users = users;
+  }
+
+  public Map<String, Object> getFields() {
+    return fields;
+  }
+
+  public void setFields(Map<String, Object> fields) {
+    this.fields = fields;
+  }
+
+  public Map<String, String> getAttributes() {
+    return attributes;
+  }
+
+  public void setAttributes(Map<String, String> attributes) {
+    this.attributes = attributes;
+  }
+
+  public Set<AssayTask> getTasks() {
+    return tasks;
+  }
+
+  public void setTasks(Set<AssayTask> tasks) {
+    this.tasks = tasks;
+  }
 }

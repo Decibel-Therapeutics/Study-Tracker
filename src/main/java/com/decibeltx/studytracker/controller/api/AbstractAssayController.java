@@ -33,21 +33,13 @@ public abstract class AbstractAssayController {
 
   private ActivityService activityService;
 
-  /**
-   * Looks up an {@link Assay} given an ID or code.
-   *
-   * @param id
-   * @return
-   */
-  protected Assay getAssayFromIdentifier(Long id) {
-    Assay assay;
-    Optional<Assay> optional = assayService.findById(id);
-    if (optional.isPresent()) {
-      assay = optional.get();
-    } else {
-      throw new RecordNotFoundException("Cannot identify assay: " + id);
+  private boolean isLong(String value) {
+    try {
+      Long.parseLong(value);
+      return true;
+    } catch (NumberFormatException e) {
+      return false;
     }
-    return assay;
   }
 
   /**
@@ -56,15 +48,38 @@ public abstract class AbstractAssayController {
    * @param id
    * @return
    */
-  protected Study getStudyFromIdentifier(Long id) {
-    Study study;
-    Optional<Study> optional = studyService.findById(id);
-    if (optional.isPresent()) {
-      study = optional.get();
+  protected Assay getAssayFromIdentifier(String id) {
+    Optional<Assay> optional;
+    if (isLong(id)) {
+      optional = assayService.findById(Long.parseLong(id));
     } else {
-      throw new RecordNotFoundException("Cannot identify study: " + id);
+      optional = assayService.findByCode(id);
     }
-    return study;
+    if (optional.isPresent()) {
+      return optional.get();
+    } else {
+      throw new RecordNotFoundException();
+    }
+  }
+
+  /**
+   * Looks up an {@link Assay} given an ID or code.
+   *
+   * @param id
+   * @return
+   */
+  protected Study getStudyFromIdentifier(String id) {
+    Optional<Study> optional;
+    if (isLong(id)) {
+      optional = studyService.findById(Long.parseLong(id));
+    } else {
+      optional = studyService.findByCode(id);
+    }
+    if (optional.isPresent()) {
+      return optional.get();
+    } else {
+      throw new RecordNotFoundException();
+    }
   }
 
   /**
@@ -145,7 +160,7 @@ public abstract class AbstractAssayController {
    * @param id
    * @param user
    */
-  protected void deleteAssay(Long id, User user) {
+  protected void deleteAssay(String id, User user) {
 
     Assay assay = this.getAssayFromIdentifier(id);
     assay.setLastModifiedBy(user);

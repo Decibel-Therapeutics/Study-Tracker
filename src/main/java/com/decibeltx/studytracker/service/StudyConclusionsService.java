@@ -16,12 +16,11 @@
 
 package com.decibeltx.studytracker.service;
 
-import com.decibeltx.studytracker.exception.RecordNotFoundException;
-import com.decibeltx.studytracker.model.Conclusions;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyConclusions;
 import com.decibeltx.studytracker.repository.StudyConclusionsRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
+import java.util.Date;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,27 +40,30 @@ public class StudyConclusionsService {
   }
 
   @Transactional
-  public Conclusions addStudyConclusions(Study study, StudyConclusions conclusions) {
+  public void addStudyConclusions(Study study, StudyConclusions conclusions) {
     conclusions.setStudy(study);
     studyConclusionsRepository.save(conclusions);
     studyRepository.save(study);
-    return conclusions;
   }
 
   @Transactional
-  public Conclusions updateStudyConclusions(Study study, StudyConclusions conclusions) {
-    studyConclusionsRepository.save(conclusions);
-    studyRepository.save(study);
-    return conclusions;
+  public void updateStudyConclusions(Study study, StudyConclusions conclusions) {
+    StudyConclusions c = studyConclusionsRepository.getOne(conclusions.getId());
+    c.setContent(conclusions.getContent());
+    studyConclusionsRepository.save(c);
+    Study s = studyRepository.getOne(study.getId());
+    s.setUpdatedAt(new Date());
+    studyRepository.save(s);
   }
 
   @Transactional
   public void deleteStudyConclusions(Study study) {
-    Optional<StudyConclusions> optional = studyConclusionsRepository.findByStudyId(study.getId());
-    if (!optional.isPresent()) {
-        throw new RecordNotFoundException(String.format("Conclusions not found for study: %s", study.getCode()));
-    }
-    studyConclusionsRepository.deleteById(optional.get().getId());
+    study.setConclusions(null);
+//    Optional<StudyConclusions> optional = studyConclusionsRepository.findByStudyId(study.getId());
+//    if (!optional.isPresent()) {
+//        throw new RecordNotFoundException(String.format("Conclusions not found for study: %s", study.getCode()));
+//    }
+//    studyConclusionsRepository.deleteById(optional.get().getId());
     studyRepository.save(study);
   }
 

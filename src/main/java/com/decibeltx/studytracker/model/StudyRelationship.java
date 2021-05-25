@@ -27,11 +27,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.Data;
 
 @Entity
 @Table(name = "study_relationships")
-@Data
 public class StudyRelationship {
 
   @Id
@@ -40,56 +38,54 @@ public class StudyRelationship {
 
   @Column(name = "type", nullable = false)
   @Enumerated(EnumType.STRING)
-  private Type type;
+  private RelationshipType type;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "source_study_id")
+  @JoinColumn(name = "source_study_id", nullable = false)
   private Study sourceStudy;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "target_study_id")
+  @JoinColumn(name = "target_study_id", nullable = false)
   private Study targetStudy;
 
   public StudyRelationship() {
   }
 
-  public StudyRelationship(Type type, Study sourceStudy, Study targetStudy) {
+  public StudyRelationship(RelationshipType type, Study sourceStudy, Study targetStudy) {
     this.type = type;
     this.sourceStudy = sourceStudy;
     this.targetStudy = targetStudy;
   }
 
-  public enum Type {
-
-    IS_RELATED_TO,
-    IS_PARENT_OF,
-    IS_CHILD_OF,
-    IS_BLOCKING,
-    IS_BLOCKED_BY,
-    IS_PRECEDED_BY,
-    IS_SUCCEEDED_BY;
-
-    public static Type getInverse(Type type) {
-      switch (type) {
-        case IS_RELATED_TO:
-          return IS_RELATED_TO;
-        case IS_PARENT_OF:
-          return IS_CHILD_OF;
-        case IS_CHILD_OF:
-          return IS_PARENT_OF;
-        case IS_BLOCKING:
-          return IS_BLOCKED_BY;
-        case IS_BLOCKED_BY:
-          return IS_BLOCKING;
-        case IS_PRECEDED_BY:
-          return IS_SUCCEEDED_BY;
-        case IS_SUCCEEDED_BY:
-          return IS_PRECEDED_BY;
-        default:
-          return IS_RELATED_TO;
-      }
-    }
-
+  public Long getId() {
+    return id;
   }
 
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public RelationshipType getType() {
+    return type;
+  }
+
+  public void setType(RelationshipType type) {
+    this.type = type;
+  }
+
+  public Study getSourceStudy() {
+    return sourceStudy;
+  }
+
+  public void setSourceStudy(Study sourceStudy) {
+    this.sourceStudy = sourceStudy;
+  }
+
+  public Study getTargetStudy() {
+    return targetStudy;
+  }
+
+  public void setTargetStudy(Study targetStudy) {
+    this.targetStudy = targetStudy;
+  }
 }

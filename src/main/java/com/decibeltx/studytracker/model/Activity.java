@@ -37,20 +37,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Data
 @Table(name = "activity")
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonBinaryType.class)
-//@TypeDefs({
-//    @TypeDef(name = "json", typeClass = JsonStringType.class),
-//    @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-//})
 public class Activity {
 
   @Id
@@ -59,7 +53,7 @@ public class Activity {
 
   @Column(name = "reference", nullable = false)
   @Enumerated(EnumType.STRING)
-  private Reference reference;
+  private ActivityReference reference;
 
   @Column(name = "reference_id", nullable = false)
   private Long referenceId;
@@ -72,7 +66,7 @@ public class Activity {
   @Type(type = "json")
   private Map<String, Object> data = new HashMap<>();
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id", nullable = false)
   @NotNull
   private User user;
@@ -86,13 +80,68 @@ public class Activity {
     return user.getUsername();
   }
 
-  public enum Reference {
-    STUDY,
-    ASSAY,
-    PROGRAM,
-    USER,
-    ASSAY_TYPE,
-    ENTRY_TEMPLATE
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public ActivityReference getReference() {
+    return reference;
+  }
+
+  public void setReference(ActivityReference reference) {
+    this.reference = reference;
+  }
+
+  public Long getReferenceId() {
+    return referenceId;
+  }
+
+  public void setReferenceId(Long referenceId) {
+    this.referenceId = referenceId;
+  }
+
+  public EventType getEventType() {
+    return eventType;
+  }
+
+  public void setEventType(EventType eventType) {
+    this.eventType = eventType;
+  }
+
+  public Map<String, Object> getData() {
+    return data;
+  }
+
+  public void setData(Map<String, Object> data) {
+    this.data = data;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
+  }
+
+  public void addData(String key, Object value) {
+    this.data.put(key, value);
+  }
+
+  public void removeData(String key) {
+    this.data.remove(key);
   }
 
 }

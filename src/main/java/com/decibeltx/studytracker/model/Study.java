@@ -43,7 +43,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedBy;
@@ -57,7 +56,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
     @Index(name = "idx_study_code", columnList = "code"),
     @Index(name = "idx_study_name", columnList = "name")
 })
-@Data
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class Study {
@@ -83,7 +81,7 @@ public class Study {
   private String name;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "program_id")
+  @JoinColumn(name = "program_id", nullable = false)
   private Program program;
 
   @Column(name = "description", nullable = false, columnDefinition = "TEXT")
@@ -143,14 +141,14 @@ public class Study {
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "study_users",
-      joinColumns = @JoinColumn(name = "study_id"),
-      inverseJoinColumns = @JoinColumn(name = "user_id"))
+      joinColumns = @JoinColumn(name = "study_id", nullable = false),
+      inverseJoinColumns = @JoinColumn(name = "user_id", nullable = false))
   private Set<User> users = new HashSet<>();
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "study_keywords",
-      joinColumns = @JoinColumn(name = "study_id"),
-      inverseJoinColumns = @JoinColumn(name = "keyword_id"))
+      joinColumns = @JoinColumn(name = "study_id", nullable = false),
+      inverseJoinColumns = @JoinColumn(name = "keyword_id", nullable = false))
   private Set<Keyword> keywords = new HashSet<>();
 
   @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -172,4 +170,300 @@ public class Study {
   @OneToMany(mappedBy = "study", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Comment> comments = new HashSet<>();
 
+  public void addUser(User user) {
+    this.users.add(user);
+  }
+
+  public void removeUser(User user) {
+    this.users.remove(user);
+  }
+
+  public void removeUser(Long id) {
+    this.users.removeIf(d -> d.getId().equals(id));
+  }
+
+  public void addKeyword(Keyword keyword) {
+    this.keywords.add(keyword);
+  }
+
+  public void removeKeyword(Keyword keyword) {
+    this.keywords.remove(keyword);
+  }
+
+  public void removeKeyword(Long id) {
+    this.keywords.removeIf(d -> d.getId().equals(id));
+  }
+
+  public void addAssay(Assay assay) {
+    this.assays.add(assay);
+  }
+
+  public void removeAssay(Assay assay) {
+    this.assays.remove(assay);
+  }
+
+  public void removeAssay(Long id) {
+    this.assays.removeIf(d -> d.getId().equals(id));
+  }
+
+  public void addAttribute(String key, String value) {
+    this.attributes.put(key, value);
+  }
+
+  public void removeAttribute(String key) {
+    this.attributes.remove(key);
+  }
+
+  public void addExternalLink(ExternalLink link) {
+    this.externalLinks.add(link);
+  }
+
+  public void removeExternalLink(ExternalLink link) {
+    this.externalLinks.remove(link);
+  }
+
+  public void removeExternalLink(Long id) {
+    this.externalLinks.removeIf(d -> d.getId().equals(id));
+  }
+
+  public void addStudyRelationship(StudyRelationship relationship) {
+    this.studyRelationships.add(relationship);
+  }
+
+  public void removeStudyRelationship(StudyRelationship relationship) {
+    this.studyRelationships.remove(relationship);
+  }
+
+  public void removeStudyRelationship(Long id) {
+    this.studyRelationships.removeIf(d -> d.getId().equals(id));
+  }
+
+  public void addComment(Comment comment) {
+    this.comments.add(comment);
+  }
+
+  public void removeComment(Comment comment) {
+    this.comments.remove(comment);
+  }
+
+  public void removeComment(Long id) {
+    this.comments.removeIf(c -> c.getId().equals(id));
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  public String getExternalCode() {
+    return externalCode;
+  }
+
+  public void setExternalCode(String externalCode) {
+    this.externalCode = externalCode;
+  }
+
+  public Status getStatus() {
+    return status;
+  }
+
+  public void setStatus(Status status) {
+    this.status = status;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Program getProgram() {
+    return program;
+  }
+
+  public void setProgram(Program program) {
+    this.program = program;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public Collaborator getCollaborator() {
+    return collaborator;
+  }
+
+  public void setCollaborator(Collaborator collaborator) {
+    this.collaborator = collaborator;
+  }
+
+  public boolean isLegacy() {
+    return legacy;
+  }
+
+  public void setLegacy(boolean legacy) {
+    this.legacy = legacy;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  public ELNFolder getNotebookFolder() {
+    return notebookFolder;
+  }
+
+  public void setNotebookFolder(ELNFolder notebookFolder) {
+    this.notebookFolder = notebookFolder;
+  }
+
+  public FileStoreFolder getStorageFolder() {
+    return storageFolder;
+  }
+
+  public void setStorageFolder(FileStoreFolder storageFolder) {
+    this.storageFolder = storageFolder;
+  }
+
+  public User getCreatedBy() {
+    return createdBy;
+  }
+
+  public void setCreatedBy(User createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  public User getLastModifiedBy() {
+    return lastModifiedBy;
+  }
+
+  public void setLastModifiedBy(User lastModifiedBy) {
+    this.lastModifiedBy = lastModifiedBy;
+  }
+
+  public Date getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+
+  public Date getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Date getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Date updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  public User getOwner() {
+    return owner;
+  }
+
+  public void setOwner(User owner) {
+    this.owner = owner;
+  }
+
+  public Set<User> getUsers() {
+    return users;
+  }
+
+  public void setUsers(Set<User> users) {
+    this.users = users;
+  }
+
+  public Set<Keyword> getKeywords() {
+    return keywords;
+  }
+
+  public void setKeywords(Set<Keyword> keywords) {
+    this.keywords = keywords;
+  }
+
+  public Set<Assay> getAssays() {
+    return assays;
+  }
+
+  public void setAssays(Set<Assay> assays) {
+    this.assays = assays;
+  }
+
+  public Map<String, String> getAttributes() {
+    return attributes;
+  }
+
+  public void setAttributes(Map<String, String> attributes) {
+    this.attributes = attributes;
+  }
+
+  public Set<ExternalLink> getExternalLinks() {
+    return externalLinks;
+  }
+
+  public void setExternalLinks(Set<ExternalLink> externalLinks) {
+    this.externalLinks = externalLinks;
+  }
+
+  public Set<StudyRelationship> getStudyRelationships() {
+    return studyRelationships;
+  }
+
+  public void setStudyRelationships(
+      Set<StudyRelationship> studyRelationships) {
+    this.studyRelationships = studyRelationships;
+  }
+
+  public StudyConclusions getConclusions() {
+    return conclusions;
+  }
+
+  public void setConclusions(StudyConclusions conclusions) {
+    this.conclusions = conclusions;
+  }
+
+  public Set<Comment> getComments() {
+    return comments;
+  }
+
+  public void setComments(Set<Comment> comments) {
+    this.comments = comments;
+  }
 }

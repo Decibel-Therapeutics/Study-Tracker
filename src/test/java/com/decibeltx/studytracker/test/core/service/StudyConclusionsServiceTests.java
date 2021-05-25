@@ -21,6 +21,8 @@ import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyConclusions;
+import com.decibeltx.studytracker.model.User;
+import com.decibeltx.studytracker.repository.UserRepository;
 import com.decibeltx.studytracker.service.StudyConclusionsService;
 import com.decibeltx.studytracker.service.StudyService;
 import java.util.Date;
@@ -44,6 +46,9 @@ public class StudyConclusionsServiceTests {
   private StudyService studyService;
 
   @Autowired
+  private UserRepository userRepository;
+
+  @Autowired
   private StudyConclusionsService studyConclusionsService;
 
   @Autowired
@@ -59,9 +64,15 @@ public class StudyConclusionsServiceTests {
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
     Assert.assertNull(study.getConclusions());
 
+    User user = userRepository.findAll().get(0);
+
     StudyConclusions conclusions = new StudyConclusions();
     conclusions.setContent("This is a test");
     conclusions.setCreatedBy(study.getCreatedBy());
+    conclusions.setStudy(study);
+    conclusions.setCreatedBy(user);
+    conclusions.setLastModifiedBy(user);
+
     studyConclusionsService.addStudyConclusions(study, conclusions);
     Assert.assertNotNull(conclusions.getId());
     Assert.assertNotNull(conclusions.getCreatedAt());
@@ -78,19 +89,24 @@ public class StudyConclusionsServiceTests {
 
   @Test
   public void updateConclusionsTest() {
+
     addConclusionsTest();
+
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
+
     study.setLastModifiedBy(study.getCreatedBy());
+
     StudyConclusions conclusions = study.getConclusions();
     Date firstDate = conclusions.getCreatedAt();
-    Assert.assertNull(conclusions.getUpdatedAt());
+    Assert.assertEquals(conclusions.getCreatedAt(), conclusions.getUpdatedAt());
     conclusions.setContent("Different text");
     conclusions.setLastModifiedBy(conclusions.getCreatedBy());
     studyConclusionsService.updateStudyConclusions(study, conclusions);
-    Assert.assertNotNull(conclusions.getUpdatedAt());
-    Assert.assertNotEquals(firstDate, conclusions.getUpdatedAt());
+
     conclusions = studyConclusionsService.findStudyConclusions(study)
         .orElseThrow(RecordNotFoundException::new);
+    Assert.assertNotNull(conclusions.getUpdatedAt());
+    Assert.assertNotEquals(firstDate, conclusions.getUpdatedAt());
     Assert.assertEquals("Different text", conclusions.getContent());
   }
 

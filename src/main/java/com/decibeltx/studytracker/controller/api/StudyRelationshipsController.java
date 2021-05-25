@@ -20,9 +20,9 @@ import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
 import com.decibeltx.studytracker.events.util.StudyActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Activity;
+import com.decibeltx.studytracker.model.RelationshipType;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyRelationship;
-import com.decibeltx.studytracker.model.StudyRelationship.Type;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.service.StudyRelationshipService;
 import java.util.List;
@@ -51,14 +51,14 @@ public class StudyRelationshipsController extends AbstractStudyController {
   private StudyRelationshipService studyRelationshipService;
 
   @GetMapping("")
-  public List<StudyRelationship> getStudyRelationships(@PathVariable("id") Long studyId) {
+  public List<StudyRelationship> getStudyRelationships(@PathVariable("id") String studyId) {
     Study study = getStudyFromIdentifier(studyId);
-    return studyRelationshipService.getStudyRelationships(study);
+    return studyRelationshipService.findStudyRelationships(study);
   }
 
   @PostMapping("")
   public HttpEntity<StudyRelationship> createStudyRelationship(
-      @PathVariable("id") Long sourceStudyId,
+      @PathVariable("id") String sourceStudyId,
       @RequestBody StudyRelationship studyRelationship) {
 
     LOGGER
@@ -70,7 +70,7 @@ public class StudyRelationshipsController extends AbstractStudyController {
         .orElseThrow(RecordNotFoundException::new);
 
     Study sourceStudy = this.getStudyFromIdentifier(sourceStudyId);
-    Study targetStudy = this.getStudyFromIdentifier(studyRelationship.getTargetStudy().getId());
+    Study targetStudy = this.getStudyFromIdentifier(studyRelationship.getTargetStudy().getCode());
     studyRelationshipService
         .addStudyRelationship(sourceStudy, targetStudy, studyRelationship.getType());
 
@@ -81,7 +81,7 @@ public class StudyRelationshipsController extends AbstractStudyController {
     this.getEventsService().dispatchEvent(sourceActivity);
 
     StudyRelationship inverseRelationship
-        = new StudyRelationship(Type.getInverse(studyRelationship.getType()), targetStudy, sourceStudy);
+        = new StudyRelationship(RelationshipType.getInverse(studyRelationship.getType()), targetStudy, sourceStudy);
     Activity targetActivity = StudyActivityUtils
         .fromNewStudyRelationship(targetStudy, sourceStudy, user, inverseRelationship);
     this.getActivityService().create(targetActivity);
@@ -92,7 +92,7 @@ public class StudyRelationshipsController extends AbstractStudyController {
   }
 
   @DeleteMapping("")
-  public HttpEntity<?> deleteStudyRelationship(@PathVariable("id") Long sourceStudyId,
+  public HttpEntity<?> deleteStudyRelationship(@PathVariable("id") String sourceStudyId,
       @RequestBody StudyRelationship studyRelationship) {
 
     String username = UserAuthenticationUtils
@@ -101,7 +101,7 @@ public class StudyRelationshipsController extends AbstractStudyController {
         .orElseThrow(RecordNotFoundException::new);
 
     Study sourceStudy = getStudyFromIdentifier(sourceStudyId);
-    Study targetStudy = getStudyFromIdentifier(studyRelationship.getTargetStudy().getId());
+    Study targetStudy = getStudyFromIdentifier(studyRelationship.getTargetStudy().getCode());
 
     studyRelationshipService.removeStudyRelationship(sourceStudy, targetStudy);
 

@@ -57,7 +57,7 @@ public class AssayController extends AbstractAssayController {
   }
 
   @GetMapping("/{id}")
-  public Assay findById(@PathVariable("id") Long assayId) throws RecordNotFoundException {
+  public Assay findById(@PathVariable("id") String assayId) throws RecordNotFoundException {
     return getAssayFromIdentifier(assayId);
   }
 
@@ -80,7 +80,7 @@ public class AssayController extends AbstractAssayController {
   }
 
   @DeleteMapping("/{id}")
-  public HttpEntity<?> delete(@PathVariable("id") Long id) {
+  public HttpEntity<?> delete(@PathVariable("id") String id) {
 
     LOGGER.info("Deleting assay: " + id);
 
@@ -97,7 +97,7 @@ public class AssayController extends AbstractAssayController {
   }
 
   @PostMapping("/{id}/status")
-  public HttpEntity<?> updateStatus(@PathVariable("id") Long id,
+  public HttpEntity<?> updateStatus(@PathVariable("id") String id,
       @RequestBody Map<String, Object> params) throws StudyTrackerException {
 
     if (!params.containsKey("status")) {
@@ -123,7 +123,7 @@ public class AssayController extends AbstractAssayController {
   }
 
   @GetMapping("/{assayId}/activity")
-  public List<Activity> getAssayActivity(@PathVariable("assayId") Long assayId) {
+  public List<Activity> getAssayActivity(@PathVariable("assayId") String assayId) {
     Assay assay = this.getAssayFromIdentifier(assayId);
     return getActivityService().findByAssay(assay);
   }

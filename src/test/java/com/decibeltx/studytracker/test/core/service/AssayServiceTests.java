@@ -33,6 +33,7 @@ import com.decibeltx.studytracker.service.NamingService;
 import com.decibeltx.studytracker.service.StudyService;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,18 +106,16 @@ public class AssayServiceTests {
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
-    assay.setTasks(Collections.singleton(new AssayTask("My task")));
+    assay.setTasks(Collections.singleton(new AssayTask(assay, "My task")));
     assayService.create(assay);
     Assert.assertEquals(ASSAY_COUNT + 1, assayRepository.count());
     Assert.assertNotNull(assay.getId());
     Assert.assertNotNull(assay.getCode());
     Assert.assertEquals(study.getCode() + "-001", assay.getCode());
-    study.getAssays().add(assay);
-    studyService.update(study);
-    Study updated = studyService.findByCode(study.getCode())
-        .orElseThrow(RecordNotFoundException::new);
-    Assert.assertTrue(!updated.getAssays().isEmpty());
-    Assert.assertEquals(updated.getAssays().stream().findFirst().get().getCode(), assay.getCode());
+
+    List<Assay> studyAssays = assayService.findByStudyId(study.getId());
+    Assert.assertFalse(studyAssays.isEmpty());
+    Assert.assertEquals(studyAssays.get(0).getCode(), assay.getCode());
   }
 
   @Test
@@ -141,7 +140,7 @@ public class AssayServiceTests {
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
-    Map<String, Object> fields = new LinkedHashMap<>();
+    Map<String, Object> fields = new HashMap<>();
     fields.put("number_of_slides", 10);
     fields.put("antibodies", "AKT1, AKT2, AKT3");
     fields.put("concentration", 1.2345);
@@ -155,12 +154,10 @@ public class AssayServiceTests {
     Assert.assertNotNull(assay.getId());
     Assert.assertNotNull(assay.getCode());
     Assert.assertEquals(study.getCode() + "-001", assay.getCode());
-    study.getAssays().add(assay);
-    studyService.update(study);
-    Study updated = studyService.findByCode(study.getCode())
-        .orElseThrow(RecordNotFoundException::new);
-    Assert.assertTrue(!updated.getAssays().isEmpty());
-    Assert.assertEquals(updated.getAssays().stream().findFirst().get().getCode(), assay.getCode());
+
+    List<Assay> studyAssays = assayService.findByStudyId(study.getId());
+    Assert.assertFalse(studyAssays.isEmpty());
+    Assert.assertEquals(studyAssays.get(0).getCode(), assay.getCode());
   }
 
   @Test

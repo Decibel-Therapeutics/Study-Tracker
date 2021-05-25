@@ -16,6 +16,7 @@
 
 package com.decibeltx.studytracker.service;
 
+import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Comment;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.repository.CommentRepository;
@@ -50,7 +51,7 @@ public class StudyCommentService {
 
   @Transactional
   public Comment updateStudyComment(Comment comment) {
-    Comment c = commentRepository.getOne(comment.getId());
+    Comment c = commentRepository.findById(comment.getId()).orElseThrow(RecordNotFoundException::new);
     c.setUpdatedAt(new Date());
     c.setText(comment.getText());
     commentRepository.save(c);

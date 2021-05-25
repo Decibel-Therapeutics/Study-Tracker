@@ -26,11 +26,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.Data;
 
 @Entity
 @Table(name = "external_links")
-@Data
 public class ExternalLink {
 
   @Id
@@ -44,7 +42,38 @@ public class ExternalLink {
   private URL url;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "study_id")
+  @JoinColumn(name = "study_id", nullable = false)
   private Study study;
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getLabel() {
+    return label;
+  }
+
+  public void setLabel(String label) {
+    this.label = label;
+  }
+
+  public URL getUrl() {
+    return url;
+  }
+
+  public void setUrl(URL url) {
+    this.url = url;
+  }
+
+  public Study getStudy() {
+    return study;
+  }
+
+  public void setStudy(Study study) {
+    this.study = study;
+  }
 }

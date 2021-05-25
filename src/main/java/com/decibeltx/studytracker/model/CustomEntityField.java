@@ -7,10 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import lombok.Data;
 
 @MappedSuperclass
-@Data
 public abstract class CustomEntityField {
 
   @Id
@@ -36,13 +34,59 @@ public abstract class CustomEntityField {
   @Column(name = "active", nullable = false)
   private boolean active;
 
-  public enum CustomEntityFieldType {
-    STRING,
-    TEXT,
-    INTEGER,
-    FLOAT,
-    DATE,
-    BOOLEAN
+  public Long getId() {
+    return id;
   }
 
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
+  }
+
+  public String getFieldName() {
+    return fieldName;
+  }
+
+  public void setFieldName(String fieldName) {
+    this.fieldName = fieldName;
+  }
+
+  public CustomEntityFieldType getType() {
+    return type;
+  }
+
+  public void setType(CustomEntityFieldType type) {
+    this.type = type;
+  }
+
+  public boolean isRequired() {
+    return required;
+  }
+
+  public void setRequired(boolean required) {
+    this.required = required;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
+  }
 }

@@ -79,18 +79,21 @@ public class StudyCommentServiceTests {
 
   @Test
   public void updateCommentTest() {
+
     addCommentTest();
+
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
+
     Comment comment = study.getComments().stream().findFirst().get();
     Long id = comment.getId();
     Date firstDate = comment.getCreatedAt();
-    Assert.assertNull(comment.getUpdatedAt());
     comment.setText("Different text");
     studyCommentService.updateStudyComment(comment);
-    Assert.assertNotNull(comment.getUpdatedAt());
-    Assert.assertNotEquals(firstDate, comment.getUpdatedAt());
+
     comment = studyCommentService.findStudyCommentById(id)
         .orElseThrow(RecordNotFoundException::new);
+    Assert.assertNotNull(comment.getUpdatedAt());
+    Assert.assertNotEquals(firstDate, comment.getUpdatedAt());
     Assert.assertEquals("Different text", comment.getText());
   }
 

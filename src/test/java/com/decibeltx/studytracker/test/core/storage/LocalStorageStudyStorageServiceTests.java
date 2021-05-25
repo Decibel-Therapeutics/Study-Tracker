@@ -203,7 +203,9 @@ public class LocalStorageStudyStorageServiceTests {
     assay.setName("Test assay");
     assay.setCode("CPA-12345-12345");
     assay.setStatus(Status.IN_PLANNING);
+    assay.setOwner(study.getOwner());
     assay.setCreatedBy(study.getOwner());
+    assay.setLastModifiedBy(study.getOwner());
     assay.setAssayType(assayType);
     assay.setStudy(study);
     assay.setDescription("This is a test");

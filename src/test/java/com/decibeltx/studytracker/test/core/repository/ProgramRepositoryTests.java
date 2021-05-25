@@ -10,19 +10,22 @@ import com.decibeltx.studytracker.repository.ProgramRepository;
 import com.decibeltx.studytracker.repository.UserRepository;
 import java.util.Collections;
 import java.util.Optional;
-import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"test"})
+@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ProgramRepositoryTests {
 
   @Autowired private UserRepository userRepository;
@@ -30,7 +33,7 @@ public class ProgramRepositoryTests {
   @Autowired private ELNFolderRepository elnFolderRepository;
   @Autowired private FileStoreFolderRepository fileStoreFolderRepository;
 
-  @After
+  @Before
   public void doBefore() {
     programRepository.deleteAll();
     fileStoreFolderRepository.deleteAll();
@@ -65,6 +68,7 @@ public class ProgramRepositoryTests {
     program.setActive(true);
     program.setCode("TST");
     program.setCreatedBy(user);
+    program.setLastModifiedBy(user);
     program.setName("Test Program");
     program.setAttributes(Collections.singletonMap("key", "value"));
 

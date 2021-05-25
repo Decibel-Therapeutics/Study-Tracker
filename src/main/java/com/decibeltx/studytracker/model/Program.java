@@ -36,10 +36,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -47,7 +48,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "programs", indexes = {
     @Index(name = "idx_program_name", columnList = "name")
 })
-@Data
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class Program {
@@ -56,11 +56,11 @@ public class Program {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column(name = "code", nullable = false)
+  @Column(name = "code", nullable = false, updatable = false)
   @NotNull(message = "Program code must not be empty")
   private String code;
 
-  @Column(name = "name", nullable = false, unique = true)
+  @Column(name = "name", nullable = false, unique = true, updatable = false)
   @NotNull(message = "Program name must not be empty")
   private String name;
 
@@ -70,10 +70,12 @@ public class Program {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "created_by", nullable = false)
   @NotNull
+  @CreatedBy
   private User createdBy;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "last_modified_by")
+  @JoinColumn(name = "last_modified_by", nullable = false)
+  @LastModifiedBy
   private User lastModifiedBy;
 
   @CreatedDate
@@ -101,4 +103,107 @@ public class Program {
   @Column(name = "attributes", columnDefinition = "json")
   private Map<String, String> attributes = new LinkedHashMap<>();
 
+  public void addAttribute(String key, String value) {
+    this.attributes.put(key, value);
+  }
+
+  public void removeAttribute(String key) {
+    this.attributes.remove(key);
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public User getCreatedBy() {
+    return createdBy;
+  }
+
+  public void setCreatedBy(User createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  public User getLastModifiedBy() {
+    return lastModifiedBy;
+  }
+
+  public void setLastModifiedBy(User lastModifiedBy) {
+    this.lastModifiedBy = lastModifiedBy;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Date getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Date updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  public ELNFolder getNotebookFolder() {
+    return notebookFolder;
+  }
+
+  public void setNotebookFolder(ELNFolder notebookFolder) {
+    this.notebookFolder = notebookFolder;
+  }
+
+  public FileStoreFolder getStorageFolder() {
+    return storageFolder;
+  }
+
+  public void setStorageFolder(FileStoreFolder storageFolder) {
+    this.storageFolder = storageFolder;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  public Map<String, String> getAttributes() {
+    return attributes;
+  }
+
+  public void setAttributes(Map<String, String> attributes) {
+    this.attributes = attributes;
+  }
 }

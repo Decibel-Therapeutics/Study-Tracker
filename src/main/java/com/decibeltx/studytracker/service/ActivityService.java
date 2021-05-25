@@ -25,6 +25,7 @@ import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.ActivityRepository;
+import com.decibeltx.studytracker.repository.AssayRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +47,9 @@ public class ActivityService {
   @Autowired
   private StudyRepository studyRepository;
 
+  @Autowired
+  private AssayRepository assayRepository;
+
   public List<Activity> findAll() {
     return activityRepository.findAll();
   }
@@ -64,7 +68,7 @@ public class ActivityService {
 
   public List<Activity> findByStudy(Study study) {
     List<Activity> activityList = activityRepository.findByStudyId(study.getId());
-    for (Assay assay : study.getAssays()) {
+    for (Assay assay : assayRepository.findByStudyId(study.getId())) {
       activityList.addAll(this.findByAssay(assay));
     }
     return activityList;

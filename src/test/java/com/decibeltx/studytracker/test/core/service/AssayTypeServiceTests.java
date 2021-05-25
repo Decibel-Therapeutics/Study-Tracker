@@ -20,7 +20,7 @@ import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.model.AssayTypeField;
-import com.decibeltx.studytracker.model.CustomEntityField.CustomEntityFieldType;
+import com.decibeltx.studytracker.model.CustomEntityFieldType;
 import com.decibeltx.studytracker.service.AssayTypeService;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -84,7 +84,7 @@ public class AssayTypeServiceTests {
     field.setFieldName("name");
     field.setRequired(true);
     field.setType(CustomEntityFieldType.STRING);
-    assayType.setFields(new HashSet<>(Arrays.asList(field)));
+    assayType.addField(field);
     assayTypeService.create(assayType);
     Assert.assertEquals(ASSAY_TYPE_COUNT + 1, assayTypeService.count());
 
@@ -107,7 +107,7 @@ public class AssayTypeServiceTests {
     field.setFieldName("name");
     field.setRequired(true);
     field.setType(CustomEntityFieldType.STRING);
-    assayType.setFields(new HashSet<>(Arrays.asList(field)));
+    assayType.addField(field);
     assayTypeService.create(assayType);
     Assert.assertEquals(ASSAY_TYPE_COUNT + 1, assayTypeService.count());
 

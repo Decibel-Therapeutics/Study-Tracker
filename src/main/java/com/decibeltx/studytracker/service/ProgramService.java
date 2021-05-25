@@ -97,8 +97,11 @@ public class ProgramService {
   @Transactional
   public void update(Program program) {
     LOGGER.info("Updating program with name: " + program.getName());
-    programRepository.findById(program.getId()).orElseThrow(RecordNotFoundException::new);
-    programRepository.save(program);
+    Program p = programRepository.getOne(program.getId());
+    p.setDescription(program.getDescription());
+    p.setActive(program.isActive());
+    p.setAttributes(program.getAttributes());
+    programRepository.save(p);
   }
 
   @Transactional

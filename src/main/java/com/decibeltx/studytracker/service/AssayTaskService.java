@@ -2,11 +2,10 @@ package com.decibeltx.studytracker.service;
 
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.AssayTask;
-import com.decibeltx.studytracker.model.Task;
 import com.decibeltx.studytracker.repository.AssayRepository;
+import com.decibeltx.studytracker.repository.AssayTaskRepository;
 import java.util.Date;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,39 +16,43 @@ public class AssayTaskService {
   @Autowired
   private AssayRepository assayRepository;
 
-  public Set<AssayTask> findAssayTasks(Assay assay) {
-    return assay.getTasks();
+  @Autowired
+  private AssayTaskRepository assayTaskRepository;
+
+  public List<AssayTask> findAssayTasks(Assay assay) {
+    return this.findAssayTasks(assay.getId());
+  }
+
+  public List<AssayTask> findAssayTasks(Long id) {
+    return assayTaskRepository.findByAssayId(id);
   }
 
   @Transactional
   public void addAssayTask(AssayTask task, Assay assay) {
-    Date now = new Date();
-    task.setCreatedAt(now);
-    task.setUpdatedAt(now);
     if (task.getOrder() == null) {
       task.setOrder(assay.getTasks().size());
     }
-    assay.getTasks().add(task);
+    task.setAssay(assay);
+    assay.addTask(task);
     assayRepository.save(assay);
   }
 
   @Transactional
   public void updateAssayTask(AssayTask task, Assay assay) {
-    for (Task t : assay.getTasks()) {
-      if (t.getLabel().equals(task.getLabel())) {
-        t.setStatus(task.getStatus());
-        t.setUpdatedAt(new Date());
-      }
-    }
-    assayRepository.save(assay);
+    AssayTask t = assayTaskRepository.getOne(task.getId());
+    t.setAssay(assay);
+    t.setStatus(task.getStatus());
+    t.setOrder(task.getOrder());
+    t.setLabel(task.getLabel());
+    assayTaskRepository.save(t);
+    Assay a = assayRepository.getOne(assay.getId());
+    a.setUpdatedAt(new Date());
+    assayRepository.save(a);
   }
 
   @Transactional
   public void deleteAssayTask(AssayTask task, Assay assay) {
-    Set<AssayTask> tasks = assay.getTasks().stream()
-        .filter(t -> !t.getLabel().equals(task.getLabel()))
-        .collect(Collectors.toSet());
-    assay.setTasks(tasks);
+    assay.removeTask(task.getId());
     assayRepository.save(assay);
   }
 

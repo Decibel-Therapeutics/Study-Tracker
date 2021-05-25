@@ -3,6 +3,7 @@ package com.decibeltx.studytracker.events.util;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.model.Comment;
+import com.decibeltx.studytracker.model.ExternalLink;
 import com.decibeltx.studytracker.model.Keyword;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Study;
@@ -138,6 +139,14 @@ public class EntityViewUtils {
     view.put("fields", assayType.getFields());
     view.put("tasks", assayType.getTasks());
     view.put("attributes", assayType.getAttributes());
+    return view;
+  }
+
+  public static Map<String, Object> createExternalLinkView(ExternalLink link) {
+    Map<String, Object> view = new HashMap<>();
+    view.put("id", link.getId());
+    view.put("label", link.getLabel());
+    view.put("url", link.getUrl());
     return view;
   }
 

@@ -52,13 +52,13 @@ public class StudyCommentsController extends AbstractStudyController {
   private StudyCommentService studyCommentService;
 
   @GetMapping("")
-  public List<Comment> getStudyComments(@PathVariable("studyId") Long studyId) {
+  public List<Comment> getStudyComments(@PathVariable("studyId") String studyId) {
     Study study = getStudyFromIdentifier(studyId);
     return studyCommentService.findStudyComments(study);
   }
 
   @PostMapping("")
-  public HttpEntity<Comment> addStudyComment(@PathVariable("studyId") Long studyId,
+  public HttpEntity<Comment> addStudyComment(@PathVariable("studyId") String studyId,
       @RequestBody Comment comment) {
 
     LOGGER
@@ -82,7 +82,7 @@ public class StudyCommentsController extends AbstractStudyController {
   }
 
   @PutMapping("/{commentId}")
-  public HttpEntity<Comment> editedStudyComment(@PathVariable("studyId") Long studyId,
+  public HttpEntity<Comment> editedStudyComment(@PathVariable("studyId") String studyId,
       @PathVariable("commentId") Long commentId, @RequestBody Comment updated) {
 
     LOGGER.info(String.format("Editing comment for study %s: %s", studyId, updated.toString()));
@@ -114,7 +114,7 @@ public class StudyCommentsController extends AbstractStudyController {
   }
 
   @DeleteMapping("/{commentId}")
-  public HttpEntity<?> deleteStudyComment(@PathVariable("studyId") Long studyId,
+  public HttpEntity<?> deleteStudyComment(@PathVariable("studyId") String studyId,
       @PathVariable("commentId") Long commentId) {
 
     LOGGER.info(String.format("Removing comment %s for study %s", commentId, studyId));

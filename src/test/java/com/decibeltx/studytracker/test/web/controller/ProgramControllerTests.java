@@ -48,6 +48,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
@@ -102,6 +103,7 @@ public class ProgramControllerTests {
 
     mockMvc.perform(get("/api/program/" + program.getId())
         .with(user(username)))
+        .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasKey("code")))
         .andExpect(jsonPath("$.code", is("CPA")))
@@ -113,7 +115,7 @@ public class ProgramControllerTests {
 
   @Test
   public void findNonExistantProgramTest() throws Exception {
-    mockMvc.perform(get("/api/program/XXXX")
+    mockMvc.perform(get("/api/program/999999")
         .with(user(username)))
         .andExpect(status().isNotFound());
   }
@@ -158,7 +160,7 @@ public class ProgramControllerTests {
         .orElseThrow(RecordNotFoundException::new);
 
     mockMvc.perform(get("/api/program/" + program.getId())
-        .with(user(username)))
+        .with(user(user.getUsername())))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasKey("active")))
         .andExpect(jsonPath("$.active", is(true)));

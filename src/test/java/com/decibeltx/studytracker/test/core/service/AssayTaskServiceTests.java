@@ -21,10 +21,11 @@ import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.AssayTask;
-import com.decibeltx.studytracker.model.Task.TaskStatus;
+import com.decibeltx.studytracker.model.TaskStatus;
 import com.decibeltx.studytracker.repository.AssayRepository;
 import com.decibeltx.studytracker.service.AssayTaskService;
-import java.util.Set;
+import java.util.Date;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public class AssayTaskServiceTests {
   public void findAssayTasks() {
     Assay assay = assayRepository.findByCode("PPB-10001-001")
         .orElseThrow(RecordNotFoundException::new);
-    Set<AssayTask> tasks = assayTaskService.findAssayTasks(assay);
+    List<AssayTask> tasks = assayTaskService.findAssayTasks(assay);
     Assert.assertNotNull(tasks);
     Assert.assertFalse(tasks.isEmpty());
     Assert.assertEquals(1, tasks.size());
@@ -68,7 +69,7 @@ public class AssayTaskServiceTests {
   public void addTaskTest() {
     Assay assay = assayRepository.findByCode("PPB-10001-001")
         .orElseThrow(RecordNotFoundException::new);
-    Set<AssayTask> tasks = assayTaskService.findAssayTasks(assay);
+    List<AssayTask> tasks = assayTaskService.findAssayTasks(assay);
     Assert.assertNotNull(tasks);
     Assert.assertFalse(tasks.isEmpty());
     Assert.assertEquals(1, tasks.size());
@@ -76,6 +77,7 @@ public class AssayTaskServiceTests {
     AssayTask task = new AssayTask();
     task.setStatus(TaskStatus.TODO);
     task.setLabel("Test task");
+    task.setAssay(assay);
     assayTaskService.addAssayTask(task, assay);
 
     tasks = assayTaskService.findAssayTasks(assay);
@@ -98,11 +100,12 @@ public class AssayTaskServiceTests {
   public void updateTaskTest() {
     Assay assay = assayRepository.findByCode("PPB-10001-001")
         .orElseThrow(RecordNotFoundException::new);
-    Set<AssayTask> tasks = assayTaskService.findAssayTasks(assay);
+    Date then = assay.getUpdatedAt();
+    List<AssayTask> tasks = assayTaskService.findAssayTasks(assay);
     Assert.assertNotNull(tasks);
     Assert.assertFalse(tasks.isEmpty());
     Assert.assertEquals(1, tasks.size());
-    AssayTask task = tasks.stream().findFirst().get();
+    AssayTask task = tasks.get(0);
     Assert.assertEquals(TaskStatus.TODO, task.getStatus());
 
     task.setStatus(TaskStatus.COMPLETE);
@@ -112,20 +115,24 @@ public class AssayTaskServiceTests {
     Assert.assertNotNull(tasks);
     Assert.assertFalse(tasks.isEmpty());
     Assert.assertEquals(1, tasks.size());
-    task = tasks.stream().findFirst().get();
+    task = tasks.get(0);
     Assert.assertEquals(TaskStatus.COMPLETE, task.getStatus());
     Assert.assertNotEquals(task.getCreatedAt(), task.getUpdatedAt());
+
+    Assay updatedAssay = assayRepository.findByCode("PPB-10001-001")
+        .orElseThrow(RecordNotFoundException::new);
+    Assert.assertNotEquals(then, updatedAssay.getUpdatedAt());
   }
 
   @Test
   public void deleteTaskTest() {
     Assay assay = assayRepository.findByCode("PPB-10001-001")
         .orElseThrow(RecordNotFoundException::new);
-    Set<AssayTask> tasks = assayTaskService.findAssayTasks(assay);
+    List<AssayTask> tasks = assayTaskService.findAssayTasks(assay);
     Assert.assertNotNull(tasks);
     Assert.assertFalse(tasks.isEmpty());
     Assert.assertEquals(1, tasks.size());
-    AssayTask task = tasks.stream().findFirst().get();
+    AssayTask task = tasks.get(0);
 
     assayTaskService.deleteAssayTask(task, assay);
 

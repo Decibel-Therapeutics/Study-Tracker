@@ -2,11 +2,14 @@ package com.decibeltx.studytracker.test.core.repository;
 
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.model.Comment;
 import com.decibeltx.studytracker.model.FileStoreFolder;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.User;
+import com.decibeltx.studytracker.repository.ActivityRepository;
+import com.decibeltx.studytracker.repository.CommentRepository;
 import com.decibeltx.studytracker.repository.ELNFolderRepository;
 import com.decibeltx.studytracker.repository.FileStoreFolderRepository;
 import com.decibeltx.studytracker.repository.ProgramRepository;
@@ -40,9 +43,13 @@ public class StudyRepositoryTests {
   @Autowired private FileStoreFolderRepository fileStoreFolderRepository;
   @Autowired private StudyRepository studyRepository;
   @Autowired private EntityManagerFactory entityManagerFactory;
+  @Autowired private CommentRepository commentRepository;
+  @Autowired private ActivityRepository activityRepository;
 
   @After
   public void doBefore() {
+    activityRepository.deleteAll();
+    commentRepository.deleteAll();
     studyRepository.deleteAll();
     programRepository.deleteAll();
     fileStoreFolderRepository.deleteAll();
@@ -71,6 +78,7 @@ public class StudyRepositoryTests {
     program.setActive(true);
     program.setCode("TST");
     program.setCreatedBy(user);
+    program.setLastModifiedBy(user);
     program.setName("Test Program");
     program.setAttributes(Collections.singletonMap("key", "value"));
 
@@ -105,6 +113,7 @@ public class StudyRepositoryTests {
       study.setCode(program.getCode() + "-10001");
       study.setDescription("This is a test");
       study.setCreatedBy(user);
+      study.setLastModifiedBy(user);
       study.setOwner(user);
       study.setUsers(Collections.singleton(user));
       study.setStatus(Status.ACTIVE);
@@ -129,6 +138,15 @@ public class StudyRepositoryTests {
       Assert.assertFalse(users.isEmpty());
       User studyUser = users.stream().findFirst().orElseThrow(RecordNotFoundException::new);
       Assert.assertEquals("test", studyUser.getUsername());
+
+      Comment comment = new Comment();
+      comment.setText("This is a test");
+      comment.setCreatedBy(user);
+      comment.setStudy(created);
+      commentRepository.save(comment);
+
+      Study updated = studyRepository.findAll().get(0);
+      Assert.assertFalse(updated.getComments().isEmpty());
 
       session.getTransaction().commit();
 

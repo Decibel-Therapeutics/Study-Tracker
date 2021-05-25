@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -127,7 +127,7 @@ public class ProgramServiceTests {
       e.printStackTrace();
     }
     Assert.assertNotNull(exception);
-    Assert.assertTrue(exception instanceof DuplicateKeyException);
+    Assert.assertTrue(exception instanceof DataIntegrityViolationException);
   }
 
   @Test
@@ -141,7 +141,7 @@ public class ProgramServiceTests {
       e.printStackTrace();
     }
     Assert.assertNotNull(exception);
-    Assert.assertTrue(exception instanceof ConstraintViolationException);
+    Assert.assertTrue(exception.getCause().getCause() instanceof ConstraintViolationException);
   }
 
 }

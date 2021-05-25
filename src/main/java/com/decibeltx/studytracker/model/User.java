@@ -35,7 +35,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedDate;
@@ -45,7 +44,6 @@ import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "users")
-@Data
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class User {
@@ -103,6 +101,10 @@ public class User {
   @Column(name = "credentials_expired", nullable = false)
   private boolean credentialsExpired = false;
 
+  @Type(type = "json")
+  @Column(name = "configuration", columnDefinition = "json")
+  private Map<String, String> configuration = new LinkedHashMap<>();
+
   @Transient
   private List<GrantedAuthority> authorities = new ArrayList<>();
 
@@ -114,6 +116,151 @@ public class User {
   @JsonProperty
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getDepartment() {
+    return department;
+  }
+
+  public void setDepartment(String department) {
+    this.department = department;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Date getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Date updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  public Map<String, String> getAttributes() {
+    return attributes;
+  }
+
+  public void setAttributes(Map<String, String> attributes) {
+    this.attributes = attributes;
+  }
+
+  public boolean isAdmin() {
+    return admin;
+  }
+
+  public void setAdmin(boolean admin) {
+    this.admin = admin;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  public boolean isLocked() {
+    return locked;
+  }
+
+  public void setLocked(boolean locked) {
+    this.locked = locked;
+  }
+
+  public boolean isExpired() {
+    return expired;
+  }
+
+  public void setExpired(boolean expired) {
+    this.expired = expired;
+  }
+
+  public boolean isCredentialsExpired() {
+    return credentialsExpired;
+  }
+
+  public void setCredentialsExpired(boolean credentialsExpired) {
+    this.credentialsExpired = credentialsExpired;
+  }
+
+  public List<GrantedAuthority> getAuthorities() {
+    return authorities;
+  }
+
+  public void setAuthorities(
+      List<GrantedAuthority> authorities) {
+    this.authorities = authorities;
+  }
+
+  public void addAttribute(String key, String value) {
+    this.attributes.put(key, value);
+  }
+
+  public void removeAttribute(String key) {
+    this.attributes.remove(key);
+  }
+
+  public Map<String, String> getConfiguration() {
+    return configuration;
+  }
+
+  public void setConfiguration(Map<String, String> configuration) {
+    this.configuration = configuration;
+  }
+
+  public void addConfiguration(String key, String value) {
+    this.configuration.put(key, value);
+  }
+
+  public void removeConfiguration(String key) {
+    this.configuration.remove(key);
   }
 
 }

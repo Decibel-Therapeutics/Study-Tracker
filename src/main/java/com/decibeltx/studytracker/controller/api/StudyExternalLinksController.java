@@ -48,13 +48,13 @@ public class StudyExternalLinksController extends AbstractStudyController {
   private StudyExternalLinkService studyExternalLinkService;
 
   @GetMapping("")
-  public List<ExternalLink> getStudyExternalLinks(@PathVariable("id") Long studyId) {
+  public List<ExternalLink> getStudyExternalLinks(@PathVariable("id") String studyId) {
     Study study = getStudyFromIdentifier(studyId);
     return studyExternalLinkService.findAllStudyExternalLinks(study);
   }
 
   @PostMapping("")
-  public HttpEntity<ExternalLink> addExternalLink(@PathVariable("id") Long studyId,
+  public HttpEntity<ExternalLink> addExternalLink(@PathVariable("id") String studyId,
       @RequestBody ExternalLink externalLink) {
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils
@@ -72,7 +72,7 @@ public class StudyExternalLinksController extends AbstractStudyController {
   }
 
   @PutMapping("/{linkId}")
-  public HttpEntity<ExternalLink> editExternalLink(@PathVariable("id") Long studyId,
+  public HttpEntity<ExternalLink> editExternalLink(@PathVariable("id") String studyId,
       @PathVariable("linkId") Long linkId, @RequestBody ExternalLink externalLink) {
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils
@@ -95,7 +95,7 @@ public class StudyExternalLinksController extends AbstractStudyController {
   }
 
   @DeleteMapping("/{linkId}")
-  public HttpEntity<?> removeExternalLink(@PathVariable("id") Long studyId,
+  public HttpEntity<?> removeExternalLink(@PathVariable("id") String studyId,
       @PathVariable("linkId") Long linkId) {
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils

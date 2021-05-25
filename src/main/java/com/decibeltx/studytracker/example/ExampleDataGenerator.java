@@ -28,7 +28,7 @@ import com.decibeltx.studytracker.model.AssayTypeField;
 import com.decibeltx.studytracker.model.AssayTypeTask;
 import com.decibeltx.studytracker.model.Collaborator;
 import com.decibeltx.studytracker.model.Comment;
-import com.decibeltx.studytracker.model.CustomEntityField.CustomEntityFieldType;
+import com.decibeltx.studytracker.model.CustomEntityFieldType;
 import com.decibeltx.studytracker.model.ELNFolder;
 import com.decibeltx.studytracker.model.ExternalLink;
 import com.decibeltx.studytracker.model.FileStoreFolder;
@@ -38,17 +38,22 @@ import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyConclusions;
-import com.decibeltx.studytracker.model.Task.TaskStatus;
+import com.decibeltx.studytracker.model.TaskStatus;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.ActivityRepository;
 import com.decibeltx.studytracker.repository.AssayRepository;
+import com.decibeltx.studytracker.repository.AssayTaskRepository;
+import com.decibeltx.studytracker.repository.AssayTypeFieldRepository;
 import com.decibeltx.studytracker.repository.AssayTypeRepository;
+import com.decibeltx.studytracker.repository.AssayTypeTaskRepository;
 import com.decibeltx.studytracker.repository.CollaboratorRepository;
 import com.decibeltx.studytracker.repository.CommentRepository;
+import com.decibeltx.studytracker.repository.ExternalLinkRepository;
 import com.decibeltx.studytracker.repository.KeywordRepository;
 import com.decibeltx.studytracker.repository.NotebookEntryTemplateRepository;
 import com.decibeltx.studytracker.repository.ProgramRepository;
 import com.decibeltx.studytracker.repository.StudyConclusionsRepository;
+import com.decibeltx.studytracker.repository.StudyRelationshipRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
 import com.decibeltx.studytracker.repository.UserRepository;
 import com.decibeltx.studytracker.storage.StorageFolder;
@@ -112,6 +117,12 @@ public class ExampleDataGenerator {
   private AssayTypeRepository assayTypeRepository;
 
   @Autowired
+  private AssayTypeFieldRepository assayTypeFieldRepository;
+
+  @Autowired
+  private AssayTypeTaskRepository assayTypeTaskRepository;
+
+  @Autowired
   private KeywordRepository keywordRepository;
 
   @Autowired
@@ -122,6 +133,15 @@ public class ExampleDataGenerator {
 
   @Autowired
   private NotebookEntryTemplateRepository notebookEntryTemplateRepository;
+
+  @Autowired
+  private AssayTaskRepository assayTaskRepository;
+
+  @Autowired
+  private StudyRelationshipRepository studyRelationshipRepository;
+
+  @Autowired
+  private ExternalLinkRepository externalLinkRepository;
 
   public List<NotebookEntryTemplate> generateExampleEntryTemplates(List<User> users) {
     User user = users.get(0);
@@ -375,8 +395,9 @@ public class ExampleDataGenerator {
     ExternalLink link = new ExternalLink();
     link.setLabel("Google");
     link.setUrl(new URL("https://google.com"));
-    study.getExternalLinks().add(link);
-    studyRepository.save(study);
+    link.setStudy(study);
+    study.addExternalLink(link);
+    externalLinkRepository.save(link);
 
     activityRepository.save(StudyActivityUtils.fromNewExternalLink(study, user, link));
 
@@ -422,8 +443,8 @@ public class ExampleDataGenerator {
     comment.setCreatedBy(user);
     comment.setText(
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-    study.getComments().add(comment);
-    studyRepository.save(study);
+    comment.setStudy(study);
+    commentRepository.save(comment);
 
     activityRepository.save(StudyActivityUtils.fromNewComment(study, user, comment));
 
@@ -432,8 +453,9 @@ public class ExampleDataGenerator {
     conclusions.setCreatedBy(user);
     conclusions.setContent(
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-    study.setConclusions(conclusions);
-    studyRepository.save(study);
+    conclusions.setStudy(study);
+    conclusions.setLastModifiedBy(user);
+    studyConclusionsRepository.save(conclusions);
 
     activityRepository.save(StudyActivityUtils.fromNewConclusions(study, user, conclusions));
 
@@ -590,7 +612,7 @@ public class ExampleDataGenerator {
 //    }
 //  }
 
-  public List<AssayType> generateExampleAssayTypes() {
+  public void generateExampleAssayTypes() {
 
     List<AssayType> assayTypes = new ArrayList<>();
 
@@ -600,26 +622,31 @@ public class ExampleDataGenerator {
     assayType.setActive(true);
     assayTypes.add(assayType);
 
+    assayTypeRepository.save(assayType);
+
     assayType = new AssayType();
     assayType.setName("Histology");
     assayType.setDescription("Histological analysis assays");
     assayType.setActive(true);
-    assayType.setFields(new HashSet<>(Arrays.asList(
-        new AssayTypeField("No. Slides", "number_of_slides", CustomEntityFieldType.INTEGER, true),
-        new AssayTypeField("Antibodies", "antibodies", CustomEntityFieldType.TEXT),
-        new AssayTypeField("Concentration (ul/mg)", "concentration", CustomEntityFieldType.FLOAT),
-        new AssayTypeField("Date", "date", CustomEntityFieldType.DATE),
-        new AssayTypeField("External", "external", CustomEntityFieldType.BOOLEAN, true),
-        new AssayTypeField("Stain", "stain", CustomEntityFieldType.STRING)
-    )));
-    assayType.setTasks(new HashSet<>(Arrays.asList(
-        new AssayTypeTask("Embed tissue", TaskStatus.TODO, 0),
-        new AssayTypeTask("Cut slides", TaskStatus.TODO, 1),
-        new AssayTypeTask("Stain slides", TaskStatus.TODO, 2)
-    )));
-    assayTypes.add(assayType);
 
-    return assayTypes;
+    assayTypeRepository.save(assayType);
+
+    List<AssayTypeField> fields = Arrays.asList(
+        new AssayTypeField(assayType, "No. Slides", "number_of_slides", CustomEntityFieldType.INTEGER, true),
+        new AssayTypeField(assayType, "Antibodies", "antibodies", CustomEntityFieldType.TEXT),
+        new AssayTypeField(assayType, "Concentration (ul/mg)", "concentration", CustomEntityFieldType.FLOAT),
+        new AssayTypeField(assayType, "Date", "date", CustomEntityFieldType.DATE),
+        new AssayTypeField(assayType, "External", "external", CustomEntityFieldType.BOOLEAN, true),
+        new AssayTypeField(assayType, "Stain", "stain", CustomEntityFieldType.STRING)
+    );
+    assayTypeFieldRepository.saveAll(fields);
+
+    List<AssayTypeTask> tasks = Arrays.asList(
+        new AssayTypeTask(assayType, "Embed tissue", TaskStatus.TODO, 0),
+        new AssayTypeTask(assayType, "Cut slides", TaskStatus.TODO, 1),
+        new AssayTypeTask(assayType, "Stain slides", TaskStatus.TODO, 2)
+    );
+    assayTypeTaskRepository.saveAll(tasks);
 
   }
 
@@ -649,9 +676,16 @@ public class ExampleDataGenerator {
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
-    assay.setTasks(Collections.singleton(new AssayTask("My task")));
     assay.setStorageFolder(createAssayFolder(assay));
     assayRepository.save(assay);
+
+    AssayTask task = new AssayTask();
+    task.setAssay(assay);
+    task.setLabel("My task");
+    task.setOrder(0);
+    task.setStatus(TaskStatus.TODO);
+    assayTaskRepository.save(task);
+
 
     assay = new Assay();
     assay.setStudy(study);
@@ -670,9 +704,15 @@ public class ExampleDataGenerator {
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
-    assay.setTasks(Collections.singleton(new AssayTask("My task")));
     assay.setStorageFolder(createAssayFolder(assay));
     assayRepository.save(assay);
+
+    task = new AssayTask();
+    task.setAssay(assay);
+    task.setLabel("My task");
+    task.setOrder(0);
+    task.setStatus(TaskStatus.TODO);
+    assayTaskRepository.save(task);
 
   }
 
@@ -693,12 +733,17 @@ public class ExampleDataGenerator {
 
   public void clearDatabase() {
     LOGGER.info("Wiping collections...");
+    externalLinkRepository.deleteAll();
     commentRepository.deleteAll();
+    assayTaskRepository.deleteAll();
     studyConclusionsRepository.deleteAll();
     activityRepository.deleteAll();
     assayRepository.deleteAll();
+    studyRelationshipRepository.deleteAll();
     studyRepository.deleteAll();
     notebookEntryTemplateRepository.deleteAll();
+    assayTypeTaskRepository.deleteAll();
+    assayTypeFieldRepository.deleteAll();
     assayTypeRepository.deleteAll();
     collaboratorRepository.deleteAll();
     keywordRepository.deleteAll();
@@ -714,7 +759,7 @@ public class ExampleDataGenerator {
       LOGGER.info("Inserting example data...");
       userRepository.saveAll(generateExampleUsers());
       programRepository.saveAll(generateExamplePrograms(userRepository.findAll()));
-      assayTypeRepository.saveAll(generateExampleAssayTypes());
+      generateExampleAssayTypes();
       keywordRepository.saveAll(generateExampleKeywords());
       collaboratorRepository.saveAll(generateExampleCollaborators());
       notebookEntryTemplateRepository.saveAll(generateExampleEntryTemplates(userRepository.findAll()));

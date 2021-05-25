@@ -8,9 +8,7 @@ import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.AssayTask;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.service.AssayTaskService;
-import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -29,21 +27,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping({"/api/assay/{assayId}/tasks", "/api/study/{studyId}/assays/{assayId}/tasks"})
 public class AssayTasksController extends AbstractAssayController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AssayTasksController.class);
-
   @Autowired
   private AssayTaskService assayTaskService;
 
   @GetMapping("")
-  public Set<AssayTask> fetchTasks(@PathVariable("assayId") Long assayId) {
+  public List<AssayTask> fetchTasks(@PathVariable("assayId") String assayId) {
     Assay assay = this.getAssayFromIdentifier(assayId);
     return assayTaskService.findAssayTasks(assay);
   }
 
   @PostMapping("")
-  public HttpEntity<AssayTask> addTask(@PathVariable("assayId") Long assayId, @RequestBody AssayTask task) {
+  public HttpEntity<AssayTask> addTask(@PathVariable("assayId") String assayId, @RequestBody AssayTask task) {
 
-    LOGGER.info("Adding new task to assay: " + task.toString());
     Assay assay = this.getAssayFromIdentifier(assayId);
 
     String username = UserAuthenticationUtils
@@ -63,10 +58,8 @@ public class AssayTasksController extends AbstractAssayController {
   }
 
   @PutMapping("")
-  public HttpEntity<AssayTask> updateTask(@PathVariable("assayId") Long assayId,
+  public HttpEntity<AssayTask> updateTask(@PathVariable("assayId") String assayId,
       @RequestBody AssayTask task) {
-
-    LOGGER.info("Updating task: " + task.toString());
 
     Assay assay = this.getAssayFromIdentifier(assayId);
 
@@ -87,9 +80,7 @@ public class AssayTasksController extends AbstractAssayController {
   }
 
   @DeleteMapping("")
-  public HttpEntity<?> removeTask(@PathVariable("assayId") Long assayId, @RequestBody AssayTask task) {
-
-    LOGGER.info("Deleting task: " + task.toString());
+  public HttpEntity<?> removeTask(@PathVariable("assayId") String assayId, @RequestBody AssayTask task) {
 
     Assay assay = this.getAssayFromIdentifier(assayId);
 

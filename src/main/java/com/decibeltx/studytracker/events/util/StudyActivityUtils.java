@@ -2,7 +2,7 @@ package com.decibeltx.studytracker.events.util;
 
 import com.decibeltx.studytracker.events.EventType;
 import com.decibeltx.studytracker.model.Activity;
-import com.decibeltx.studytracker.model.Activity.Reference;
+import com.decibeltx.studytracker.model.ActivityReference;
 import com.decibeltx.studytracker.model.Comment;
 import com.decibeltx.studytracker.model.ExternalLink;
 import com.decibeltx.studytracker.model.Status;
@@ -20,7 +20,7 @@ public class StudyActivityUtils {
 
   public static Activity fromNewStudy(Study study, User triggeredBy) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.NEW_STUDY);
     activity.setDate(new Date());
@@ -31,7 +31,7 @@ public class StudyActivityUtils {
 
   public static Activity fromUpdatedStudy(Study study, User triggeredBy) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.UPDATED_STUDY);
     activity.setDate(new Date());
@@ -42,7 +42,7 @@ public class StudyActivityUtils {
 
   public static Activity fromDeletedStudy(Study study, User triggeredBy) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.DELETED_STUDY);
     activity.setDate(new Date());
@@ -54,7 +54,7 @@ public class StudyActivityUtils {
   public static Activity fromStudyStatusChange(Study study, User triggeredBy, Status oldStatus,
       Status newStatus) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.STUDY_STATUS_CHANGED);
     activity.setDate(new Date());
@@ -69,7 +69,7 @@ public class StudyActivityUtils {
 
   public static Activity fromFileUpload(Study study, User triggeredBy, StorageFile storageFile) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.FILE_UPLOADED);
     activity.setDate(new Date());
@@ -84,7 +84,7 @@ public class StudyActivityUtils {
   public static Activity fromNewConclusions(Study study, User triggeredBy,
       StudyConclusions conclusions) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.NEW_STUDY_CONCLUSIONS);
     activity.setDate(new Date());
@@ -99,7 +99,7 @@ public class StudyActivityUtils {
   public static Activity fromUpdatedConclusions(Study study, User triggeredBy,
       StudyConclusions conclusions) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.EDITED_STUDY_CONCLUSIONS);
     activity.setDate(new Date());
@@ -113,7 +113,7 @@ public class StudyActivityUtils {
 
   public static Activity fromDeletedConclusions(Study study, User triggeredBy) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.DELETED_STUDY_CONCLUSIONS);
     activity.setDate(new Date());
@@ -126,7 +126,7 @@ public class StudyActivityUtils {
 
   public static Activity fromNewComment(Study study, User triggeredBy, Comment comment) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.NEW_COMMENT);
     activity.setDate(new Date());
@@ -140,7 +140,7 @@ public class StudyActivityUtils {
 
   public static Activity fromEditiedComment(Study study, User triggeredBy, Comment comment) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.EDITED_COMMENT);
     activity.setDate(new Date());
@@ -154,7 +154,7 @@ public class StudyActivityUtils {
 
   public static Activity fromDeletedComment(Study study, User triggeredBy) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.DELETED_COMMENT);
     activity.setDate(new Date());
@@ -168,7 +168,7 @@ public class StudyActivityUtils {
   public static Activity fromNewStudyRelationship(Study sourceStudy, Study targetStudy,
       User triggeredBy, StudyRelationship relationship) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(sourceStudy.getId());
     activity.setEventType(EventType.NEW_STUDY_RELATIONSHIP);
     activity.setDate(new Date());
@@ -184,7 +184,7 @@ public class StudyActivityUtils {
   public static Activity fromUpdatedStudyRelationship(Study study, User triggeredBy,
       StudyRelationship relationship) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.UPDATED_STUDY_RELATIONSHIP);
     activity.setDate(new Date());
@@ -192,14 +192,14 @@ public class StudyActivityUtils {
     Map<String, Object> data = new HashMap<>();
     data.put("targetStudy", EntityViewUtils.createStudyView(relationship.getTargetStudy()));
     data.put("sourceStudy", EntityViewUtils.createStudyView(study));
-    data.put("relationship", relationship);
+    data.put("relationship", EntityViewUtils.createStudyRelationshipView(relationship));
     activity.setData(data);
     return activity;
   }
 
   public static Activity fromDeletedStudyRelationship(Study study, User triggeredBy) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.DELETED_STUDY_RELATIONSHIP);
     activity.setDate(new Date());
@@ -212,35 +212,35 @@ public class StudyActivityUtils {
 
   public static Activity fromNewExternalLink(Study study, User triggeredBy, ExternalLink link) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.NEW_STUDY_EXTERNAL_LINK);
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
     data.put("study", EntityViewUtils.createStudyView(study));
-    data.put("link", link);
+    data.put("link", EntityViewUtils.createExternalLinkView(link));
     activity.setData(data);
     return activity;
   }
 
   public static Activity fromUpdatedExternalLink(Study study, User triggeredBy, ExternalLink link) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.UPDATED_STUDY_EXTERNAL_LINK);
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
     data.put("study", EntityViewUtils.createStudyView(study));
-    data.put("link", link);
+    data.put("link", EntityViewUtils.createExternalLinkView(link));
     activity.setData(data);
     return activity;
   }
 
   public static Activity fromDeletedExternalLink(Study study, User triggeredBy) {
     Activity activity = new Activity();
-    activity.setReference(Reference.STUDY);
+    activity.setReference(ActivityReference.STUDY);
     activity.setReferenceId(study.getId());
     activity.setEventType(EventType.DELETED_STUDY_EXTERNAL_LINK);
     activity.setDate(new Date());

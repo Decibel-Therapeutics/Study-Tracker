@@ -52,7 +52,7 @@ public class StudyConclusionsController extends AbstractStudyController {
   private StudyConclusionsService studyConclusionsService;
 
   @GetMapping("")
-  public StudyConclusions getStudyConclusions(@PathVariable("studyId") Long studyId) {
+  public StudyConclusions getStudyConclusions(@PathVariable("studyId") String studyId) {
     Study study = getStudyFromIdentifier(studyId);
     Optional<StudyConclusions> optional = studyConclusionsService.findStudyConclusions(study);
     if (optional.isPresent()) {
@@ -62,7 +62,7 @@ public class StudyConclusionsController extends AbstractStudyController {
   }
 
   @PostMapping("")
-  public HttpEntity<StudyConclusions> newStudyConclusions(@PathVariable("studyId") Long studyId,
+  public HttpEntity<StudyConclusions> newStudyConclusions(@PathVariable("studyId") String studyId,
       @RequestBody StudyConclusions conclusions) {
     Study study = getStudyFromIdentifier(studyId);
     if (conclusions.getId() != null || study.getConclusions() != null) {
@@ -87,7 +87,7 @@ public class StudyConclusionsController extends AbstractStudyController {
   }
 
   @PutMapping("")
-  public HttpEntity<StudyConclusions> editStudyConclusions(@PathVariable("studyId") Long studyId,
+  public HttpEntity<StudyConclusions> editStudyConclusions(@PathVariable("studyId") String studyId,
       @RequestBody StudyConclusions conclusions) {
     LOGGER.info(
         String.format("Updating conclusions for study %s: %s", studyId, conclusions.toString()));
@@ -107,7 +107,7 @@ public class StudyConclusionsController extends AbstractStudyController {
   }
 
   @DeleteMapping("")
-  public HttpEntity<?> deleteStudyConclusions(@PathVariable("studyId") Long studyId) {
+  public HttpEntity<?> deleteStudyConclusions(@PathVariable("studyId") String studyId) {
     LOGGER.info(String.format("Deleting conclusions for study %s", studyId));
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils

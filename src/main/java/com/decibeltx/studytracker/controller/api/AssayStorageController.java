@@ -56,7 +56,7 @@ public class AssayStorageController extends AbstractAssayController {
   private StudyStorageService studyStorageService;
 
   @GetMapping("")
-  public StorageFolder getStorageFolder(@PathVariable("assayId") Long assayId)
+  public StorageFolder getStorageFolder(@PathVariable("assayId") String assayId)
       throws Exception {
     LOGGER.info("Fetching storage folder for assay: " + assayId);
     Assay assay = getAssayFromIdentifier(assayId);
@@ -64,7 +64,7 @@ public class AssayStorageController extends AbstractAssayController {
   }
 
   @PostMapping("")
-  public HttpEntity<StorageFile> uploadFile(@PathVariable("assayId") Long assayId,
+  public HttpEntity<StorageFile> uploadFile(@PathVariable("assayId") String assayId,
       @RequestParam("file") MultipartFile file) throws Exception {
     LOGGER.info("Uploaded file: " + file.getOriginalFilename());
     String username = UserAuthenticationUtils

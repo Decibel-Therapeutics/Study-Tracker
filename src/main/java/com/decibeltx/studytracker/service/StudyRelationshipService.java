@@ -17,13 +17,15 @@
 package com.decibeltx.studytracker.service;
 
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.model.RelationshipType;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyRelationship;
-import com.decibeltx.studytracker.model.StudyRelationship.Type;
 import com.decibeltx.studytracker.repository.StudyRelationshipRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,19 +39,46 @@ public class StudyRelationshipService {
   @Autowired
   private StudyRelationshipRepository studyRelationshipRepository;
 
-  public List<StudyRelationship> getStudyRelationships(Study study) {
-    return studyRelationshipRepository.findBySourceStudyId(study.getId());
+  @Transactional(readOnly = true)
+  public List<StudyRelationship> findStudyRelationships(Study study) {
+    List<StudyRelationship> relationships = studyRelationshipRepository.findBySourceStudyId(study.getId());
+    for (StudyRelationship relationship: relationships) {
+      Hibernate.initialize(relationship.getSourceStudy());
+      Hibernate.initialize(relationship.getTargetStudy());
+    }
+    return relationships;
   }
 
   @Transactional
-  public void addStudyRelationship(Study sourceStudy, Study targetStudy, Type type) {
-    StudyRelationship sourceRelationship = new StudyRelationship(type, sourceStudy, targetStudy);
-    Type targetType = Type.getInverse(type);
-    StudyRelationship targetRelationship = new StudyRelationship(targetType, targetStudy, sourceStudy);
+  public void addStudyRelationship(Study sourceStudy, Study targetStudy, RelationshipType type) {
+
+    StudyRelationship sourceRelationship;
+    StudyRelationship targetRelationship;
+
+    Optional<StudyRelationship> optional = studyRelationshipRepository
+        .findBySourceAndTargetStudyIds(sourceStudy.getId(), targetStudy.getId());
+    if (optional.isPresent()) {
+      sourceRelationship = optional.get();
+      sourceRelationship.setType(type);
+      targetRelationship = studyRelationshipRepository
+          .findBySourceAndTargetStudyIds(targetStudy.getId(), sourceStudy.getId())
+          .orElseThrow(RecordNotFoundException::new);
+      targetRelationship.setType(RelationshipType.getInverse(type));
+    } else {
+      sourceRelationship = new StudyRelationship(type, sourceStudy, targetStudy);
+      targetRelationship = new StudyRelationship(RelationshipType.getInverse(type), targetStudy, sourceStudy);
+    }
+
     studyRelationshipRepository.save(sourceRelationship);
     studyRelationshipRepository.save(targetRelationship);
-    studyRepository.save(sourceStudy);
-    studyRepository.save(targetStudy);
+
+    Study s1 = studyRepository.getOne(sourceStudy.getId());
+    s1.setUpdatedAt(new Date());
+    studyRepository.save(s1);
+
+    Study s2 = studyRepository.getOne(targetStudy.getId());
+    s2.setUpdatedAt(new Date());
+    studyRepository.save(s2);
   }
 
   @Transactional
@@ -73,8 +102,15 @@ public class StudyRelationshipService {
           + "%s and target study %s", targetStudy.getCode(), sourceStudy.getCode()));
     }
 
-    studyRepository.save(sourceStudy);
-    studyRepository.save(targetStudy);
+    studyRelationshipRepository.flush();
+
+    Study s1 = studyRepository.getOne(sourceStudy.getId());
+    s1.setUpdatedAt(new Date());
+    studyRepository.save(s1);
+
+    Study s2 = studyRepository.getOne(targetStudy.getId());
+    s2.setUpdatedAt(new Date());
+    studyRepository.save(s2);
 
   }
 

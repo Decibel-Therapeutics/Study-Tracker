@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -114,7 +114,7 @@ public class UserServiceTests {
       e.printStackTrace();
     }
     Assert.assertNotNull(exception);
-    Assert.assertTrue(exception instanceof ConstraintViolationException);
+    Assert.assertTrue(exception.getCause().getCause() instanceof ConstraintViolationException);
   }
 
   @Test
@@ -132,26 +132,28 @@ public class UserServiceTests {
     try {
       userService.create(user);
     } catch (Exception e) {
+      e.printStackTrace();
       exception = e;
     }
     Assert.assertNotNull(exception);
-    Assert.assertTrue(exception instanceof DuplicateKeyException);
+    Assert.assertTrue(exception instanceof DataIntegrityViolationException);
   }
 
   @Test
   public void userModificationTest() {
     Assert.assertEquals(USER_COUNT, userRepository.count());
-    Optional<User> optional = userService.findByUsername("jsmith");
+    createNewUserTest();
+    Optional<User> optional = userService.findByUsername("jperson");
     Assert.assertTrue(optional.isPresent());
     User user = optional.get();
     user.setTitle("VP");
     userService.update(user);
-    optional = userService.findByUsername("jsmith");
+    optional = userService.findByUsername("jperson");
     Assert.assertTrue(optional.isPresent());
     Assert.assertEquals("VP", optional.get().getTitle());
     userService.delete(optional.get());
-    Assert.assertEquals(USER_COUNT - 1, userRepository.count());
-    optional = userService.findByUsername("jsmith");
+    Assert.assertEquals(USER_COUNT, userRepository.count());
+    optional = userService.findByUsername("jperson");
     Assert.assertFalse(optional.isPresent());
   }
 

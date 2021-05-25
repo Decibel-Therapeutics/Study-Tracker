@@ -28,26 +28,79 @@ import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "assay_types")
-@Data
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class AssayType extends CustomEntity {
 
-  @OneToMany(mappedBy = "assayType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "assayType", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   private Set<AssayTypeField> fields = new HashSet<>();
 
-  @OneToMany(mappedBy = "assayType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "assayType", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   private Set<AssayTypeTask> tasks = new HashSet<>();
 
   @Type(type = "json")
   @Column(name = "attributes", columnDefinition = "json")
   private Map<String, String> attributes = new HashMap<>();
 
+  public void addTask(AssayTypeTask task) {
+    this.tasks.add(task);
+  }
+
+  public void removeTask(AssayTypeTask task) {
+    this.tasks.remove(task);
+  }
+
+  public void removeTask(Long id) {
+    this.tasks.removeIf(t -> t.getId().equals(id));
+  }
+
+  public void addField(AssayTypeField field) {
+    this.fields.add(field);
+  }
+
+  public void removeField(AssayTypeField field) {
+    this.fields.remove(field);
+  }
+
+  public void removeField(Long id) {
+    this.fields.removeIf(f -> f.getId().equals(id));
+  }
+
+  public void addAttribute(String key, String value) {
+    this.attributes.put(key, value);
+  }
+
+  public void removeAttribute(String key) {
+    this.attributes.remove(key);
+  }
+
+  public Set<AssayTypeField> getFields() {
+    return fields;
+  }
+
+  public void setFields(Set<AssayTypeField> fields) {
+    this.fields = fields;
+  }
+
+  public Set<AssayTypeTask> getTasks() {
+    return tasks;
+  }
+
+  public void setTasks(Set<AssayTypeTask> tasks) {
+    this.tasks = tasks;
+  }
+
+  public Map<String, String> getAttributes() {
+    return attributes;
+  }
+
+  public void setAttributes(Map<String, String> attributes) {
+    this.attributes = attributes;
+  }
 }

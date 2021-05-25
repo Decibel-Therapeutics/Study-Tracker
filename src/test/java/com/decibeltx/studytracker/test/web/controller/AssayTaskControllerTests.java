@@ -33,7 +33,7 @@ import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.AssayTask;
 import com.decibeltx.studytracker.model.Task;
-import com.decibeltx.studytracker.model.Task.TaskStatus;
+import com.decibeltx.studytracker.model.TaskStatus;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.AssayRepository;
 import com.decibeltx.studytracker.service.UserService;

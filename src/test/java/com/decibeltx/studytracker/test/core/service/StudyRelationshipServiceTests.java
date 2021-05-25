@@ -19,10 +19,12 @@ package com.decibeltx.studytracker.test.core.service;
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.model.RelationshipType;
 import com.decibeltx.studytracker.model.Study;
-import com.decibeltx.studytracker.model.StudyRelationship.Type;
+import com.decibeltx.studytracker.model.StudyRelationship;
 import com.decibeltx.studytracker.service.StudyRelationshipService;
 import com.decibeltx.studytracker.service.StudyService;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,57 +63,70 @@ public class StudyRelationshipServiceTests {
     Study targetStudy = studyService.findByCode("PPB-10001")
         .orElseThrow(RecordNotFoundException::new);
 
-    Assert.assertEquals(0, sourceStudy.getStudyRelationships().size());
-    Assert.assertEquals(0, targetStudy.getStudyRelationships().size());
+    List<StudyRelationship> sourceStudyRelationships = studyRelationshipService.findStudyRelationships(sourceStudy);
+    List<StudyRelationship> targetStudyRelationships = studyRelationshipService.findStudyRelationships(targetStudy);
 
-    studyRelationshipService.addStudyRelationship(sourceStudy, targetStudy, Type.IS_BLOCKING);
+    Assert.assertEquals(0, sourceStudyRelationships.size());
+    Assert.assertEquals(0, targetStudyRelationships.size());
 
-    Study updatedSource = studyService.findByCode("CPA-10001")
-        .orElseThrow(RecordNotFoundException::new);
-    Study updatedTarget = studyService.findByCode("PPB-10001")
-        .orElseThrow(RecordNotFoundException::new);
+    studyRelationshipService.addStudyRelationship(sourceStudy, targetStudy, RelationshipType.IS_BLOCKING);
 
-    Assert.assertEquals(1, updatedSource.getStudyRelationships().size());
-    Assert.assertEquals(1, updatedTarget.getStudyRelationships().size());
-    Assert.assertEquals(updatedTarget.getCode(),
-        updatedSource.getStudyRelationships().stream().findFirst().get().getTargetStudy().getCode());
-    Assert.assertEquals(Type.IS_BLOCKING, updatedSource.getStudyRelationships().stream().findFirst().get().getType());
-    Assert.assertEquals(updatedSource.getCode(),
-        updatedTarget.getStudyRelationships().stream().findFirst().get().getTargetStudy().getCode());
-    Assert.assertEquals(Type.IS_BLOCKED_BY, updatedTarget.getStudyRelationships().stream().findFirst().get().getType());
+//    Study updatedSource = studyService.findByCode("CPA-10001")
+//        .orElseThrow(RecordNotFoundException::new);
+//    Study updatedTarget = studyService.findByCode("PPB-10001")
+//        .orElseThrow(RecordNotFoundException::new);
 
-    studyRelationshipService.addStudyRelationship(updatedSource, updatedTarget, Type.IS_RELATED_TO);
+    sourceStudyRelationships = studyRelationshipService.findStudyRelationships(sourceStudy);
+    targetStudyRelationships = studyRelationshipService.findStudyRelationships(targetStudy);
+    Assert.assertEquals(1, sourceStudyRelationships.size());
+    Assert.assertEquals(1, targetStudyRelationships.size());
 
-    updatedSource = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
-    updatedTarget = studyService.findByCode("PPB-10001").orElseThrow(RecordNotFoundException::new);
+    StudyRelationship sourceRelationship = sourceStudyRelationships.get(0);
+    StudyRelationship targetRelationship = targetStudyRelationships.get(0);
+    Assert.assertEquals(targetStudy.getCode(), sourceRelationship.getTargetStudy().getCode());
+    Assert.assertEquals(RelationshipType.IS_BLOCKING, sourceRelationship.getType());
+    Assert.assertEquals(sourceStudy.getCode(), targetRelationship.getTargetStudy().getCode());
+    Assert.assertEquals(RelationshipType.IS_BLOCKED_BY, targetRelationship.getType());
 
-    Assert.assertEquals(1, updatedSource.getStudyRelationships().size());
-    Assert.assertEquals(1, updatedTarget.getStudyRelationships().size());
-    Assert.assertEquals(updatedTarget.getCode(),
-        updatedSource.getStudyRelationships().stream().findFirst().get().getTargetStudy().getCode());
-    Assert.assertEquals(Type.IS_RELATED_TO, updatedSource.getStudyRelationships().stream().findFirst().get().getType());
-    Assert.assertEquals(updatedSource.getCode(),
-        updatedTarget.getStudyRelationships().stream().findFirst().get().getTargetStudy().getCode());
-    Assert.assertEquals(Type.IS_RELATED_TO, updatedTarget.getStudyRelationships().stream().findFirst().get().getType());
+    studyRelationshipService.addStudyRelationship(sourceStudy, targetStudy, RelationshipType.IS_RELATED_TO);
+
+    sourceStudyRelationships = studyRelationshipService.findStudyRelationships(sourceStudy);
+    targetStudyRelationships = studyRelationshipService.findStudyRelationships(targetStudy);
+    Assert.assertEquals(1, sourceStudyRelationships.size());
+    Assert.assertEquals(1, targetStudyRelationships.size());
+    sourceRelationship = sourceStudyRelationships.get(0);
+    targetRelationship = targetStudyRelationships.get(0);
+
+    Assert.assertEquals(targetStudy.getCode(), sourceRelationship.getTargetStudy().getCode());
+    Assert.assertEquals(RelationshipType.IS_RELATED_TO, sourceRelationship.getType());
+    Assert.assertEquals(sourceStudy.getCode(),targetRelationship.getTargetStudy().getCode());
+    Assert.assertEquals(RelationshipType.IS_RELATED_TO, targetRelationship.getType());
 
   }
 
   @Test
   public void removeStudyRelationshipTest() {
     this.studyRelationshipTests();
+
     Study sourceStudy = studyService.findByCode("CPA-10001")
         .orElseThrow(RecordNotFoundException::new);
     Study targetStudy = studyService.findByCode("PPB-10001")
         .orElseThrow(RecordNotFoundException::new);
-    Assert.assertEquals(1, sourceStudy.getStudyRelationships().size());
-    Assert.assertEquals(1, targetStudy.getStudyRelationships().size());
+    List<StudyRelationship> sourceRelationships
+        = studyRelationshipService.findStudyRelationships(sourceStudy);
+    List<StudyRelationship> targetRelationships
+        = studyRelationshipService.findStudyRelationships(targetStudy);
+
+    Assert.assertEquals(1, sourceRelationships.size());
+    Assert.assertEquals(1, targetRelationships.size());
+
     studyRelationshipService.removeStudyRelationship(sourceStudy, targetStudy);
-    Study updatedSource = studyService.findByCode("CPA-10001")
-        .orElseThrow(RecordNotFoundException::new);
-    Study updatedTarget = studyService.findByCode("PPB-10001")
-        .orElseThrow(RecordNotFoundException::new);
-    Assert.assertEquals(0, updatedSource.getStudyRelationships().size());
-    Assert.assertEquals(0, updatedTarget.getStudyRelationships().size());
+
+    sourceRelationships = studyRelationshipService.findStudyRelationships(sourceStudy);
+    targetRelationships = studyRelationshipService.findStudyRelationships(targetStudy);
+
+    Assert.assertEquals(0, sourceRelationships.size());
+    Assert.assertEquals(0, targetRelationships.size());
   }
 
 
