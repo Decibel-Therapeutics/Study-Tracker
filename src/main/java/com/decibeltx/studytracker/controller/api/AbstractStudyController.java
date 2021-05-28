@@ -61,7 +61,7 @@ public abstract class AbstractStudyController {
     if (optional.isPresent()) {
       return optional.get();
     } else {
-      throw new RecordNotFoundException();
+      throw new RecordNotFoundException("Cannot find study: " + id);
     }
   }
 
@@ -75,7 +75,7 @@ public abstract class AbstractStudyController {
     if (optional.isPresent()) {
       return optional.get();
     } else {
-      throw new RecordNotFoundException();
+      throw new RecordNotFoundException("Cannot find assay: " + id);
     }
   }
 

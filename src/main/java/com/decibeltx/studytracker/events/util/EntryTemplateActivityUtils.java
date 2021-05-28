@@ -2,7 +2,6 @@ package com.decibeltx.studytracker.events.util;
 
 import com.decibeltx.studytracker.events.EventType;
 import com.decibeltx.studytracker.model.Activity;
-import com.decibeltx.studytracker.model.ActivityReference;
 import com.decibeltx.studytracker.model.NotebookEntryTemplate;
 import com.decibeltx.studytracker.model.User;
 import java.util.Collections;
@@ -12,8 +11,6 @@ public class EntryTemplateActivityUtils {
 
     private static Activity createActivity(NotebookEntryTemplate notebookEntryTemplate, User triggeredBy, EventType eventType) {
         Activity activity = new Activity();
-        activity.setReference(ActivityReference.ENTRY_TEMPLATE);
-        activity.setReferenceId(notebookEntryTemplate.getId());
         activity.setEventType(eventType);
         activity.setDate(new Date());
         activity.setUser(triggeredBy);

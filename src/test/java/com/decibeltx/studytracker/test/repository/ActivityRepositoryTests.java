@@ -6,7 +6,6 @@ import com.decibeltx.studytracker.events.util.EntityViewUtils;
 import com.decibeltx.studytracker.events.util.StudyActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Activity;
-import com.decibeltx.studytracker.model.ActivityReference;
 import com.decibeltx.studytracker.model.FileStoreFolder;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Status;
@@ -178,8 +177,8 @@ public class ActivityRepositoryTests {
 //    Activity activity = StudyActivityUtils.fromStudyStatusChange(study, user, Status.ACTIVE, Status.COMPLETE);
 
     Activity activity = new Activity();
-    activity.setReference(ActivityReference.STUDY);
-    activity.setReferenceId(study.getId());
+    activity.setStudy(study);
+    activity.setProgram(study.getProgram());
     activity.setEventType(EventType.STUDY_STATUS_CHANGED);
     activity.setDate(new Date());
     activity.setUser(user);

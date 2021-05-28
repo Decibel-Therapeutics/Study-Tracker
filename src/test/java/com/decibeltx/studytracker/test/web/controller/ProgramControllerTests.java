@@ -87,6 +87,7 @@ public class ProgramControllerTests {
   public void allProgramsTest() throws Exception {
     mockMvc.perform(get("/api/program")
         .with(user(username)))
+        .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(NUM_PROGRAMS)))
         .andExpect(jsonPath("$[0]", hasKey("id")))
@@ -110,7 +111,11 @@ public class ProgramControllerTests {
         .andExpect(jsonPath("$", hasKey("active")))
         .andExpect(jsonPath("$.active", is(true)))
         .andExpect(jsonPath("$", hasKey("name")))
-        .andExpect(jsonPath("$.name", is("Clinical Program A")));
+        .andExpect(jsonPath("$.name", is("Clinical Program A")))
+        .andExpect(jsonPath("$", hasKey("createdBy")))
+        .andExpect(jsonPath("$.createdBy", hasKey("displayName")))
+        .andExpect(jsonPath("$.createdBy.displayName", notNullValue()))
+    ;
   }
 
   @Test

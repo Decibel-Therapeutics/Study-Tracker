@@ -25,6 +25,7 @@ import com.decibeltx.studytracker.service.StudyExternalLinkService;
 import com.decibeltx.studytracker.service.StudyService;
 import java.net.URL;
 import java.util.Optional;
+import org.hibernate.LazyInitializationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +74,17 @@ public class StudyExternalLinkServiceTests {
     Assert.assertTrue(optional.isPresent());
     link = optional.get();
     Assert.assertEquals("Google", link.getLabel());
+    Assert.assertNotNull(link.getStudy().getId());
+
+    Exception exception = null;
+    try {
+      link.getStudy().getCode();
+    } catch (Exception e) {
+      exception = e;
+      e.printStackTrace();
+    }
+    Assert.assertNotNull(exception);
+    Assert.assertTrue(exception instanceof LazyInitializationException);
 
   }
 

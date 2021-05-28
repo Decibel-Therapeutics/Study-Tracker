@@ -3,6 +3,7 @@ package com.decibeltx.studytracker.test.repository;
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Comment;
+import com.decibeltx.studytracker.model.ExternalLink;
 import com.decibeltx.studytracker.model.FileStoreFolder;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Status;
@@ -12,17 +13,20 @@ import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.ActivityRepository;
 import com.decibeltx.studytracker.repository.CommentRepository;
 import com.decibeltx.studytracker.repository.ELNFolderRepository;
+import com.decibeltx.studytracker.repository.ExternalLinkRepository;
 import com.decibeltx.studytracker.repository.FileStoreFolderRepository;
 import com.decibeltx.studytracker.repository.ProgramRepository;
 import com.decibeltx.studytracker.repository.StudyConclusionsRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
 import com.decibeltx.studytracker.repository.UserRepository;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 import org.hibernate.Hibernate;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -53,9 +57,11 @@ public class StudyRepositoryTests {
   @Autowired private CommentRepository commentRepository;
   @Autowired private ActivityRepository activityRepository;
   @Autowired private StudyConclusionsRepository studyConclusionsRepository;
+  @Autowired private ExternalLinkRepository externalLinkRepository;
 
   @Before
   public void doBefore() {
+    externalLinkRepository.deleteAll();
     studyConclusionsRepository.deleteAll();
     activityRepository.deleteAll();
     commentRepository.deleteAll();
@@ -377,6 +383,37 @@ public class StudyRepositoryTests {
 //
 //    Assert.assertNotNull(exception);
 //    Assert.assertTrue(exception instanceof LazyInitializationException);
+
+  }
+
+  @Test
+  public void externalLinkTest() throws Exception {
+    newStudyTest();
+
+    Study study = studyRepository.findByCode("TST-10001").orElseThrow(RecordNotFoundException::new);
+
+    ExternalLink link = new ExternalLink();
+    link.setLabel("Google");
+    link.setUrl(new URL("https://www.google.com"));
+    study.addExternalLink(link);
+
+    studyRepository.save(study);
+
+    List<ExternalLink> links = externalLinkRepository.findByStudyId(study.getId());
+    Assert.assertFalse(links.isEmpty());
+    Assert.assertEquals(1, links.size());
+    ExternalLink created = links.get(0);
+    Assert.assertEquals("Google", created.getLabel());
+    Assert.assertNotNull(created.getStudy().getId());
+    Exception exception = null;
+    try {
+      created.getStudy().getCode();
+    } catch (Exception e) {
+      exception = e;
+    }
+    Assert.assertNotNull(exception);
+    Assert.assertTrue(exception instanceof LazyInitializationException);
+
 
   }
 

@@ -58,12 +58,17 @@ public class Activity {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column(name = "reference", nullable = false)
-  @Enumerated(EnumType.STRING)
-  private ActivityReference reference;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "program_id")
+  private Program program;
 
-  @Column(name = "reference_id", nullable = false)
-  private Long referenceId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "study_id")
+  private Study study;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "assay_id")
+  private Assay assay;
 
   @Column(name = "event_type", nullable = false)
   @Enumerated(EnumType.STRING)
@@ -95,20 +100,28 @@ public class Activity {
     this.id = id;
   }
 
-  public ActivityReference getReference() {
-    return reference;
+  public Program getProgram() {
+    return program;
   }
 
-  public void setReference(ActivityReference reference) {
-    this.reference = reference;
+  public void setProgram(Program program) {
+    this.program = program;
   }
 
-  public Long getReferenceId() {
-    return referenceId;
+  public Study getStudy() {
+    return study;
   }
 
-  public void setReferenceId(Long referenceId) {
-    this.referenceId = referenceId;
+  public void setStudy(Study study) {
+    this.study = study;
+  }
+
+  public Assay getAssay() {
+    return assay;
+  }
+
+  public void setAssay(Assay assay) {
+    this.assay = assay;
   }
 
   public EventType getEventType() {

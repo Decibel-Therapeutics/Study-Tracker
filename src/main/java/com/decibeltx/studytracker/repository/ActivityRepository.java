@@ -20,22 +20,33 @@ import com.decibeltx.studytracker.events.EventType;
 import com.decibeltx.studytracker.model.Activity;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
 
+  @Override
+  @EntityGraph("activity-with-user")
+  Optional<Activity> findById(Long id);
+
+  @EntityGraph("activity-with-user")
   List<Activity> findByEventType(EventType eventType);
 
-  @Query("select a from Activity a where a.reference = 'STUDY' and a.referenceId = ?1 ")
+  @EntityGraph("activity-with-user")
+  @Query("select a from Activity a where a.study.id = ?1 ")
   List<Activity> findByStudyId(Long studyId);
 
-  @Query("select a from Activity a where a.reference = 'ASSAY' and a.referenceId = ?1 ")
+  @EntityGraph("activity-with-user")
+  @Query("select a from Activity a where a.assay.id = ?1 ")
   List<Activity> findByAssayId(Long assayId);
 
-  @Query("select a from Activity a where a.reference = 'PROGRAM' and a.referenceId = ?1 ")
+  @EntityGraph("activity-with-user")
+  @Query("select a from Activity a where a.program.id = ?1 ")
   List<Activity> findByProgramId(Long programId);
 
+  @EntityGraph("activity-with-user")
   @Query("select a from Activity a where a.user = ?1 ")
   List<Activity> findByUserId(Long userId);
 
@@ -45,7 +56,7 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
 
   long countByDateBetween(Date startDate, Date endDate);
 
-  @Query("select a from Activity a where a.reference = 'STUDY' and a.eventType = 'STUDY_STATUS_CHANGED' and a.date >= ?1")
+  @Query("select a from Activity a where a.eventType = 'STUDY_STATUS_CHANGED' and a.date >= ?1")
   List<Activity> findStatusChangeStudiesAfterDate(Date date);
 
 }

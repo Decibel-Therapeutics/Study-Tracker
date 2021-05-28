@@ -26,6 +26,7 @@ import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.ActivityRepository;
 import com.decibeltx.studytracker.repository.AssayRepository;
+import com.decibeltx.studytracker.repository.ProgramRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +50,9 @@ public class ActivityService {
 
   @Autowired
   private AssayRepository assayRepository;
+
+  @Autowired
+  private ProgramRepository programRepository;
 
   public List<Activity> findAll() {
     return activityRepository.findAll();
@@ -95,17 +99,21 @@ public class ActivityService {
     return activityRepository.findByUserId(user.getId());
   }
 
-  public Activity create(Activity activity) {
-    return activityRepository.save(activity);
-  }
-
   @Transactional
-  public Activity update(Activity activity) {
-    if (activityRepository.existsById(activity.getId())) {
-      activityRepository.save(activity);
-      return activity;
+  public Activity create(Activity activity) {
+    if (activity.getAssay() != null && activity.getStudy() == null) {
+      Long studyId = activity.getAssay().getStudy().getId();
+      Study study = studyRepository.findById(studyId)
+          .orElseThrow(() -> new RecordNotFoundException("Could not find study: " + studyId));
+      activity.setStudy(study);
     }
-    throw new RecordNotFoundException(activity.getId().toString());
+    if (activity.getStudy() != null && activity.getProgram() == null) {
+      Long programId = activity.getStudy().getProgram().getId();
+      Program program = programRepository.findById(programId)
+          .orElseThrow(() -> new RecordNotFoundException("Could not find program: " + programId));
+      activity.setProgram(program);
+    }
+    return activityRepository.save(activity);
   }
 
   @Transactional
@@ -113,9 +121,10 @@ public class ActivityService {
     if (activityRepository.existsById(activity.getId())) {
       activityRepository.delete(activity);
     }
-    throw new RecordNotFoundException(activity.getId().toString());
+    throw new RecordNotFoundException("Activity record not found: " + activity.getId().toString());
   }
 
+  @Transactional
   public void deleteStudyActivity(Study study) {
     for (Activity activity : this.findByStudy(study)) {
       this.delete(activity);
@@ -141,7 +150,7 @@ public class ActivityService {
   public long countCompletedStudiesFromDate(Date date) {
     return activityRepository.findStatusChangeStudiesAfterDate(date)
         .stream()
-        //.filter(a -> a.getData().containsKey("newStatus") && a.getData().get("newStatus").equals("COMPLETE"))
+        .filter(a -> a.getData().containsKey("newStatus") && a.getData().get("newStatus").equals("COMPLETE"))
         .count();
   }
 
