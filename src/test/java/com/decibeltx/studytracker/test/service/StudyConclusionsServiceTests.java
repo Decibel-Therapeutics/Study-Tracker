@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.test.core.service;
+package com.decibeltx.studytracker.test.service;
 
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
-import com.decibeltx.studytracker.model.Comment;
 import com.decibeltx.studytracker.model.Study;
-import com.decibeltx.studytracker.service.StudyCommentService;
+import com.decibeltx.studytracker.model.StudyConclusions;
+import com.decibeltx.studytracker.model.User;
+import com.decibeltx.studytracker.repository.UserRepository;
+import com.decibeltx.studytracker.service.StudyConclusionsService;
 import com.decibeltx.studytracker.service.StudyService;
 import java.util.Date;
 import java.util.Optional;
@@ -38,13 +40,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"test", "example"})
-public class StudyCommentServiceTests {
+public class StudyConclusionsServiceTests {
 
   @Autowired
   private StudyService studyService;
 
   @Autowired
-  private StudyCommentService studyCommentService;
+  private UserRepository userRepository;
+
+  @Autowired
+  private StudyConclusionsService studyConclusionsService;
 
   @Autowired
   private ExampleDataGenerator exampleDataGenerator;
@@ -55,58 +60,64 @@ public class StudyCommentServiceTests {
   }
 
   @Test
-  public void addCommentTest() {
+  public void addConclusionsTest() {
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
-    Assert.assertTrue(study.getComments().isEmpty());
+    Assert.assertNull(study.getConclusions());
 
-    Comment comment = new Comment();
-    comment.setText("This is a test");
-    comment.setCreatedBy(study.getCreatedBy());
-    studyCommentService.addStudyComment(study, comment);
-    Assert.assertNotNull(comment.getId());
-    Assert.assertNotNull(comment.getCreatedAt());
-    Long id = comment.getId();
+    User user = userRepository.findAll().get(0);
+
+    StudyConclusions conclusions = new StudyConclusions();
+    conclusions.setContent("This is a test");
+    conclusions.setCreatedBy(study.getCreatedBy());
+    conclusions.setStudy(study);
+    conclusions.setCreatedBy(user);
+    conclusions.setLastModifiedBy(user);
+
+    studyConclusionsService.addStudyConclusions(study, conclusions);
+    Assert.assertNotNull(conclusions.getId());
+    Assert.assertNotNull(conclusions.getCreatedAt());
 
     study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
-    Assert.assertFalse(study.getComments().isEmpty());
+    Assert.assertNotNull(study.getConclusions());
 
-    Optional<Comment> optional = studyCommentService.findStudyCommentById(id);
+    Optional<StudyConclusions> optional = studyConclusionsService.findStudyConclusions(study);
     Assert.assertTrue(optional.isPresent());
-    comment = optional.get();
-    Assert.assertEquals("This is a test", comment.getText());
+    conclusions = optional.get();
+    Assert.assertEquals("This is a test", conclusions.getContent());
 
   }
 
   @Test
-  public void updateCommentTest() {
+  public void updateConclusionsTest() {
 
-    addCommentTest();
+    addConclusionsTest();
 
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
 
-    Comment comment = study.getComments().stream().findFirst().get();
-    Long id = comment.getId();
-    Date firstDate = comment.getCreatedAt();
-    comment.setText("Different text");
-    studyCommentService.updateStudyComment(comment);
+    study.setLastModifiedBy(study.getCreatedBy());
 
-    comment = studyCommentService.findStudyCommentById(id)
+    StudyConclusions conclusions = study.getConclusions();
+    Date firstDate = conclusions.getCreatedAt();
+    Assert.assertEquals(conclusions.getCreatedAt(), conclusions.getUpdatedAt());
+    conclusions.setContent("Different text");
+    conclusions.setLastModifiedBy(conclusions.getCreatedBy());
+    studyConclusionsService.updateStudyConclusions(study, conclusions);
+
+    conclusions = studyConclusionsService.findStudyConclusions(study)
         .orElseThrow(RecordNotFoundException::new);
-    Assert.assertNotNull(comment.getUpdatedAt());
-    Assert.assertNotEquals(firstDate, comment.getUpdatedAt());
-    Assert.assertEquals("Different text", comment.getText());
+    Assert.assertNotNull(conclusions.getUpdatedAt());
+    Assert.assertNotEquals(firstDate, conclusions.getUpdatedAt());
+    Assert.assertEquals("Different text", conclusions.getContent());
   }
 
   @Test
-  public void deleteCommentTest() {
-    addCommentTest();
+  public void deleteConclusionsTest() {
+    addConclusionsTest();
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
-    Comment comment = study.getComments().stream().findFirst().get();
-    Long id = comment.getId();
-    studyCommentService.deleteStudyComment(comment.getId());
+    studyConclusionsService.deleteStudyConclusions(study);
     Exception exception = null;
     try {
-      comment = studyCommentService.findStudyCommentById(id)
+      studyConclusionsService.findStudyConclusions(study)
           .orElseThrow(RecordNotFoundException::new);
     } catch (Exception e) {
       exception = e;

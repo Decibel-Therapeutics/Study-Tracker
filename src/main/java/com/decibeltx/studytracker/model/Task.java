@@ -59,27 +59,6 @@ public abstract class Task {
   @LastModifiedDate
   private Date updatedAt = new Date();
 
-  public Task() {
-  }
-
-  public Task(String label) {
-    this.status = TaskStatus.TODO;
-    this.label = label;
-    this.order = 0;
-  }
-
-  public Task(String label, TaskStatus status) {
-    this.status = status;
-    this.label = label;
-    this.order = 0;
-  }
-
-  public Task(String label, TaskStatus status, Integer order) {
-    this.status = status;
-    this.label = label;
-    this.order = order;
-  }
-
   public Long getId() {
     return id;
   }
@@ -127,4 +106,5 @@ public abstract class Task {
   public void setUpdatedAt(Date updatedAt) {
     this.updatedAt = updatedAt;
   }
+
 }

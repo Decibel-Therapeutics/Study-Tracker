@@ -24,6 +24,7 @@ import com.decibeltx.studytracker.benchling.exception.EntityNotFoundException;
 import com.decibeltx.studytracker.eln.NotebookEntry;
 import com.decibeltx.studytracker.eln.NotebookFolder;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
+import com.decibeltx.studytracker.exception.MalformedEntityException;
 import com.decibeltx.studytracker.exception.NotebookException;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.Program;
@@ -195,8 +196,8 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
   @Override
   public NotebookFolder createProgramFolder(Program program) throws NotebookException {
-    LOGGER.info(
-        "Registering new program folder. NOTE: Benchling does not support project creation, so a valid folderId must be provided when registering new programs.");
+    LOGGER.info("Registering new program folder. NOTE: Benchling does not support project creation, "
+        + "so a valid folderId must be provided when registering new programs.");
     if (program.getNotebookFolder() != null
         && program.getNotebookFolder().getReferenceId() != null) {
       try {
@@ -208,10 +209,9 @@ public final class BenchlingNotebookService implements StudyNotebookService {
         throw new NotebookException(e);
       }
     } else {
-      LOGGER.warn("Program folder ID is not set, cannot create NotebookFolder record for program: "
-          + program.getName());
+      throw new MalformedEntityException("Program folder ID is not set, cannot create NotebookFolder "
+          + "record for program: " + program.getName());
     }
-    return null;
   }
 
   @Override

@@ -71,7 +71,7 @@ public class AssayTasksController extends AbstractAssayController {
 
     assayTaskService.updateAssayTask(task, assay);
 
-    Activity activity = AssayActivityUtils.fromTaskUpdate(assay, user, task);
+    Activity activity = AssayActivityUtils.fromAssayTaskUpdate(assay, user, task);
     this.getActivityService().create(activity);
     this.getEventsService().dispatchEvent(activity);
 

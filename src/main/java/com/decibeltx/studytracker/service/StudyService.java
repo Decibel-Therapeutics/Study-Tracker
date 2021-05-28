@@ -20,7 +20,6 @@ import com.decibeltx.studytracker.eln.NotebookFolder;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.exception.DuplicateRecordException;
 import com.decibeltx.studytracker.exception.InvalidConstraintException;
-import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.ELNFolder;
 import com.decibeltx.studytracker.model.FileStoreFolder;
 import com.decibeltx.studytracker.model.Program;
@@ -36,6 +35,8 @@ import javax.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -77,6 +78,16 @@ public class StudyService {
    */
   public List<Study> findAll() {
     return studyRepository.findAll();
+  }
+
+  /**
+   * Returns a {@link Page} of studies
+   *
+   * @param pageable
+   * @return
+   */
+  public Page<Study> findAll(Pageable pageable) {
+    return studyRepository.findAll(pageable);
   }
 
   /**
@@ -202,8 +213,7 @@ public class StudyService {
   @Transactional
   public void update(Study updated) {
     LOGGER.info("Attempting to update existing study with code: " + updated.getCode());
-    Study study = studyRepository.findById(updated.getId())
-        .orElseThrow(RecordNotFoundException::new);
+    Study study = studyRepository.getOne(updated.getId());
 
     study.setDescription(updated.getDescription());
     study.setStatus(updated.getStatus());
@@ -212,6 +222,7 @@ public class StudyService {
     study.setOwner(updated.getOwner());
     study.setUsers(updated.getUsers());
     study.setKeywords(updated.getKeywords());
+    study.setAttributes(updated.getAttributes());
 
     // Collaborator changes
     if (study.getCollaborator() == null && updated.getCollaborator() != null) {
@@ -236,8 +247,9 @@ public class StudyService {
    */
   @Transactional
   public void delete(Study study) {
-    study.setActive(false);
-    studyRepository.save(study);
+    Study s = studyRepository.getOne(study.getId());
+    s.setActive(false);
+    studyRepository.save(s);
   }
 
   /**
@@ -248,11 +260,12 @@ public class StudyService {
    */
   @Transactional
   public void updateStatus(Study study, Status status) {
-    study.setStatus(status);
+    Study s = studyRepository.getOne(study.getId());
+    s.setStatus(status);
     if (status.equals(Status.COMPLETE) && study.getEndDate() == null) {
-      study.setEndDate(new Date());
+      s.setEndDate(new Date());
     }
-    studyRepository.save(study);
+    studyRepository.save(s);
   }
 
   /**

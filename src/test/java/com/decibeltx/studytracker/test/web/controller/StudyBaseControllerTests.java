@@ -82,8 +82,6 @@ public class StudyBaseControllerTests {
 
   private String username;
 
-  private static final int NUM_STUDIES = 6;
-
   @Before
   public void doBefore() {
     exampleDataGenerator.populateDatabase();
@@ -97,7 +95,7 @@ public class StudyBaseControllerTests {
     mockMvc.perform(get("/api/study")
         .with(user(username)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$", hasSize(NUM_STUDIES)))
+        .andExpect(jsonPath("$", hasSize(ExampleDataGenerator.STUDY_COUNT - 1)))
         .andExpect(jsonPath("$[0]", hasKey("id")))
         .andExpect(jsonPath("$[0]", hasKey("name")))
         .andExpect(jsonPath("$[0]", hasKey("description")))
@@ -139,8 +137,8 @@ public class StudyBaseControllerTests {
     study.setProgram(program);
     study.setDescription("This is a test");
     study.setLegacy(false);
-    study.setCreatedBy(user);
-    study.setLastModifiedBy(user);
+//    study.setCreatedBy(user);
+//    study.setLastModifiedBy(user);
     study.setStartDate(new Date());
     study.setOwner(user);
     study.setUsers(Collections.singleton(user));

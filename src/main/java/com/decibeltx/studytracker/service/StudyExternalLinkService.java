@@ -66,7 +66,11 @@ public class StudyExternalLinkService {
 
   @Transactional
   public void deleteStudyExternalLink(Study study, Long linkId) {
-    externalLinkRepository.deleteById(linkId);
+    study.removeExternalLink(linkId);
+//    externalLinkRepository.deleteById(linkId);
+//    externalLinkRepository.flush();
+//    Study s = studyRepository.getOne(study.getId());
+//    s.setUpdatedAt(new Date());
     studyRepository.save(study);
   }
 

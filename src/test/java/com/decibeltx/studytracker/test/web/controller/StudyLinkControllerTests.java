@@ -140,8 +140,8 @@ public class StudyLinkControllerTests {
     ExternalLink link = study.getExternalLinks().stream().findFirst().get();
 
     mockMvc.perform(delete("/api/study/CPA-10001/links/" + link.getId())
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsBytes(link))
+//        .contentType(MediaType.APPLICATION_JSON)
+//        .content(objectMapper.writeValueAsBytes(link))
         .with(user(user.getUsername())))
         .andExpect(status().isOk());
 

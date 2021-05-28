@@ -371,7 +371,7 @@ const ActivityMessage = ({activity}) => {
             <p>
               <a href={"/user/"
               + activity.user.username}>{activity.user.displayName}</a>
-              &nbsp;has created a new assay:
+              &nbsp;has created a new program:
             </p>
 
             <div className="bg-light text-secondary p-3">

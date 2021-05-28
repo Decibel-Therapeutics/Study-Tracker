@@ -16,6 +16,7 @@
 
 package com.decibeltx.studytracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import java.util.Date;
 import java.util.HashSet;
@@ -37,6 +38,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -58,13 +62,43 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 })
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonType.class)
+@NamedEntityGraphs({
+    @NamedEntityGraph(
+        name = "study-summary",
+        attributeNodes = {
+            @NamedAttributeNode("program"),
+            @NamedAttributeNode("collaborator"),
+            @NamedAttributeNode("notebookFolder"),
+            @NamedAttributeNode("storageFolder"),
+            @NamedAttributeNode("owner")
+        }
+    ),
+    @NamedEntityGraph(
+        name = "study-with-attributes",
+        attributeNodes = {
+            @NamedAttributeNode("program"),
+            @NamedAttributeNode("collaborator"),
+            @NamedAttributeNode("notebookFolder"),
+            @NamedAttributeNode("storageFolder"),
+            @NamedAttributeNode("createdBy"),
+            @NamedAttributeNode("lastModifiedBy"),
+            @NamedAttributeNode("owner"),
+            @NamedAttributeNode("users"),
+            @NamedAttributeNode("keywords"),
+            @NamedAttributeNode("externalLinks"),
+            @NamedAttributeNode("conclusions"),
+            @NamedAttributeNode("comments"),
+            @NamedAttributeNode("studyRelationships")
+        }
+    )
+})
 public class Study {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column(name = "code", nullable = false, unique = true)
+  @Column(name = "code", nullable = false, unique = true, updatable = false)
   @NotNull
   private String code;
 
@@ -76,19 +110,19 @@ public class Study {
   @NotNull
   private Status status;
 
-  @Column(name = "name", nullable = false)
+  @Column(name = "name", nullable = false, updatable = false)
   @NotNull
   private String name;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "program_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "program_id", nullable = false, updatable = false)
   private Program program;
 
   @Column(name = "description", nullable = false, columnDefinition = "TEXT")
   @NotNull
   private String description;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "collaborator_id")
   private Collaborator collaborator;
 
@@ -98,21 +132,21 @@ public class Study {
   @Column(name = "active", nullable = false)
   private boolean active = true;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "notebook_folder_id")
   private ELNFolder notebookFolder;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "storage_folder_id")
   private FileStoreFolder storageFolder;
 
   @CreatedBy
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "created_by", nullable = false)
   private User createdBy;
 
   @LastModifiedBy
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "last_modified_by", nullable = false)
   private User lastModifiedBy;
 
@@ -135,39 +169,40 @@ public class Study {
   @Temporal(TemporalType.TIMESTAMP)
   private Date updatedAt;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "owner", nullable = false)
   private User owner;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "study_users",
       joinColumns = @JoinColumn(name = "study_id", nullable = false),
       inverseJoinColumns = @JoinColumn(name = "user_id", nullable = false))
   private Set<User> users = new HashSet<>();
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "study_keywords",
       joinColumns = @JoinColumn(name = "study_id", nullable = false),
       inverseJoinColumns = @JoinColumn(name = "keyword_id", nullable = false))
   private Set<Keyword> keywords = new HashSet<>();
 
   @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
   private Set<Assay> assays = new HashSet<>();
 
   @Type(type = "json")
   @Column(name = "attributes", columnDefinition = "json")
   private Map<String, String> attributes = new LinkedHashMap<>();
 
-  @OneToMany(mappedBy = "study", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<ExternalLink> externalLinks = new HashSet<>();
 
-  @OneToMany(mappedBy = "sourceStudy", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "sourceStudy", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<StudyRelationship> studyRelationships = new HashSet<>();
 
-  @OneToOne(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+  @OneToOne(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   private StudyConclusions conclusions;
 
-  @OneToMany(mappedBy = "study", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Comment> comments = new HashSet<>();
 
   public void addUser(User user) {
@@ -195,6 +230,7 @@ public class Study {
   }
 
   public void addAssay(Assay assay) {
+    assay.setStudy(this);
     this.assays.add(assay);
   }
 
@@ -215,6 +251,7 @@ public class Study {
   }
 
   public void addExternalLink(ExternalLink link) {
+    link.setStudy(this);
     this.externalLinks.add(link);
   }
 
@@ -239,6 +276,7 @@ public class Study {
   }
 
   public void addComment(Comment comment) {
+    comment.setStudy(this);
     this.comments.add(comment);
   }
 
@@ -423,6 +461,9 @@ public class Study {
   }
 
   public void setAssays(Set<Assay> assays) {
+    for (Assay assay: assays) {
+      assay.setStudy(this);
+    }
     this.assays = assays;
   }
 
@@ -439,6 +480,9 @@ public class Study {
   }
 
   public void setExternalLinks(Set<ExternalLink> externalLinks) {
+    for (ExternalLink link: externalLinks) {
+      link.setStudy(this);
+    }
     this.externalLinks = externalLinks;
   }
 
@@ -446,8 +490,7 @@ public class Study {
     return studyRelationships;
   }
 
-  public void setStudyRelationships(
-      Set<StudyRelationship> studyRelationships) {
+  public void setStudyRelationships(Set<StudyRelationship> studyRelationships) {
     this.studyRelationships = studyRelationships;
   }
 
@@ -456,6 +499,7 @@ public class Study {
   }
 
   public void setConclusions(StudyConclusions conclusions) {
+    if (conclusions != null) conclusions.setStudy(this);
     this.conclusions = conclusions;
   }
 
@@ -464,6 +508,9 @@ public class Study {
   }
 
   public void setComments(Set<Comment> comments) {
+    for (Comment comment: comments) {
+      comment.setStudy(this);
+    }
     this.comments = comments;
   }
 }

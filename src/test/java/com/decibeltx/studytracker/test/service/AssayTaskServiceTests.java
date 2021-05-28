@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.test.core.service;
+package com.decibeltx.studytracker.test.service;
 
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
@@ -22,6 +22,7 @@ import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.AssayTask;
 import com.decibeltx.studytracker.model.TaskStatus;
+import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.AssayRepository;
 import com.decibeltx.studytracker.service.AssayTaskService;
 import java.util.Date;
@@ -69,6 +70,7 @@ public class AssayTaskServiceTests {
   public void addTaskTest() {
     Assay assay = assayRepository.findByCode("PPB-10001-001")
         .orElseThrow(RecordNotFoundException::new);
+    User user = assay.getCreatedBy();
     List<AssayTask> tasks = assayTaskService.findAssayTasks(assay);
     Assert.assertNotNull(tasks);
     Assert.assertFalse(tasks.isEmpty());
@@ -78,6 +80,8 @@ public class AssayTaskServiceTests {
     task.setStatus(TaskStatus.TODO);
     task.setLabel("Test task");
     task.setAssay(assay);
+    task.setCreatedBy(user);
+    task.setLastModifiedBy(user);
     assayTaskService.addAssayTask(task, assay);
 
     tasks = assayTaskService.findAssayTasks(assay);

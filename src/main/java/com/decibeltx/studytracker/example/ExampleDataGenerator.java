@@ -90,6 +90,8 @@ public class ExampleDataGenerator {
 
   public static final int ENTRY_TEMPLATE_COUNT = 2;
 
+  public static final int STUDY_COUNT = 6;
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ExampleDataGenerator.class);
 
   @Autowired
@@ -641,12 +643,28 @@ public class ExampleDataGenerator {
     );
     assayTypeFieldRepository.saveAll(fields);
 
-    List<AssayTypeTask> tasks = Arrays.asList(
-        new AssayTypeTask(assayType, "Embed tissue", TaskStatus.TODO, 0),
-        new AssayTypeTask(assayType, "Cut slides", TaskStatus.TODO, 1),
-        new AssayTypeTask(assayType, "Stain slides", TaskStatus.TODO, 2)
-    );
-    assayTypeTaskRepository.saveAll(tasks);
+    AssayTypeTask task1 = new AssayTypeTask();
+    task1.setLabel("Embed tissue");
+    task1.setStatus(TaskStatus.TODO);
+    task1.setOrder(0);
+    task1.setAssayType(assayType);
+    assayTypeTaskRepository.save(task1);
+
+    AssayTypeTask task2 = new AssayTypeTask();
+    task2.setLabel("Cut slides");
+    task2.setStatus(TaskStatus.TODO);
+    task2.setOrder(1);
+    task2.setAssayType(assayType);
+    assayTypeTaskRepository.save(task2);
+
+    AssayTypeTask task3 = new AssayTypeTask();
+    task3.setLabel("Stain slides");
+    task3.setStatus(TaskStatus.TODO);
+    task3.setOrder(2);
+    task3.setAssayType(assayType);
+    assayTypeTaskRepository.save(task3);
+
+
 
   }
 
@@ -672,19 +690,21 @@ public class ExampleDataGenerator {
     assay.setAssayType(assayType);
     assay.setOwner(user);
     assay.setCreatedBy(user);
-    assay.setUsers(Collections.singletonList(user));
+    assay.setUsers(Collections.singleton(user));
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
     assay.setStorageFolder(createAssayFolder(assay));
-    assayRepository.save(assay);
 
     AssayTask task = new AssayTask();
-    task.setAssay(assay);
     task.setLabel("My task");
     task.setOrder(0);
     task.setStatus(TaskStatus.TODO);
-    assayTaskRepository.save(task);
+    task.setCreatedBy(user);
+    task.setLastModifiedBy(user);
+    assay.addTask(task);
+
+    assayRepository.save(assay);
 
 
     assay = new Assay();
@@ -700,19 +720,21 @@ public class ExampleDataGenerator {
     assay.setAssayType(assayType);
     assay.setOwner(user);
     assay.setCreatedBy(user);
-    assay.setUsers(Collections.singletonList(user));
+    assay.setUsers(Collections.singleton(user));
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
     assay.setStorageFolder(createAssayFolder(assay));
-    assayRepository.save(assay);
 
     task = new AssayTask();
-    task.setAssay(assay);
     task.setLabel("My task");
     task.setOrder(0);
     task.setStatus(TaskStatus.TODO);
-    assayTaskRepository.save(task);
+    task.setCreatedBy(user);
+    task.setLastModifiedBy(user);
+    assay.addTask(task);
+
+    assayRepository.save(assay);
 
   }
 

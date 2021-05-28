@@ -17,24 +17,6 @@ public class AssayTypeTask extends Task {
   @JoinColumn(name = "assay_type_id", nullable = false)
   private AssayType assayType;
 
-  public AssayTypeTask() {
-  }
-
-  public AssayTypeTask(AssayType assayType, String label) {
-    super(label);
-    this.assayType = assayType;
-  }
-
-  public AssayTypeTask(AssayType assayType, String label, TaskStatus status) {
-    super(label, status);
-    this.assayType = assayType;
-  }
-
-  public AssayTypeTask(AssayType assayType, String label, TaskStatus status, Integer order) {
-    super(label, status, order);
-    this.assayType = assayType;
-  }
-
   public AssayType getAssayType() {
     return assayType;
   }

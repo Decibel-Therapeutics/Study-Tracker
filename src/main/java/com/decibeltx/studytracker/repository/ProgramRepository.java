@@ -20,10 +20,16 @@ import com.decibeltx.studytracker.model.Program;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProgramRepository extends JpaRepository<Program, Long> {
 
+  @Override
+  @EntityGraph(value = "program-with-attributes")
+  Optional<Program> findById(Long id);
+
+  @EntityGraph(value = "program-with-attributes")
   Optional<Program> findByName(String name);
 
   List<Program> findByCode(String code);

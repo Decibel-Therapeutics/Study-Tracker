@@ -10,6 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,6 +26,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "notebook_entry_templates")
 @EntityListeners(AuditingEntityListener.class)
+@NamedEntityGraphs({
+    @NamedEntityGraph(name = "entry-template-details", attributeNodes = {
+        @NamedAttributeNode("createdBy"),
+        @NamedAttributeNode("lastModifiedBy")
+    })
+})
 public class NotebookEntryTemplate {
 
     @Id
@@ -38,13 +47,11 @@ public class NotebookEntryTemplate {
     private String templateId;
 
     @CreatedBy
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
     @LastModifiedBy
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "last_modified_by", nullable = false)
     private User lastModifiedBy;

@@ -26,6 +26,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,6 +41,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "comments")
 @EntityListeners(AuditingEntityListener.class)
+@NamedEntityGraphs({
+    @NamedEntityGraph(name = "comment-details", attributeNodes = {
+        @NamedAttributeNode("createdBy")
+    })
+})
 public class Comment {
 
   @Id

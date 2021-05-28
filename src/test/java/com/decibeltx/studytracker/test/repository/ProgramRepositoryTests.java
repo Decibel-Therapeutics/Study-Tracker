@@ -1,4 +1,4 @@
-package com.decibeltx.studytracker.test.core.repository;
+package com.decibeltx.studytracker.test.repository;
 
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.model.FileStoreFolder;
@@ -9,7 +9,9 @@ import com.decibeltx.studytracker.repository.FileStoreFolderRepository;
 import com.decibeltx.studytracker.repository.ProgramRepository;
 import com.decibeltx.studytracker.repository.UserRepository;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import org.hibernate.LazyInitializationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +72,7 @@ public class ProgramRepositoryTests {
     program.setCreatedBy(user);
     program.setLastModifiedBy(user);
     program.setName("Test Program");
-    program.setAttributes(Collections.singletonMap("key", "value"));
+    program.addAttribute("key", "value");
 
     FileStoreFolder folder = new FileStoreFolder();
     folder.setPath("/path/to/test");
@@ -111,17 +113,59 @@ public class ProgramRepositoryTests {
     duplicate.setActive(true);
     duplicate.setCode("TST");
     duplicate.setCreatedBy(user);
+    duplicate.setLastModifiedBy(user);
     duplicate.setName("Test Program");
     duplicate.setAttributes(Collections.singletonMap("key", "value"));
     try {
       programRepository.save(duplicate);
     } catch (Exception e) {
-      e.printStackTrace();
       exception = e;
     }
 
     Assert.assertNotNull(exception);
     Assert.assertEquals(1, programRepository.count());
+
+  }
+
+  @Test
+  public void findProgramsTest() {
+
+    newProgramTest();
+
+    Exception exception = null;
+    System.out.println("FInd programs test start");
+
+    Optional<Program> optional = programRepository.findByName("Test Program"); //fetch the eagerly-loaded entity
+    Assert.assertTrue(optional.isPresent());
+    Program program = optional.get();
+    Assert.assertEquals("Test Program", program.getName());
+    Long id = program.getId();
+
+    try {
+      Assert.assertNotNull(program.getCreatedBy()); // get the loaded entity
+      Assert.assertNotNull(program.getCreatedBy().getDisplayName()); // this will not throw an error
+    } catch (Exception e) {
+      exception = e;
+      e.printStackTrace();
+    }
+
+    Assert.assertNull(exception);
+
+    List<Program> another = programRepository.findAll(); // get the lazy-loaded entity
+    Assert.assertFalse(another.isEmpty());
+    Program program2 = another.get(0);
+
+    Assert.assertNotNull(program2.getCreatedBy()); // the reference is there, but not loaded
+    Assert.assertNotNull(program2.getCreatedBy().getId()); // the ID of the reference is always present
+
+    try {
+      Assert.assertNotNull(program2.getCreatedBy().getDisplayName()); // but the attributes are not loaded because the entity is not fully loaded
+    } catch (Exception e) {
+      exception = e;
+    }
+
+    Assert.assertNotNull(exception);
+    Assert.assertTrue(exception instanceof LazyInitializationException);
 
   }
 

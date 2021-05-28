@@ -13,9 +13,9 @@ import com.decibeltx.studytracker.service.AssayTypeService;
 import com.decibeltx.studytracker.service.EventsService;
 import com.decibeltx.studytracker.service.StudyService;
 import com.decibeltx.studytracker.service.UserService;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -96,7 +96,7 @@ public abstract class AbstractAssayController {
     assay.setStudy(study);
 
     // Assay team
-    List<User> team = new ArrayList<>();
+    Set<User> team = new HashSet<>();
     for (User u : assay.getUsers()) {
       team.add(userService.findByUsername(u.getUsername())
           .orElseThrow(RecordNotFoundException::new));
@@ -130,10 +130,10 @@ public abstract class AbstractAssayController {
    */
   protected Assay updateAssay(Assay assay, User user) {
 
-    assay.setLastModifiedBy(user);
+//    assay.setLastModifiedBy(user);
 
     // Assay team
-    List<User> team = new ArrayList<>();
+    Set<User> team = new HashSet<>();
     for (User u : assay.getUsers()) {
       team.add(userService.findByUsername(u.getUsername())
           .orElseThrow(RecordNotFoundException::new));

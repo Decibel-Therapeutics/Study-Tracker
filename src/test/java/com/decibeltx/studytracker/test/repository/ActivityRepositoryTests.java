@@ -1,4 +1,4 @@
-package com.decibeltx.studytracker.test.core.repository;
+package com.decibeltx.studytracker.test.repository;
 
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.events.EventType;
@@ -21,10 +21,8 @@ import com.decibeltx.studytracker.repository.UserRepository;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManagerFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,12 +30,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"test"})
+@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ActivityRepositoryTests {
 
   @Autowired private UserRepository userRepository;
@@ -46,7 +47,6 @@ public class ActivityRepositoryTests {
   @Autowired private FileStoreFolderRepository fileStoreFolderRepository;
   @Autowired private StudyRepository studyRepository;
   @Autowired private ActivityRepository activityRepository;
-  @Autowired private EntityManagerFactory entityManagerFactory;
 
   @Before
   public void doBefore() {
@@ -81,7 +81,7 @@ public class ActivityRepositoryTests {
     program.setCreatedBy(user);
     program.setLastModifiedBy(user);
     program.setName("Test Program");
-    program.setAttributes(Collections.singletonMap("key", "value"));
+    program.addAttribute("key", "value");
 
     FileStoreFolder folder = new FileStoreFolder();
     folder.setPath("/path/to/test");
@@ -107,10 +107,10 @@ public class ActivityRepositoryTests {
     study.setCreatedBy(user);
     study.setLastModifiedBy(user);
     study.setOwner(user);
-    study.setUsers(Collections.singleton(user));
+    study.addUser(user);
     study.setStatus(Status.ACTIVE);
     study.setStartDate(new Date());
-    study.setAttributes(Collections.singletonMap("key", "value"));
+    study.addAttribute("key", "value");
     studyRepository.save(study);
 
   }
@@ -123,7 +123,7 @@ public class ActivityRepositoryTests {
     createStudy();
 
     User user = userRepository.findAll().get(0);
-    Study study = studyRepository.findAll().get(0);
+    Study study = studyRepository.findByCode("TST-10001").orElseThrow(RecordNotFoundException::new);
 
     Assert.assertEquals(0, activityRepository.count());
     Activity activity = StudyActivityUtils.fromNewStudy(study, user);
@@ -172,7 +172,7 @@ public class ActivityRepositoryTests {
     createStudy();
 
     User user = userRepository.findAll().get(0);
-    Study study = studyRepository.findAll().get(0);
+    Study study = studyRepository.findByCode("TST-10001").orElseThrow(RecordNotFoundException::new);
     study.setStatus(Status.COMPLETE);
     studyRepository.save(study);
 //    Activity activity = StudyActivityUtils.fromStudyStatusChange(study, user, Status.ACTIVE, Status.COMPLETE);
@@ -183,11 +183,9 @@ public class ActivityRepositoryTests {
     activity.setEventType(EventType.STUDY_STATUS_CHANGED);
     activity.setDate(new Date());
     activity.setUser(user);
-    Map<String, Object> data = new LinkedHashMap<>();
-    data.put("study", createStudyView(study));
-    data.put("oldStatus", Status.ACTIVE);
-    data.put("newStatus", "COMPLETE");
-    activity.setData(data);
+    activity.addData("study", createStudyView(study));
+    activity.addData("oldStatus", Status.ACTIVE);
+    activity.addData("newStatus", "COMPLETE");
 
     Assert.assertEquals(0, activityRepository.count());
     activityRepository.save(activity);

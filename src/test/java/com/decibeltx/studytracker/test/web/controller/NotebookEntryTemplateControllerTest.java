@@ -73,11 +73,11 @@ public class NotebookEntryTemplateControllerTest {
     public void allEntryTemplateTest() throws Exception {
         mockMvc.perform(get("/api/entryTemplate")
             .with(user(username)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(ENTRY_TEMPLATE_COUNT)))
-                .andExpect(jsonPath("$[0]", hasKey("id")))
-                .andExpect(jsonPath("$[0]", hasKey("name")))
-                .andExpect(jsonPath("$[0]", hasKey("templateId")));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(ENTRY_TEMPLATE_COUNT)))
+            .andExpect(jsonPath("$[0]", hasKey("id")))
+            .andExpect(jsonPath("$[0]", hasKey("name")))
+            .andExpect(jsonPath("$[0]", hasKey("templateId")));
     }
 
     @Test

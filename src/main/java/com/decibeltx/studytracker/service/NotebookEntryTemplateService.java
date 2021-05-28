@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EntryTemplateService {
+public class NotebookEntryTemplateService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EntryTemplateService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NotebookEntryTemplateService.class);
 
     @Autowired
     private NotebookEntryTemplateRepository notebookEntryTemplateRepository;

@@ -54,6 +54,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(MalformedEntityException.class)
+  public final ResponseEntity<ApiError> malformedEntity(InvalidConstraintException ex,
+      WebRequest request) {
+    ex.printStackTrace();
+    ApiError apiError = new ApiError(ex.getMessage(), request.getDescription(false));
+    return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(RecordNotFoundException.class)
   public final ResponseEntity<ApiError> recordNotFound(RecordNotFoundException ex,
       WebRequest request) {

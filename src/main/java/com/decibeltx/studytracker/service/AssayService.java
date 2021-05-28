@@ -27,7 +27,6 @@ import com.decibeltx.studytracker.model.ELNFolder;
 import com.decibeltx.studytracker.model.FileStoreFolder;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.repository.AssayRepository;
-import com.decibeltx.studytracker.repository.StudyRepository;
 import com.decibeltx.studytracker.storage.StorageFolder;
 import com.decibeltx.studytracker.storage.StudyStorageService;
 import java.text.SimpleDateFormat;
@@ -50,9 +49,6 @@ public class AssayService {
 
   @Autowired
   private AssayRepository assayRepository;
-
-  @Autowired
-  private StudyRepository studyRepository;
 
   @Autowired
   private StudyStorageService storageService;

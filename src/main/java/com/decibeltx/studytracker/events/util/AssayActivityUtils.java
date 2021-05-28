@@ -4,8 +4,8 @@ import com.decibeltx.studytracker.events.EventType;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.ActivityReference;
 import com.decibeltx.studytracker.model.Assay;
+import com.decibeltx.studytracker.model.AssayTask;
 import com.decibeltx.studytracker.model.Status;
-import com.decibeltx.studytracker.model.Task;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.storage.StorageFile;
 import java.util.Date;
@@ -83,7 +83,7 @@ public class AssayActivityUtils {
     return activity;
   }
 
-  public static Activity fromTaskAdded(Assay assay, User triggeredBy, Task task) {
+  public static Activity fromTaskAdded(Assay assay, User triggeredBy, AssayTask task) {
     Activity activity = new Activity();
     activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
@@ -92,12 +92,12 @@ public class AssayActivityUtils {
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
     data.put("assay", EntityViewUtils.createAssayView(assay));
-    data.put("task", task);
+    data.put("task", EntityViewUtils.createAssayTaskView(task));
     activity.setData(data);
     return activity;
   }
 
-  public static Activity fromTaskUpdate(Assay assay, User triggeredBy, Task task) {
+  public static Activity fromAssayTaskUpdate(Assay assay, User triggeredBy, AssayTask task) {
     Activity activity = new Activity();
     activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
@@ -106,12 +106,12 @@ public class AssayActivityUtils {
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
     data.put("assay", EntityViewUtils.createAssayView(assay));
-    data.put("task", task);
+    data.put("task", EntityViewUtils.createAssayTaskView(task));
     activity.setData(data);
     return activity;
   }
 
-  public static Activity fromTaskDeleted(Assay assay, User triggeredBy, Task task) {
+  public static Activity fromTaskDeleted(Assay assay, User triggeredBy, AssayTask task) {
     Activity activity = new Activity();
     activity.setReference(ActivityReference.ASSAY);
     activity.setReferenceId(assay.getId());
@@ -120,7 +120,7 @@ public class AssayActivityUtils {
     activity.setUser(triggeredBy);
     Map<String, Object> data = new HashMap<>();
     data.put("assay", EntityViewUtils.createAssayView(assay));
-    data.put("task", task);
+    data.put("task", EntityViewUtils.createAssayTaskView(task));
     activity.setData(data);
     return activity;
   }

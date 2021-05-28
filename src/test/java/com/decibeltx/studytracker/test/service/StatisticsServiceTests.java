@@ -1,4 +1,4 @@
-package com.decibeltx.studytracker.test.core.service;
+package com.decibeltx.studytracker.test.service;
 
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.entities.Statistics;

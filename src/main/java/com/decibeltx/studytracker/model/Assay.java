@@ -17,11 +17,9 @@
 package com.decibeltx.studytracker.model;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -38,6 +36,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -57,6 +59,34 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "assays")
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonType.class)
+@NamedEntityGraphs({
+    @NamedEntityGraph(name = "assay-summary", attributeNodes = {
+        @NamedAttributeNode("assayType"),
+        @NamedAttributeNode("notebookFolder"),
+        @NamedAttributeNode("storageFolder"),
+        @NamedAttributeNode("owner")
+    }),
+    @NamedEntityGraph(name = "assay-with-attributes", attributeNodes = {
+        @NamedAttributeNode(value = "assayType", subgraph = "assay-type-details"),
+        @NamedAttributeNode("notebookFolder"),
+        @NamedAttributeNode("storageFolder"),
+        @NamedAttributeNode("owner"),
+        @NamedAttributeNode("createdBy"),
+        @NamedAttributeNode("lastModifiedBy"),
+        @NamedAttributeNode(value = "tasks", subgraph = "assay-task-details"),
+        @NamedAttributeNode("users")
+    }, subgraphs = {
+        @NamedSubgraph(name = "assay-type-details", attributeNodes = {
+            @NamedAttributeNode("fields"),
+            @NamedAttributeNode("tasks")
+        }),
+        @NamedSubgraph(name = "assay-task-details", attributeNodes = {
+            @NamedAttributeNode("createdBy"),
+            @NamedAttributeNode("lastModifiedBy"),
+            @NamedAttributeNode("assignedTo")
+        })
+    })
+})
 public class Assay {
 
   @Id
@@ -68,11 +98,11 @@ public class Assay {
   @NotNull
   private Status status;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "assay_type_id", nullable = false)
   private AssayType assayType;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "study_id", nullable = false)
   private Study study;
 
@@ -89,16 +119,16 @@ public class Assay {
   private String description;
 
   @CreatedBy
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "created_by", nullable = false)
   private User createdBy;
 
   @LastModifiedBy
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "last_modified_by", nullable = false)
   private User lastModifiedBy;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "owner", nullable = false)
   private User owner;
 
@@ -111,11 +141,11 @@ public class Assay {
   @Temporal(TemporalType.TIMESTAMP)
   private Date endDate;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "notebook_folder_id")
   private ELNFolder notebookFolder;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "storage_folder_id")
   private FileStoreFolder storageFolder;
 
@@ -135,11 +165,11 @@ public class Assay {
   @LastModifiedDate
   private Date updatedAt;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "assay_users",
       joinColumns = @JoinColumn(name = "assay_id", nullable = false),
       inverseJoinColumns = @JoinColumn(name = "user_id", nullable = false))
-  private List<User> users = new ArrayList<>();
+  private Set<User> users = new HashSet<>();
 
   @Type(type = "json")
   @Column(name = "fields", columnDefinition = "json")
@@ -149,10 +179,11 @@ public class Assay {
   @Column(name = "attributes", columnDefinition = "json")
   private Map<String, String> attributes = new LinkedHashMap<>();
 
-  @OneToMany(mappedBy = "assay", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "assay", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<AssayTask> tasks = new HashSet<>();
 
   public void addTask(AssayTask task) {
+    task.setAssay(this);
     this.tasks.add(task);
   }
 
@@ -336,11 +367,11 @@ public class Assay {
     this.updatedAt = updatedAt;
   }
 
-  public List<User> getUsers() {
+  public Set<User> getUsers() {
     return users;
   }
 
-  public void setUsers(List<User> users) {
+  public void setUsers(Set<User> users) {
     this.users = users;
   }
 
@@ -365,6 +396,9 @@ public class Assay {
   }
 
   public void setTasks(Set<AssayTask> tasks) {
+    for (AssayTask task: tasks) {
+      task.setAssay(this);
+    }
     this.tasks = tasks;
   }
 }

@@ -31,6 +31,9 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -50,6 +53,17 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 })
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonType.class)
+@NamedEntityGraphs(
+    @NamedEntityGraph(
+        name = "program-with-attributes",
+        attributeNodes = {
+          @NamedAttributeNode("createdBy"),
+          @NamedAttributeNode("lastModifiedBy"),
+          @NamedAttributeNode("notebookFolder"),
+          @NamedAttributeNode("storageFolder")
+        }
+    )
+)
 public class Program {
 
   @Id
@@ -67,13 +81,12 @@ public class Program {
   @Column(name = "description", columnDefinition = "TEXT")
   private String description;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "created_by", nullable = false)
-  @NotNull
   @CreatedBy
   private User createdBy;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "last_modified_by", nullable = false)
   @LastModifiedBy
   private User lastModifiedBy;
@@ -88,11 +101,11 @@ public class Program {
   @Temporal(TemporalType.TIMESTAMP)
   private Date updatedAt;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "notebook_folder_id")
   private ELNFolder notebookFolder;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "storage_folder_id")
   private FileStoreFolder storageFolder;
 

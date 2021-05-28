@@ -20,18 +20,30 @@ import com.decibeltx.studytracker.model.Study;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface StudyRepository extends JpaRepository<Study, Long> {
 
+  @Override
+  @EntityGraph("study-summary")
+  List<Study> findAll();
+
+  @Override
+  @EntityGraph("study-with-attributes")
+  Optional<Study> findById(Long id);
+
+  @EntityGraph("study-with-attributes")
   Optional<Study> findByCode(String code);
 
+  @EntityGraph("study-with-attributes")
   Optional<Study> findByExternalCode(String code);
 
   @Query("select s from Study s where s.program.id = ?1")
   List<Study> findByProgramId(Long programId);
 
+  @EntityGraph("study-with-attributes")
   List<Study> findByName(String name);
 
   @Query("select s from Study s where s.program.id = ?1 and s.legacy = false")

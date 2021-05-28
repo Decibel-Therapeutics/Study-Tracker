@@ -149,7 +149,7 @@ public class StudyAssayControllerTests {
     assay.setStartDate(new Date());
     assay.setAssayType(assayType);
     assay.setOwner(user);
-    assay.setUsers(Collections.singletonList(user));
+    assay.setUsers(Collections.singleton(user));
     assay.setCreatedBy(user);
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());

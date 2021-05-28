@@ -33,6 +33,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -45,6 +48,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "activity")
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonBinaryType.class)
+@NamedEntityGraphs({
+    @NamedEntityGraph(name = "activity-with-user",
+        attributeNodes = { @NamedAttributeNode("user") })
+})
 public class Activity {
 
   @Id
@@ -66,7 +73,7 @@ public class Activity {
   @Type(type = "json")
   private Map<String, Object> data = new HashMap<>();
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   @NotNull
   private User user;

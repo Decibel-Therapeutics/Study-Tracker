@@ -7,8 +7,8 @@ import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.NotebookEntryTemplate;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.service.ActivityService;
-import com.decibeltx.studytracker.service.EntryTemplateService;
 import com.decibeltx.studytracker.service.EventsService;
+import com.decibeltx.studytracker.service.NotebookEntryTemplateService;
 import com.decibeltx.studytracker.service.UserService;
 import java.util.List;
 import java.util.Optional;
@@ -33,12 +33,12 @@ import org.springframework.web.bind.annotation.RestController;
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @RestController
 @RequestMapping("/api/entryTemplate")
-public class EntryTemplateController {
+public class NotebookEntryTemplateController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EntryTemplateController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NotebookEntryTemplateController.class);
 
     @Autowired
-    private EntryTemplateService entryTemplateService;
+    private NotebookEntryTemplateService entryTemplateService;
 
     @Autowired
     private UserService userService;
@@ -65,7 +65,6 @@ public class EntryTemplateController {
     @GetMapping("")
     public List<NotebookEntryTemplate> getEntryTemplates() {
         LOGGER.info("Getting all entry templates");
-
         return entryTemplateService.findAll();
     }
 

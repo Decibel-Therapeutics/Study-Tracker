@@ -20,11 +20,17 @@ import com.decibeltx.studytracker.model.Assay;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface AssayRepository extends JpaRepository<Assay, Long> {
 
+  @Override
+  @EntityGraph("assay-with-attributes")
+  Optional<Assay> findById(Long id);
+
+  @EntityGraph("assay-with-attributes")
   Optional<Assay> findByCode(String code);
 
   List<Assay> findByStudyId(Long studyId);

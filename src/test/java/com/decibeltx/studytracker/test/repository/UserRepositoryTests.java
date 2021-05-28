@@ -1,4 +1,4 @@
-package com.decibeltx.studytracker.test.core.repository;
+package com.decibeltx.studytracker.test.repository;
 
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.model.User;

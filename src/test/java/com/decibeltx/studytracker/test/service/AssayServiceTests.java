@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.decibeltx.studytracker.test.core.service;
+package com.decibeltx.studytracker.test.service;
 
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
@@ -25,6 +25,7 @@ import com.decibeltx.studytracker.model.AssayTask;
 import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
+import com.decibeltx.studytracker.model.TaskStatus;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.AssayRepository;
 import com.decibeltx.studytracker.repository.AssayTypeRepository;
@@ -101,13 +102,22 @@ public class AssayServiceTests {
     assay.setStartDate(new Date());
     assay.setAssayType(assayType);
     assay.setOwner(user);
-    assay.setUsers(Collections.singletonList(user));
+    assay.setUsers(Collections.singleton(user));
     assay.setCreatedBy(user);
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
     assay.setAttributes(Collections.singletonMap("key", "value"));
-    assay.setTasks(Collections.singleton(new AssayTask(assay, "My task")));
+
+    AssayTask task = new AssayTask();
+    task.setLabel("My task");
+    task.setOrder(0);
+    task.setStatus(TaskStatus.TODO);
+    task.setCreatedBy(user);
+    task.setLastModifiedBy(user);
+    assay.addTask(task);
+
     assayService.create(assay);
+
     Assert.assertEquals(ASSAY_COUNT + 1, assayRepository.count());
     Assert.assertNotNull(assay.getId());
     Assert.assertNotNull(assay.getCode());
@@ -135,7 +145,7 @@ public class AssayServiceTests {
     assay.setStartDate(new Date());
     assay.setAssayType(assayType);
     assay.setOwner(user);
-    assay.setUsers(Collections.singletonList(user));
+    assay.setUsers(Collections.singleton(user));
     assay.setCreatedBy(user);
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
@@ -177,7 +187,7 @@ public class AssayServiceTests {
     assay.setStartDate(new Date());
     assay.setAssayType(assayType);
     assay.setOwner(user);
-    assay.setUsers(Collections.singletonList(user));
+    assay.setUsers(Collections.singleton(user));
     assay.setCreatedBy(user);
     assay.setLastModifiedBy(user);
     assay.setUpdatedAt(new Date());
