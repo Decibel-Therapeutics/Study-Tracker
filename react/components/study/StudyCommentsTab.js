@@ -134,7 +134,6 @@ class StudyCommentsTab extends React.Component {
 
   render() {
 
-    let content = null;
     let comments = this.state.comments.sort((a, b) => {
       if (a.createdAt > b.createdAt) {
         return 1;
@@ -145,11 +144,11 @@ class StudyCommentsTab extends React.Component {
       }
     }).map((comment, i) => {
       return (
-          <React.Fragment>
+          <React.Fragment key={'hr-' + i}>
             {
               i > 0
                 ? (
-                    <Col key={'hr-' + i} sm={12}>
+                    <Col sm={12}>
                       <hr/>
                     </Col>
                 ) : ""
@@ -195,7 +194,7 @@ class StudyCommentsTab extends React.Component {
     //   }
     // });
 
-    content = comments.length > 0 ? comments : (
+    let content = comments.length > 0 ? comments : (
         <Col sm={12}>
           <div className={"text-center"}>
             <h4>No comments have been added.</h4>

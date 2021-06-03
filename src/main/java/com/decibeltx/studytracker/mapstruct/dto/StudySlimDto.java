@@ -10,4 +10,5 @@ public class StudySlimDto {
   private String externalCode;
   private Status status;
   private String name;
+  private boolean active = true;
 }

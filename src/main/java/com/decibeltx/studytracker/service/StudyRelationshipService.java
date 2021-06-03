@@ -22,7 +22,6 @@ import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyRelationship;
 import com.decibeltx.studytracker.repository.StudyRelationshipRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.hibernate.Hibernate;
@@ -39,6 +38,10 @@ public class StudyRelationshipService {
   @Autowired
   private StudyRelationshipRepository studyRelationshipRepository;
 
+  public Optional<StudyRelationship> findById(Long id) {
+    return studyRelationshipRepository.findById(id);
+  }
+
   @Transactional(readOnly = true)
   public List<StudyRelationship> findStudyRelationships(Study study) {
     List<StudyRelationship> relationships = studyRelationshipRepository.findBySourceStudyId(study.getId());
@@ -50,7 +53,7 @@ public class StudyRelationshipService {
   }
 
   @Transactional
-  public void addStudyRelationship(Study sourceStudy, Study targetStudy, RelationshipType type) {
+  public StudyRelationship addStudyRelationship(Study sourceStudy, Study targetStudy, RelationshipType type) {
 
     StudyRelationship sourceRelationship;
     StudyRelationship targetRelationship;
@@ -72,13 +75,8 @@ public class StudyRelationshipService {
     studyRelationshipRepository.save(sourceRelationship);
     studyRelationshipRepository.save(targetRelationship);
 
-    Study s1 = studyRepository.getOne(sourceStudy.getId());
-    s1.setUpdatedAt(new Date());
-    studyRepository.save(s1);
+    return sourceRelationship;
 
-    Study s2 = studyRepository.getOne(targetStudy.getId());
-    s2.setUpdatedAt(new Date());
-    studyRepository.save(s2);
   }
 
   @Transactional
@@ -87,7 +85,9 @@ public class StudyRelationshipService {
     Optional<StudyRelationship> optional = studyRelationshipRepository.findBySourceAndTargetStudyIds(
         sourceStudy.getId(), targetStudy.getId());
     if (optional.isPresent()) {
-      studyRelationshipRepository.deleteById(optional.get().getId());
+      sourceStudy.removeStudyRelationship(optional.get());
+      studyRepository.save(sourceStudy);
+//      studyRelationshipRepository.deleteById(optional.get().getId());
     } else {
       throw new RecordNotFoundException(String.format("No study relationship found for source study "
           + "%s and target study %s", sourceStudy.getCode(), targetStudy.getCode()));
@@ -96,21 +96,23 @@ public class StudyRelationshipService {
     optional = studyRelationshipRepository.findBySourceAndTargetStudyIds(
         targetStudy.getId(), sourceStudy.getId());
     if (optional.isPresent()) {
-      studyRelationshipRepository.deleteById(optional.get().getId());
+      targetStudy.removeStudyRelationship(optional.get());
+      studyRepository.save(targetStudy);
+//      studyRelationshipRepository.deleteById(optional.get().getId());
     } else {
       throw new RecordNotFoundException(String.format("No study relationship found for source study "
           + "%s and target study %s", targetStudy.getCode(), sourceStudy.getCode()));
     }
 
-    studyRelationshipRepository.flush();
-
-    Study s1 = studyRepository.getOne(sourceStudy.getId());
-    s1.setUpdatedAt(new Date());
-    studyRepository.save(s1);
-
-    Study s2 = studyRepository.getOne(targetStudy.getId());
-    s2.setUpdatedAt(new Date());
-    studyRepository.save(s2);
+//    studyRelationshipRepository.flush();
+//
+//    Study s1 = studyRepository.getOne(sourceStudy.getId());
+//    s1.setUpdatedAt(new Date());
+//    studyRepository.save(s1);
+//
+//    Study s2 = studyRepository.getOne(targetStudy.getId());
+//    s2.setUpdatedAt(new Date());
+//    studyRepository.save(s2);
 
   }
 

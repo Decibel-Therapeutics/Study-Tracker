@@ -27,5 +27,6 @@ public interface UserMapper {
 
   User fromUserSlim(UserSlimDto dto);
   UserSlimDto toUserSlim(User user);
+  List<UserSlimDto> toUserSlimList(List<User> users);
 
 }

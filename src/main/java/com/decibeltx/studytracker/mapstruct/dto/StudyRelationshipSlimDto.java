@@ -5,11 +5,11 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class StudyRelationshipDto {
+public class StudyRelationshipSlimDto {
 
   private Long id;
   @NotNull private RelationshipType type;
-  private StudySlimDto sourceStudy;
-  private StudySlimDto targetRelationship;
+  private Long sourceStudyId;
+  private Long targetStudyId;
 
 }
