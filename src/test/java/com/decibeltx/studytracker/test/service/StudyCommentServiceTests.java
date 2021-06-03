@@ -103,7 +103,7 @@ public class StudyCommentServiceTests {
     Study study = studyService.findByCode("CPA-10001").orElseThrow(RecordNotFoundException::new);
     Comment comment = study.getComments().stream().findFirst().get();
     Long id = comment.getId();
-    studyCommentService.deleteStudyComment(comment.getId());
+    studyCommentService.deleteStudyComment(study, comment);
     Exception exception = null;
     try {
       comment = studyCommentService.findStudyCommentById(id)

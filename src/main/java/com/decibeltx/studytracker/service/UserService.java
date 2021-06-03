@@ -16,7 +16,6 @@
 
 package com.decibeltx.studytracker.service;
 
-import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.UserRepository;
 import java.util.Date;
@@ -65,13 +64,35 @@ public class UserService {
 
   @Transactional
   public void update(User user) {
-    userRepository.findById(user.getId()).orElseThrow(RecordNotFoundException::new);
-    userRepository.save(user);
+    User u = userRepository.getOne(user.getId());
+    u.setDisplayName(user.getDisplayName());
+    u.setEmail(user.getEmail());
+    u.setActive(user.isActive());
+    u.setTitle(user.getTitle());
+    u.setDepartment(user.getDepartment());
+    u.setAttributes(user.getAttributes());
+    userRepository.save(u);
+  }
+
+  @Transactional
+  public void updatePassword(User user, String password) {
+    User u = userRepository.getOne(user.getId());
+    u.setPassword(password);
+    u.setCredentialsExpired(false);
+    userRepository.save(u);
   }
 
   @Transactional
   public void delete(User user) {
     userRepository.delete(user);
+  }
+
+  public boolean exists(User user) {
+    return this.exists(user.getId());
+  }
+
+  public boolean exists(Long id) {
+    return userRepository.existsById(id);
   }
 
   public long countFromDate(Date startDate) {

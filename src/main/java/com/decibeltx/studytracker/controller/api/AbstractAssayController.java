@@ -1,5 +1,6 @@
 package com.decibeltx.studytracker.controller.api;
 
+import com.decibeltx.studytracker.events.EventsService;
 import com.decibeltx.studytracker.events.util.AssayActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Activity;
@@ -10,7 +11,6 @@ import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.service.ActivityService;
 import com.decibeltx.studytracker.service.AssayService;
 import com.decibeltx.studytracker.service.AssayTypeService;
-import com.decibeltx.studytracker.service.EventsService;
 import com.decibeltx.studytracker.service.StudyService;
 import com.decibeltx.studytracker.service.UserService;
 import java.util.HashSet;

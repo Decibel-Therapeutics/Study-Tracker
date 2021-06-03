@@ -20,6 +20,8 @@ import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
 import com.decibeltx.studytracker.events.util.StudyActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.exception.StudyTrackerException;
+import com.decibeltx.studytracker.mapstruct.dto.StudyDetailsDto;
+import com.decibeltx.studytracker.mapstruct.dto.StudySummaryDto;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Status;
@@ -60,7 +62,7 @@ public class StudyBaseController extends AbstractStudyController {
   private static final Logger LOGGER = LoggerFactory.getLogger(StudyBaseController.class);
 
   @GetMapping("")
-  public List<Study> getAllStudies(
+  public List<StudySummaryDto> getAllStudies(
       @RequestParam(value = "code", required = false) String code,
       @RequestParam(value = "owner", required = false) Long owner,
       @RequestParam(value = "user", required = false) Long userId,
@@ -72,9 +74,11 @@ public class StudyBaseController extends AbstractStudyController {
       @RequestParam(value = "program", required = false) Long programId
   ) {
 
+    List<Study> studies;
+
     // Search
     if (!StringUtils.isEmpty(search)) {
-      return getStudyService().search(search);
+      studies = getStudyService().search(search);
     }
 
     // Find by program
@@ -83,7 +87,7 @@ public class StudyBaseController extends AbstractStudyController {
       if (!optional.isPresent()) {
         throw new RecordNotFoundException("Cannot find program with ID: " + programId);
       }
-      return getStudyService().findByProgram(optional.get());
+      studies = getStudyService().findByProgram(optional.get());
     }
 
     // Find by owner
@@ -92,7 +96,7 @@ public class StudyBaseController extends AbstractStudyController {
       if (!optional.isPresent()) {
         throw new RecordNotFoundException("Cannot find user record: " + owner);
       }
-      return getStudyService().findAll()
+      studies = getStudyService().findAll()
           .stream()
           .filter(study -> study.getOwner().equals(owner) && study.isActive())
           .collect(Collectors.toList());
@@ -105,7 +109,7 @@ public class StudyBaseController extends AbstractStudyController {
         throw new RecordNotFoundException("Cannot find user record: " + userId);
       }
       User user = optional.get();
-      return getStudyService().findAll()
+      studies = getStudyService().findAll()
           .stream()
           .filter(study -> study.getOwner().getId().equals(user.getId()) && study.isActive())
           .collect(Collectors.toList());
@@ -118,7 +122,7 @@ public class StudyBaseController extends AbstractStudyController {
             .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
         User user = getUserService().findByUsername(username)
             .orElseThrow(RecordNotFoundException::new);
-        return getStudyService().findAll().stream()
+        studies = getStudyService().findAll().stream()
             .filter(s -> s.getOwner().equals(user))
             .collect(Collectors.toList());
       } catch (Exception e) {
@@ -128,7 +132,7 @@ public class StudyBaseController extends AbstractStudyController {
 
     // Active
     else if (active) {
-      return getStudyService().findAll()
+      studies = getStudyService().findAll()
           .stream()
           .filter(study -> study.isActive() && Arrays.asList(Status.IN_PLANNING, Status.ACTIVE)
               .contains(study.getStatus()))
@@ -137,38 +141,41 @@ public class StudyBaseController extends AbstractStudyController {
 
     // Legacy
     else if (legacy) {
-      return getStudyService().findAll().stream()
+      studies = getStudyService().findAll().stream()
           .filter(s -> s.isLegacy() && s.isActive())
           .collect(Collectors.toList());
     } else if (external) {
-      return getStudyService().findAll().stream()
+      studies = getStudyService().findAll().stream()
           .filter(s -> s.getCollaborator() != null)
           .collect(Collectors.toList());
     }
 
     // Find by code
     else if (code != null) {
-      return Collections.singletonList(
+      studies = Collections.singletonList(
           getStudyService().findByCode(code).orElseThrow(RecordNotFoundException::new));
     }
 
     // Find all
     else {
-      return getStudyService().findAll().stream().filter(Study::isActive)
+      studies = getStudyService().findAll().stream().filter(Study::isActive)
           .collect(Collectors.toList());
     }
+
+    return this.getStudyMapper().toStudySummaryList(studies);
+
   }
 
   @GetMapping("/{id}")
-  public Study getStudy(@PathVariable("id") String studyId) throws RecordNotFoundException {
-    return getStudyFromIdentifier(studyId);
+  public StudyDetailsDto getStudy(@PathVariable("id") String studyId) throws RecordNotFoundException {
+    return this.getStudyMapper().toStudyDetails(getStudyFromIdentifier(studyId));
   }
 
   @PostMapping("")
-  public HttpEntity<Study> createStudy(@RequestBody Study study) {
+  public HttpEntity<StudyDetailsDto> createStudy(@RequestBody StudyDetailsDto dto) {
 
     LOGGER.info("Creating study");
-    LOGGER.info(study.toString());
+    LOGGER.info(dto.toString());
 
     // Get authenticated user
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -177,19 +184,21 @@ public class StudyBaseController extends AbstractStudyController {
     // Created by
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
-    study.setCreatedBy(user);
+//    study.setCreatedBy(user);
+
+    Study study = this.getStudyMapper().fromStudyDetails(dto);
 
     // Study team
     Set<User> team = new HashSet<>();
     for (User u : study.getUsers()) {
-      team.add(getUserService().findByUsername(u.getUsername())
-          .orElseThrow(RecordNotFoundException::new));
+      team.add(getUserService().findById(u.getId())
+          .orElseThrow(() -> new RecordNotFoundException("Cannot find user: " + u.getId())));
     }
     study.setUsers(team);
 
     // Owner
-    study.setOwner(getUserService().findByUsername(study.getOwner().getUsername())
-        .orElseThrow(RecordNotFoundException::new));
+    study.setOwner(getUserService().findById(study.getOwner().getId())
+        .orElseThrow(() -> new RecordNotFoundException("Cannot find user: " + study.getOwner().getId())));
 
     // Save the record
     getStudyService().create(study);
@@ -200,32 +209,36 @@ public class StudyBaseController extends AbstractStudyController {
     getActivityService().create(activity);
     getEventsService().dispatchEvent(activity);
 
-    return new ResponseEntity<>(study, HttpStatus.CREATED);
+    return new ResponseEntity<>(this.getStudyMapper().toStudyDetails(study), HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public HttpEntity<Study> updateStudy(@PathVariable("id") String id, @RequestBody Study study) {
+  public HttpEntity<StudyDetailsDto> updateStudy(@PathVariable("id") String id, @RequestBody StudyDetailsDto dto) {
+
     LOGGER.info("Updating study");
-    LOGGER.info(study.toString());
+    LOGGER.info(dto.toString());
 
     // Last modified by
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
-    study.setLastModifiedBy(user);
+
+    Study study = this.getStudyMapper().fromStudyDetails(dto);
+
+//    study.setLastModifiedBy(user);
 
     // Study team
     Set<User> team = new HashSet<>();
     for (User u : study.getUsers()) {
-      team.add(getUserService().findByUsername(u.getUsername())
-          .orElseThrow(RecordNotFoundException::new));
+      team.add(getUserService().findById(u.getId())
+          .orElseThrow(() -> new RecordNotFoundException("Cannot find user: " + u.getId())));
     }
     study.setUsers(team);
 
     // Owner
-    study.setOwner(getUserService().findByUsername(study.getOwner().getUsername())
-        .orElseThrow(RecordNotFoundException::new));
+    study.setOwner(getUserService().findById(study.getOwner().getId())
+        .orElseThrow(() -> new RecordNotFoundException("Cannot find user: " + study.getOwner().getId())));
 
     getStudyService().update(study);
 
@@ -234,7 +247,7 @@ public class StudyBaseController extends AbstractStudyController {
     getActivityService().create(activity);
     getEventsService().dispatchEvent(activity);
 
-    return new ResponseEntity<>(study, HttpStatus.OK);
+    return new ResponseEntity<>(this.getStudyMapper().toStudyDetails(study), HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")

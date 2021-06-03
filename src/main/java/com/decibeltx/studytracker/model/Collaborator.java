@@ -23,7 +23,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -36,11 +35,9 @@ public class Collaborator {
   private Long id;
 
   @Column(name = "label", unique = true, nullable = false)
-  @NotNull
   private String label;
 
   @Column(name = "organization_name", nullable = false)
-  @NotNull
   private String organizationName;
 
   @Column(name = "organization_location")
@@ -53,7 +50,6 @@ public class Collaborator {
   private String contactEmail;
 
   @Column(name = "code", nullable = false)
-  @NotNull
   private String code;
 
   @Column(name = "active", nullable = false)

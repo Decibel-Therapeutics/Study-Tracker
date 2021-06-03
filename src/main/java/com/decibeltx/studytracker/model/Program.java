@@ -16,7 +16,7 @@
 
 package com.decibeltx.studytracker.model;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
     @Index(name = "idx_program_name", columnList = "name")
 })
 @EntityListeners(AuditingEntityListener.class)
-@TypeDef(name = "json", typeClass = JsonType.class)
+@TypeDef(name = "json", typeClass = JsonBinaryType.class)
 @NamedEntityGraphs(
     @NamedEntityGraph(
         name = "program-with-attributes",

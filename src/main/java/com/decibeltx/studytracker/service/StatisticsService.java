@@ -1,6 +1,6 @@
 package com.decibeltx.studytracker.service;
 
-import com.decibeltx.studytracker.entities.Statistics;
+import com.decibeltx.studytracker.mapstruct.dto.StatisticsDto;
 import java.util.Calendar;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,52 +24,52 @@ public class StatisticsService {
   @Autowired
   private UserService userService;
 
-  public Statistics getCurrent() {
-    Statistics statistics = new Statistics();
-    statistics.setProgramCount(programService.count());
-    statistics.setStudyCount(studyService.count());
-    statistics.setAssayCount(assayService.count());
-    statistics.setUserCount(userService.count());
-    statistics.setActivityCount(activityService.count());
-    statistics.setActiveUserCount(userService.countActiveUsers());
-    return statistics;
+  public StatisticsDto getCurrent() {
+    StatisticsDto statisticsDto = new StatisticsDto();
+    statisticsDto.setProgramCount(programService.count());
+    statisticsDto.setStudyCount(studyService.count());
+    statisticsDto.setAssayCount(assayService.count());
+    statisticsDto.setUserCount(userService.count());
+    statisticsDto.setActivityCount(activityService.count());
+    statisticsDto.setActiveUserCount(userService.countActiveUsers());
+    return statisticsDto;
   }
 
-  public Statistics getBeforeDate(Date date) {
-    Statistics statistics = new Statistics();
-    statistics.setProgramCount(programService.countBeforeDate(date));
-    statistics.setStudyCount(studyService.countBeforeDate(date));
-    statistics.setAssayCount(assayService.countBeforeDate(date));
-    statistics.setUserCount(userService.countBeforeDate(date));
-    statistics.setActivityCount(activityService.countBeforeDate(date));
-    statistics.setActiveUserCount(userService.countActiveUsers());
-    return statistics;
+  public StatisticsDto getBeforeDate(Date date) {
+    StatisticsDto statisticsDto = new StatisticsDto();
+    statisticsDto.setProgramCount(programService.countBeforeDate(date));
+    statisticsDto.setStudyCount(studyService.countBeforeDate(date));
+    statisticsDto.setAssayCount(assayService.countBeforeDate(date));
+    statisticsDto.setUserCount(userService.countBeforeDate(date));
+    statisticsDto.setActivityCount(activityService.countBeforeDate(date));
+    statisticsDto.setActiveUserCount(userService.countActiveUsers());
+    return statisticsDto;
   }
 
-  public Statistics getAfterDate(Date date) {
-    Statistics statistics = new Statistics();
-    statistics.setProgramCount(programService.countFromDate(date));
-    statistics.setStudyCount(studyService.countFromDate(date));
-    statistics.setAssayCount(assayService.countFromDate(date));
-    statistics.setUserCount(userService.countFromDate(date));
-    statistics.setActivityCount(activityService.countFromDate(date));
-    statistics.setActiveUserCount(userService.countActiveUsers());
-    return statistics;
+  public StatisticsDto getAfterDate(Date date) {
+    StatisticsDto statisticsDto = new StatisticsDto();
+    statisticsDto.setProgramCount(programService.countFromDate(date));
+    statisticsDto.setStudyCount(studyService.countFromDate(date));
+    statisticsDto.setAssayCount(assayService.countFromDate(date));
+    statisticsDto.setUserCount(userService.countFromDate(date));
+    statisticsDto.setActivityCount(activityService.countFromDate(date));
+    statisticsDto.setActiveUserCount(userService.countActiveUsers());
+    return statisticsDto;
   }
 
-  public Statistics getBetweenDates(Date startDate, Date endDate) {
-    Statistics statistics = new Statistics();
-    statistics.setProgramCount(programService.countBetweenDates(startDate, endDate));
-    statistics.setStudyCount(studyService.countBetweenDates(startDate, endDate));
-    statistics.setAssayCount(assayService.countBetweenDates(startDate, endDate));
-    statistics.setUserCount(userService.countBetweenDates(startDate, endDate));
-    statistics.setActivityCount(activityService.countBetweenDates(startDate, endDate));
-    statistics.setActiveUserCount(userService.countActiveUsers());
-    return statistics;
+  public StatisticsDto getBetweenDates(Date startDate, Date endDate) {
+    StatisticsDto statisticsDto = new StatisticsDto();
+    statisticsDto.setProgramCount(programService.countBetweenDates(startDate, endDate));
+    statisticsDto.setStudyCount(studyService.countBetweenDates(startDate, endDate));
+    statisticsDto.setAssayCount(assayService.countBetweenDates(startDate, endDate));
+    statisticsDto.setUserCount(userService.countBetweenDates(startDate, endDate));
+    statisticsDto.setActivityCount(activityService.countBetweenDates(startDate, endDate));
+    statisticsDto.setActiveUserCount(userService.countActiveUsers());
+    return statisticsDto;
   }
 
-  public Statistics mainPageSummary() {
-    Statistics statistics = new Statistics();
+  public StatisticsDto mainPageSummary() {
+    StatisticsDto statisticsDto = new StatisticsDto();
 
     Calendar calendar = Calendar.getInstance();
     calendar.add(Calendar.DAY_OF_MONTH, -7);
@@ -79,13 +79,13 @@ public class StatisticsService {
     calendar.add(Calendar.MONTH, -1);
     Date lastMonth = calendar.getTime();
 
-    statistics.setActivityCount(activityService.countFromDate(lastWeek));
-    statistics.setActiveUserCount(userService.countActiveUsers());
-    statistics.setNewStudyCount(studyService.countFromDate(lastWeek));
-    statistics.setCompletedStudyCount(activityService.countCompletedStudiesFromDate(lastMonth));
-    statistics.setStudyCount(studyService.count());
+    statisticsDto.setActivityCount(activityService.countFromDate(lastWeek));
+    statisticsDto.setActiveUserCount(userService.countActiveUsers());
+    statisticsDto.setNewStudyCount(studyService.countFromDate(lastWeek));
+    statisticsDto.setCompletedStudyCount(activityService.countCompletedStudiesFromDate(lastMonth));
+    statisticsDto.setStudyCount(studyService.count());
 
-    return statistics;
+    return statisticsDto;
   }
 
 }

@@ -20,6 +20,8 @@ import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
 import com.decibeltx.studytracker.events.util.StudyActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.exception.StudyTrackerException;
+import com.decibeltx.studytracker.mapstruct.dto.StudyConclusionsDto;
+import com.decibeltx.studytracker.mapstruct.mapper.StudyConclusionsMapper;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyConclusions;
@@ -51,31 +53,35 @@ public class StudyConclusionsController extends AbstractStudyController {
   @Autowired
   private StudyConclusionsService studyConclusionsService;
 
+  @Autowired
+  private StudyConclusionsMapper conclusionsMapper;
+
   @GetMapping("")
-  public StudyConclusions getStudyConclusions(@PathVariable("studyId") String studyId) {
+  public StudyConclusionsDto getStudyConclusions(@PathVariable("studyId") String studyId) {
     Study study = getStudyFromIdentifier(studyId);
     Optional<StudyConclusions> optional = studyConclusionsService.findStudyConclusions(study);
     if (optional.isPresent()) {
-      return optional.get();
+      return conclusionsMapper.toDto(optional.get());
     }
     throw new RecordNotFoundException("No conclusions found for study: " + study.getCode());
   }
 
   @PostMapping("")
-  public HttpEntity<StudyConclusions> newStudyConclusions(@PathVariable("studyId") String studyId,
-      @RequestBody StudyConclusions conclusions) {
+  public HttpEntity<StudyConclusionsDto> newStudyConclusions(@PathVariable("studyId") String studyId,
+      @RequestBody StudyConclusionsDto dto) {
     Study study = getStudyFromIdentifier(studyId);
-    if (conclusions.getId() != null || study.getConclusions() != null) {
+    if (dto.getId() != null || study.getConclusions() != null) {
       throw new StudyTrackerException("Study conclusions object already exists.");
     }
     LOGGER.info(
-        String.format("Creating conclusions for study %s: %s", studyId, conclusions.toString()));
+        String.format("Creating conclusions for study %s: %s", studyId, dto.toString()));
 
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
 
+    StudyConclusions conclusions = conclusionsMapper.fromDto(dto);
     studyConclusionsService.addStudyConclusions(study, conclusions);
 
     // Publish events
@@ -83,27 +89,28 @@ public class StudyConclusionsController extends AbstractStudyController {
     getActivityService().create(activity);
     getEventsService().dispatchEvent(activity);
 
-    return new ResponseEntity<>(conclusions, HttpStatus.CREATED);
+    return new ResponseEntity<>(conclusionsMapper.toDto(conclusions), HttpStatus.CREATED);
   }
 
   @PutMapping("")
-  public HttpEntity<StudyConclusions> editStudyConclusions(@PathVariable("studyId") String studyId,
-      @RequestBody StudyConclusions conclusions) {
+  public HttpEntity<StudyConclusionsDto> editStudyConclusions(@PathVariable("studyId") String studyId,
+      @RequestBody StudyConclusionsDto dto) {
     LOGGER.info(
-        String.format("Updating conclusions for study %s: %s", studyId, conclusions.toString()));
+        String.format("Updating conclusions for study %s: %s", studyId, dto.toString()));
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
 
+    StudyConclusions conclusions = conclusionsMapper.fromDto(dto);
     studyConclusionsService.updateStudyConclusions(study, conclusions);
 
     Activity activity = StudyActivityUtils.fromUpdatedConclusions(study, user, conclusions);
     getActivityService().create(activity);
     getEventsService().dispatchEvent(activity);
 
-    return new ResponseEntity<>(conclusions, HttpStatus.OK);
+    return new ResponseEntity<>(conclusionsMapper.toDto(conclusions), HttpStatus.OK);
   }
 
   @DeleteMapping("")
@@ -114,7 +121,6 @@ public class StudyConclusionsController extends AbstractStudyController {
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
-    study.setLastModifiedBy(user);
 
     studyConclusionsService.deleteStudyConclusions(study);
 

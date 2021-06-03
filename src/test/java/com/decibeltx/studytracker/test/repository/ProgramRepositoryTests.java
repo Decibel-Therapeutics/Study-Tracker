@@ -139,7 +139,6 @@ public class ProgramRepositoryTests {
     Assert.assertTrue(optional.isPresent());
     Program program = optional.get();
     Assert.assertEquals("Test Program", program.getName());
-    Long id = program.getId();
 
     try {
       Assert.assertNotNull(program.getCreatedBy()); // get the loaded entity

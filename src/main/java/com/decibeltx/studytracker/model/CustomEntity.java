@@ -5,7 +5,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @MappedSuperclass
@@ -17,11 +16,9 @@ public abstract class CustomEntity {
   private Long id;
 
   @Column(name = "name", unique = true, nullable = false)
-  @NotNull
   private String name;
 
   @Column(name = "description", nullable = false, length = 1024)
-  @NotNull
   private String description;
 
   @Column(name = "active", nullable = false)

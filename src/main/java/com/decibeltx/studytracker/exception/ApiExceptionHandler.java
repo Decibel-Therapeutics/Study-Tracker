@@ -46,6 +46,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
   }
 
+  @ExceptionHandler(InsufficientPrivilegesException.class)
+  public final ResponseEntity<ApiError> insufficientPrivileges(InsufficientPrivilegesException ex,
+      WebRequest request) {
+    ex.printStackTrace();
+    ApiError error = new ApiError(ex.getMessage(), request.getDescription(false));
+    return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+  }
+
   @ExceptionHandler(InvalidConstraintException.class)
   public final ResponseEntity<ApiError> invalidConstraint(InvalidConstraintException ex,
       WebRequest request) {

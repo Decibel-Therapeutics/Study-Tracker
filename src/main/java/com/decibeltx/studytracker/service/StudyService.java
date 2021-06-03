@@ -25,6 +25,7 @@ import com.decibeltx.studytracker.model.FileStoreFolder;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
+import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.StudyRepository;
 import com.decibeltx.studytracker.storage.StorageFolder;
 import com.decibeltx.studytracker.storage.StudyStorageService;
@@ -278,6 +279,31 @@ public class StudyService {
   @Transactional
   public List<Study> search(String keyword) {
     return studyRepository.findByNameOrCodeLike(keyword);
+  }
+
+
+  /**
+   * Checks to see whether the study with the provided ID exists.
+   *
+   * @param studyId
+   * @return
+   */
+  public boolean exists(Long studyId) {
+    return studyRepository.existsById(studyId);
+  }
+
+  /**
+   * Manually updates a study's {@code updatedAt} and {@code lastModifiedBy} fields.
+   *
+   * @param study
+   * @param user
+   */
+  @Transactional
+  public void markAsUpdated(Study study, User user) {
+    Study s = studyRepository.getOne(study.getId());
+    s.setLastModifiedBy(user);
+    s.setUpdatedAt(new Date());
+    studyRepository.save(s);
   }
 
   /**

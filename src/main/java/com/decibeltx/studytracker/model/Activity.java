@@ -50,7 +50,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @TypeDef(name = "json", typeClass = JsonBinaryType.class)
 @NamedEntityGraphs({
     @NamedEntityGraph(name = "activity-with-user",
-        attributeNodes = { @NamedAttributeNode("user") })
+        attributeNodes = { @NamedAttributeNode("user") }),
+    @NamedEntityGraph(name = "activity-details", attributeNodes = {
+        @NamedAttributeNode("user") ,
+        @NamedAttributeNode("program"),
+        @NamedAttributeNode("study"),
+        @NamedAttributeNode("assay")
+    })
 })
 public class Activity {
 

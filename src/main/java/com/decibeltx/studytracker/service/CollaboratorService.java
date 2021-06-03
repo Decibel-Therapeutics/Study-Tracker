@@ -16,7 +16,6 @@
 
 package com.decibeltx.studytracker.service;
 
-import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Collaborator;
 import com.decibeltx.studytracker.repository.CollaboratorRepository;
 import java.util.List;
@@ -55,12 +54,31 @@ public class CollaboratorService {
   }
 
   public void update(Collaborator collaborator) {
-    collaboratorRepository.findById(collaborator.getId()).orElseThrow(RecordNotFoundException::new);
-    collaboratorRepository.save(collaborator);
+    Collaborator c = collaboratorRepository.getOne(collaborator.getId());
+    c.setActive(collaborator.isActive());
+    c.setCode(collaborator.getCode());
+    c.setContactEmail(collaborator.getContactEmail());
+    c.setLabel(collaborator.getLabel());
+    c.setContactPersonName(collaborator.getContactPersonName());
+    c.setOrganizationName(collaborator.getOrganizationName());
+    c.setOrganizationLocation(collaborator.getOrganizationLocation());
+    collaboratorRepository.save(c);
   }
 
   public void delete(Collaborator collaborator) {
-    collaboratorRepository.delete(collaborator);
+    Collaborator c = collaboratorRepository.getOne(collaborator.getId());
+    c.setActive(false);
+    collaboratorRepository.save(c);
+  }
+
+  public void delete(Long id) {
+    Collaborator c = collaboratorRepository.getOne(id);
+    c.setActive(false);
+    collaboratorRepository.save(c);
+  }
+
+  public boolean exists(Long id) {
+    return collaboratorRepository.existsById(id);
   }
 
 }

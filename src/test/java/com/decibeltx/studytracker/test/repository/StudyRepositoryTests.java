@@ -370,7 +370,7 @@ public class StudyRepositoryTests {
     Assert.assertTrue(optional.isPresent());
     Study study = optional.get();
     Assert.assertNotNull(study.getProgram());
-    Program program = study.getProgram();
+//    Program program = study.getProgram();
 
 //    Exception exception = null;
 //    try {

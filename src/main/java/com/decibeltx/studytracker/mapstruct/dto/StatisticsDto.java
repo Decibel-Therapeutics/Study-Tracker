@@ -1,10 +1,10 @@
-package com.decibeltx.studytracker.entities;
+package com.decibeltx.studytracker.mapstruct.dto;
 
 import java.util.Date;
 import lombok.Data;
 
 @Data
-public class Statistics {
+public class StatisticsDto {
 
   /* Timeframe */
   private Date startDate;

@@ -18,7 +18,6 @@ package com.decibeltx.studytracker.service;
 
 import com.decibeltx.studytracker.eln.NotebookFolder;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
-import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.exception.StudyTrackerException;
 import com.decibeltx.studytracker.model.ELNFolder;
 import com.decibeltx.studytracker.model.FileStoreFolder;
@@ -107,9 +106,18 @@ public class ProgramService {
   @Transactional
   public void delete(Program program) {
     LOGGER.info("Innactivating program with name: " + program.getName());
-    programRepository.findById(program.getId()).orElseThrow(RecordNotFoundException::new);
+    this.delete(program.getId());
+  }
+
+  @Transactional
+  public void delete(Long programId) {
+    Program program = programRepository.getOne(programId);
     program.setActive(false);
     programRepository.save(program);
+  }
+
+  public boolean exists(Long id) {
+    return programRepository.existsById(id);
   }
 
   public long count() {

@@ -1,4 +1,4 @@
-package com.decibeltx.studytracker.service;
+package com.decibeltx.studytracker.events;
 
 import com.decibeltx.studytracker.model.Activity;
 
@@ -9,5 +9,6 @@ import com.decibeltx.studytracker.model.Activity;
 public interface EventsService {
 
   void dispatchEvent(Activity activity);
+  void dispatchEvent(StudyTrackerEvent event);
 
 }

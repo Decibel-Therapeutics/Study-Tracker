@@ -18,10 +18,10 @@ package com.decibeltx.studytracker.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Column;
@@ -34,7 +34,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedDate;
@@ -45,7 +44,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
-@TypeDef(name = "json", typeClass = JsonType.class)
+@TypeDef(name = "json", typeClass = JsonBinaryType.class)
 public class User {
 
   @Id
@@ -53,7 +52,6 @@ public class User {
   private Long id;
 
   @Column(name = "username", unique = true, nullable = false)
-  @NotNull
   private String username;
 
   @Column(name = "password")
@@ -66,11 +64,9 @@ public class User {
   private String title;
 
   @Column(name = "display_name", nullable = false)
-  @NotNull
   private String displayName;
 
   @Column(name = "email", unique = true, nullable = false)
-  @NotNull
   private String email;
 
   @Column(name = "created_at", nullable = false)
@@ -84,7 +80,7 @@ public class User {
 
   @Type(type = "json")
   @Column(name = "attributes", columnDefinition = "json")
-  private Map<String, String> attributes = new LinkedHashMap<>();
+  private Map<String, String> attributes = new HashMap<>();
 
   @Column(name = "admin", nullable = false)
   private boolean admin = false;
@@ -103,7 +99,7 @@ public class User {
 
   @Type(type = "json")
   @Column(name = "configuration", columnDefinition = "json")
-  private Map<String, String> configuration = new LinkedHashMap<>();
+  private Map<String, String> configuration = new HashMap<>();
 
   @Transient
   private List<GrantedAuthority> authorities = new ArrayList<>();

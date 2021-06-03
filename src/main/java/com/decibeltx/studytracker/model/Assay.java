@@ -16,7 +16,7 @@
 
 package com.decibeltx.studytracker.model;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -45,7 +45,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedBy;
@@ -58,7 +57,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "assays")
 @EntityListeners(AuditingEntityListener.class)
-@TypeDef(name = "json", typeClass = JsonType.class)
+@TypeDef(name = "json", typeClass = JsonBinaryType.class)
 @NamedEntityGraphs({
     @NamedEntityGraph(name = "assay-summary", attributeNodes = {
         @NamedAttributeNode("assayType"),
@@ -95,7 +94,6 @@ public class Assay {
 
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
-  @NotNull
   private Status status;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -107,15 +105,12 @@ public class Assay {
   private Study study;
 
   @Column(name = "name", nullable = false)
-  @NotNull
   private String name;
 
   @Column(name = "code", nullable = false, unique = true)
-  @NotNull
   private String code;
 
   @Column(name = "description", nullable = false, columnDefinition = "TEXT")
-  @NotNull
   private String description;
 
   @CreatedBy
@@ -134,7 +129,6 @@ public class Assay {
 
   @Column(name = "start_date", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
-  @NotNull
   private Date startDate;
 
   @Column(name = "end_date")

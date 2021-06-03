@@ -27,8 +27,10 @@ import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.exception.MalformedEntityException;
 import com.decibeltx.studytracker.exception.NotebookException;
 import com.decibeltx.studytracker.model.Assay;
+import com.decibeltx.studytracker.model.ELNFolder;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Study;
+import com.decibeltx.studytracker.repository.ELNFolderRepository;
 import com.decibeltx.studytracker.service.NamingService;
 import java.util.Collections;
 import java.util.List;
@@ -49,6 +51,9 @@ public final class BenchlingNotebookService implements StudyNotebookService {
 
   @Autowired
   private NamingService namingService;
+
+  @Autowired
+  private ELNFolderRepository elnFolderRepository;
 
   private String createFolderUrl(BenchlingFolder folder) {
     return options.getRootFolderUrl() + "/" + folder.getId().replace("lib_", "") + "-"
@@ -139,9 +144,10 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   public Optional<NotebookFolder> findProgramFolder(Program program) {
 
     LOGGER.info("Fetching benchling notebook entry for program: " + program.getName());
+    Optional<ELNFolder> elnFolderOptional = elnFolderRepository.findByProgramId(program.getId());
 
-    if (program.getNotebookFolder() != null) {
-      Optional<BenchlingFolder> optional = client.findFolderById(program.getNotebookFolder().getReferenceId());
+    if (elnFolderOptional.isPresent()) {
+      Optional<BenchlingFolder> optional = client.findFolderById(elnFolderOptional.get().getReferenceId());
       return optional.map(this::convertFolder);
     } else {
       LOGGER.warn(
@@ -159,10 +165,11 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   private Optional<NotebookFolder> findStudyFolder(Study study, boolean includeContents) {
 
     LOGGER.info("Fetching notebook entry for study: " + study.getCode());
+    Optional<ELNFolder> elnFolderOptional = elnFolderRepository.findByStudyId(study.getId());
 
     // Does the study have the folder object set?
-    if (study.getNotebookFolder() != null) {
-      NotebookFolder studyFolder = NotebookFolder.from(study.getNotebookFolder());
+    if (elnFolderOptional.isPresent()) {
+      NotebookFolder studyFolder = NotebookFolder.from(elnFolderOptional.get());
       Optional<BenchlingFolder> optional = client.findFolderById(studyFolder.getReferenceId());
       return optional.flatMap(folder -> {
           if (includeContents) {
@@ -182,9 +189,10 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   public Optional<NotebookFolder> findAssayFolder(Assay assay) {
 
     LOGGER.info("Fetching notebook entry for assay: " + assay.getCode());
+    Optional<ELNFolder> elnFolderOptional = elnFolderRepository.findByAssayId(assay.getId());
 
-    if (assay.getNotebookFolder() != null) {
-      NotebookFolder assayFolder = NotebookFolder.from(assay.getNotebookFolder());
+    if (elnFolderOptional.isPresent()) {
+      NotebookFolder assayFolder = NotebookFolder.from(elnFolderOptional.get());
       Optional<BenchlingFolder> optional = client.findFolderById(assayFolder.getReferenceId());
       return optional.flatMap(folder -> Optional.of(getContentFullNotebookFolder(folder, assay)));
     } else {

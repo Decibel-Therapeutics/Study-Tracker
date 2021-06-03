@@ -48,20 +48,19 @@ public class StudyExternalLinkService {
   }
 
   @Transactional
-  public ExternalLink addStudyExternalLink(Study study, ExternalLink externalLink) {
+  public void addStudyExternalLink(Study study, ExternalLink externalLink) {
     LOGGER.info(String.format("Adding new external link for study %s: %s",
         study.getCode(), externalLink));
-    externalLink.setStudy(study);
-    externalLinkRepository.save(externalLink);
+    study.addExternalLink(externalLink);
     studyRepository.save(study);
-    return externalLink;
   }
 
   @Transactional
-  public ExternalLink updateStudyExternalLink(Study study, ExternalLink externalLink) {
-    externalLinkRepository.save(externalLink);
-    studyRepository.save(study);
-    return externalLink;
+  public void updateStudyExternalLink(Study study, ExternalLink externalLink) {
+    ExternalLink l = externalLinkRepository.getOne(externalLink.getId());
+    l.setUrl(externalLink.getUrl());
+    l.setLabel(externalLink.getLabel());
+    externalLinkRepository.save(l);
   }
 
   @Transactional

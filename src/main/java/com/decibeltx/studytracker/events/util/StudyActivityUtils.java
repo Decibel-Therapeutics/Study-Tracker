@@ -23,6 +23,7 @@ public class StudyActivityUtils {
     activity.setEventType(EventType.NEW_STUDY);
     activity.setDate(new Date());
     activity.setUser(triggeredBy);
+//    activity.setData(Collections.singletonMap("study", EntityViewUtils.createStudyView(study)));
     activity.setData(Collections.singletonMap("study", EntityViewUtils.createStudyView(study)));
     return activity;
   }

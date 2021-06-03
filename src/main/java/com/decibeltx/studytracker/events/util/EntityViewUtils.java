@@ -47,7 +47,7 @@ public class EntityViewUtils {
     view.put("updatedAt", study.getUpdatedAt());
     view.put("legacy", study.isLegacy());
     view.put("active", study.isActive());
-    view.put("keyword", study.getKeywords().stream()
+    view.put("keywords", study.getKeywords().stream()
         .map(EntityViewUtils::createKeywordView)
         .collect(Collectors.toSet()));
     view.put("startDate", study.getStartDate());

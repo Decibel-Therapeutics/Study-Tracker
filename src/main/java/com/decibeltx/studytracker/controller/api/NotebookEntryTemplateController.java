@@ -1,13 +1,13 @@
 package com.decibeltx.studytracker.controller.api;
 
 import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
+import com.decibeltx.studytracker.events.EventsService;
 import com.decibeltx.studytracker.events.util.EntryTemplateActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.NotebookEntryTemplate;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.service.ActivityService;
-import com.decibeltx.studytracker.service.EventsService;
 import com.decibeltx.studytracker.service.NotebookEntryTemplateService;
 import com.decibeltx.studytracker.service.UserService;
 import java.util.List;

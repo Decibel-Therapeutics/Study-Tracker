@@ -22,7 +22,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "keywords")
@@ -33,7 +32,6 @@ public class Keyword {
   private Long id;
 
   @Column(name = "keyword", nullable = false)
-  @NotNull
   private String keyword;
 
   @Column(name = "category", nullable = false)
@@ -42,12 +40,12 @@ public class Keyword {
   public Keyword() {
   }
 
-  public Keyword(@NotNull String keyword, String category) {
+  public Keyword(String keyword, String category) {
     this.keyword = keyword;
     this.category = category;
   }
 
-  public Keyword(Long id, @NotNull String keyword, String category) {
+  public Keyword(Long id, String keyword, String category) {
     this.id = id;
     this.keyword = keyword;
     this.category = category;

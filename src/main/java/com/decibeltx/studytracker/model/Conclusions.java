@@ -28,7 +28,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -44,7 +43,6 @@ public abstract class Conclusions {
   private Long id;
 
   @Column(name = "content", nullable = false, columnDefinition = "TEXT")
-  @NotNull
   private String content;
 
   @ManyToOne(fetch = FetchType.LAZY)

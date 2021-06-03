@@ -32,7 +32,6 @@ import javax.persistence.NamedEntityGraphs;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -57,7 +56,6 @@ public class Comment {
   private Study study;
 
   @Column(name = "text", nullable = false)
-  @NotNull
   private String text;
 
   @ManyToOne(fetch = FetchType.LAZY)
