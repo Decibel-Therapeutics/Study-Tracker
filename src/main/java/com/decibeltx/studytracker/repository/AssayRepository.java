@@ -33,6 +33,7 @@ public interface AssayRepository extends JpaRepository<Assay, Long> {
   @EntityGraph("assay-with-attributes")
   Optional<Assay> findByCode(String code);
 
+  @EntityGraph("assay-summary")
   List<Assay> findByStudyId(Long studyId);
 
   @Query("select a from Assay a where lower(a.code) like lower(concat('%', ?1, '%'))")

@@ -62,7 +62,7 @@ public class AssayTypeService {
   }
 
   @Transactional
-  public void create(AssayType assayType) {
+  public AssayType create(AssayType assayType) {
     validateFields(assayType);
     for (AssayTypeField field: assayType.getFields()) {
       field.setAssayType(assayType);
@@ -71,10 +71,12 @@ public class AssayTypeService {
       task.setAssayType(assayType);
     }
     assayTypeRepository.save(assayType);
+    return assayType;
   }
 
   @Transactional
-  public void update(AssayType assayType) {
+  public AssayType update(AssayType assayType) {
+
     validateFields(assayType);
     for (AssayTypeField field: assayType.getFields()) {
       field.setAssayType(assayType);
@@ -82,6 +84,13 @@ public class AssayTypeService {
     for (AssayTypeTask task: assayType.getTasks()) {
       task.setAssayType(assayType);
     }
+    assayTypeRepository.save(assayType);
+    return assayType;
+  }
+
+  @Transactional
+  public void toggleActive(AssayType assayType) {
+    assayType.setActive(!assayType.isActive());
     assayTypeRepository.save(assayType);
   }
 

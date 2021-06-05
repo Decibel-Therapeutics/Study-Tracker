@@ -17,17 +17,18 @@
 package com.decibeltx.studytracker.controller.api;
 
 import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
-import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.exception.NotebookException;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.exception.StudyTrackerException;
+import com.decibeltx.studytracker.mapstruct.dto.AssayDetailsDto;
+import com.decibeltx.studytracker.mapstruct.dto.AssaySummaryDto;
+import com.decibeltx.studytracker.mapstruct.mapper.AssayMapper;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.User;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,59 +52,54 @@ public class StudyAssayController extends AbstractAssayController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(StudyAssayController.class);
 
-  @Autowired(required = false)
-  private StudyNotebookService studyNotebookService;
+  @Autowired
+  private AssayMapper assayMapper;
 
   @GetMapping("")
-  public List<Assay> findStudyAssays(@PathVariable("studyId") String studyId) {
-    return getStudyFromIdentifier(studyId).getAssays().stream()
-        .filter(Assay::isActive)
-        .collect(Collectors.toList());
+  public List<AssaySummaryDto> findStudyAssays(@PathVariable("studyId") String studyId) {
+    Study study = getStudyFromIdentifier(studyId);
+    return assayMapper.toAssaySummaryList(this.getAssayService().findByStudyId(study.getId()));
   }
 
   @GetMapping("/{assayId}")
-  public Assay findById(@PathVariable("assayId") String assayId) throws RecordNotFoundException {
-    return getAssayFromIdentifier(assayId);
+  public AssayDetailsDto findById(@PathVariable("assayId") String assayId) throws RecordNotFoundException {
+    return assayMapper.toAssayDetails(getAssayFromIdentifier(assayId));
   }
 
   @PostMapping("")
-  public HttpEntity<Assay> create(@PathVariable("studyId") String studyId,
-      @RequestBody Assay assay)
+  public HttpEntity<AssayDetailsDto> create(@PathVariable("studyId") String studyId,
+      @RequestBody AssayDetailsDto dto)
           throws RecordNotFoundException, NotebookException {
+
     LOGGER.info("Creating assay");
-    LOGGER.info(assay.toString());
+    LOGGER.info(dto.toString());
+
     Study study = this.getStudyFromIdentifier(studyId);
+
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
+
+    Assay assay = assayMapper.fromAssayDetails(dto);
     Assay created = this.createAssay(assay, study, user);
 
-    if (assay.getEntryTemplateId() != null) {
-      if (studyNotebookService == null) {
-        throw new RecordNotFoundException("Could not create new entry");
-      }
-      Map<String, String> userAttributes = user.getAttributes();
-      String benchlingUserId =
-          userAttributes != null ? userAttributes.get("benchlingUserId") : null;
-      studyNotebookService
-          .createAssayNotebookEntry(created, assay.getEntryTemplateId(), benchlingUserId);
-    }
+    return new ResponseEntity<>(assayMapper.toAssayDetails(created), HttpStatus.CREATED);
 
-    return new ResponseEntity<>(created, HttpStatus.CREATED);
   }
 
   @PutMapping("/{assayId}")
-  public HttpEntity<Assay> update(@PathVariable("assayId") String assayId,
-      @RequestBody Assay assay) {
+  public HttpEntity<AssayDetailsDto> update(@PathVariable("assayId") String assayId,
+      @RequestBody AssayDetailsDto dto) {
     LOGGER.info("Updating assay");
-    LOGGER.info(assay.toString());
+    LOGGER.info(dto.toString());
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
+    Assay assay = assayMapper.fromAssayDetails(dto);
     this.updateAssay(assay, user);
-    return new ResponseEntity<>(assay, HttpStatus.OK);
+    return new ResponseEntity<>(assayMapper.toAssayDetails(assay), HttpStatus.OK);
   }
 
   @DeleteMapping("/{assayId}")

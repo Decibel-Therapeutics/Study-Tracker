@@ -51,7 +51,6 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -63,7 +62,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
         @NamedAttributeNode("assayType"),
         @NamedAttributeNode("notebookFolder"),
         @NamedAttributeNode("storageFolder"),
-        @NamedAttributeNode("owner")
+        @NamedAttributeNode("owner"),
+        @NamedAttributeNode("users")
     }),
     @NamedEntityGraph(name = "assay-with-attributes", attributeNodes = {
         @NamedAttributeNode(value = "assayType", subgraph = "assay-type-details"),
@@ -145,9 +145,6 @@ public class Assay {
 
   @Column(name = "active", nullable = false)
   private boolean active;
-
-  @Transient
-  private String entryTemplateId;
 
   @Column(name = "created_at", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
@@ -335,14 +332,6 @@ public class Assay {
 
   public void setActive(boolean active) {
     this.active = active;
-  }
-
-  public String getEntryTemplateId() {
-    return entryTemplateId;
-  }
-
-  public void setEntryTemplateId(String entryTemplateId) {
-    this.entryTemplateId = entryTemplateId;
   }
 
   public Date getCreatedAt() {

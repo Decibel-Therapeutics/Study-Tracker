@@ -152,6 +152,7 @@ public class StudyService {
       throw new DuplicateRecordException("Duplicate study name: " + study.getName());
     }
 
+    // Assign the code, if necessary
     if (study.getCode() == null) {
       study.setCode(namingService.generateStudyCode(study));
     }

@@ -27,6 +27,7 @@ import com.decibeltx.studytracker.model.ELNFolder;
 import com.decibeltx.studytracker.model.FileStoreFolder;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.repository.AssayRepository;
+import com.decibeltx.studytracker.repository.AssayTaskRepository;
 import com.decibeltx.studytracker.storage.StorageFolder;
 import com.decibeltx.studytracker.storage.StudyStorageService;
 import java.text.SimpleDateFormat;
@@ -49,6 +50,9 @@ public class AssayService {
 
   @Autowired
   private AssayRepository assayRepository;
+
+  @Autowired
+  private AssayTaskRepository assayTaskRepository;
 
   @Autowired
   private StudyStorageService storageService;
@@ -188,7 +192,8 @@ public class AssayService {
   }
 
   @Transactional
-  public void update(Assay updated) {
+  public Assay update(Assay updated) {
+
     LOGGER.info("Updating assay record with code: " + updated.getCode());
     Assay assay = assayRepository.getOne(updated.getId());
 
@@ -200,13 +205,26 @@ public class AssayService {
     assay.setUsers(updated.getUsers());
     assay.setAttributes(updated.getAttributes());
     assay.setFields(updated.getFields());
-    assay.setTasks(updated.getTasks());
+//    assay.setTasks(updated.getTasks());
 
-    for (AssayTask task: assay.getTasks()) {
-      task.setAssay(assay);
+    // Update the tasks
+    for (AssayTask task: updated.getTasks()) {
+      if (task.getId() != null) {
+        AssayTask t = assayTaskRepository.getOne(task.getId());
+        t.setStatus(task.getStatus());
+        t.setOrder(task.getOrder());
+        t.setLabel(task.getLabel());
+        assayTaskRepository.save(t);
+      } else {
+        task.setAssay(assay);
+        assay.addTask(task);
+      }
     }
 
     assayRepository.save(assay);
+
+    return assay;
+
   }
 
   @Transactional

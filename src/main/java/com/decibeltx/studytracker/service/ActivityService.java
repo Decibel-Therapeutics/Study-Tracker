@@ -102,15 +102,13 @@ public class ActivityService {
   @Transactional
   public Activity create(Activity activity) {
     if (activity.getAssay() != null && activity.getStudy() == null) {
-      Long studyId = activity.getAssay().getStudy().getId();
-      Study study = studyRepository.findById(studyId)
-          .orElseThrow(() -> new RecordNotFoundException("Could not find study: " + studyId));
+      Study study = studyRepository.findByAssayId(activity.getAssay().getId())
+          .orElseThrow(() -> new RecordNotFoundException("Could not find study: " + activity.getAssay().getId()));
       activity.setStudy(study);
     }
     if (activity.getStudy() != null && activity.getProgram() == null) {
-      Long programId = activity.getStudy().getProgram().getId();
-      Program program = programRepository.findById(programId)
-          .orElseThrow(() -> new RecordNotFoundException("Could not find program: " + programId));
+      Program program = programRepository.findByStudyId(activity.getStudy().getId())
+          .orElseThrow(() -> new RecordNotFoundException("Could not find program: " + activity.getStudy().getId()));
       activity.setProgram(program);
     }
     return activityRepository.save(activity);

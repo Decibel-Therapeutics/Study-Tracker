@@ -4,6 +4,9 @@ import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
 import com.decibeltx.studytracker.events.EventsService;
 import com.decibeltx.studytracker.events.util.EntryTemplateActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.mapstruct.dto.NotebookEntryTemplateDetailsDto;
+import com.decibeltx.studytracker.mapstruct.dto.NotebookEntryTemplateSlimDto;
+import com.decibeltx.studytracker.mapstruct.mapper.NotebookEntryTemplateMapper;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.NotebookEntryTemplate;
 import com.decibeltx.studytracker.model.User;
@@ -49,6 +52,9 @@ public class NotebookEntryTemplateController {
     @Autowired
     private EventsService eventsService;
 
+    @Autowired
+    private NotebookEntryTemplateMapper mapper;
+
     private User getAuthenticatedUser() throws RecordNotFoundException {
         String username = UserAuthenticationUtils
                 .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
@@ -63,31 +69,32 @@ public class NotebookEntryTemplateController {
     }
 
     @GetMapping("")
-    public List<NotebookEntryTemplate> getEntryTemplates() {
+    public List<NotebookEntryTemplateSlimDto> getEntryTemplates() {
         LOGGER.info("Getting all entry templates");
-        return entryTemplateService.findAll();
+        return mapper.toSlimList(entryTemplateService.findAll());
     }
 
     @GetMapping("/active")
-    public List<NotebookEntryTemplate> getActiveTemplates() {
+    public List<NotebookEntryTemplateSlimDto> getActiveTemplates() {
         LOGGER.info("Getting all active entry templates");
 
-        return entryTemplateService.findAllActive();
+        return mapper.toSlimList(entryTemplateService.findAllActive());
     }
 
     @PostMapping("")
-    public HttpEntity<NotebookEntryTemplate> createTemplate(@RequestBody NotebookEntryTemplate notebookEntryTemplate)
-            throws RecordNotFoundException {
-        LOGGER.info("Creating new entry template : " + notebookEntryTemplate.toString());
+    public HttpEntity<NotebookEntryTemplateDetailsDto> createTemplate(
+        @RequestBody NotebookEntryTemplateDetailsDto dto) throws RecordNotFoundException {
+        LOGGER.info("Creating new entry template : " + dto.toString());
 
+        NotebookEntryTemplate notebookEntryTemplate = mapper.fromDetails(dto);
         authenticateUserAndApplyTemplateOperation(Optional.empty(), notebookEntryTemplate,
                 entryTemplateService::create, EntryTemplateActivityUtils::fromNewEntryTemplate);
 
-        return new ResponseEntity<>(notebookEntryTemplate, HttpStatus.CREATED);
+        return new ResponseEntity<>(mapper.toDetails(notebookEntryTemplate), HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}/status")
-    public HttpEntity<NotebookEntryTemplate> updateTemplateStatus(@PathVariable("id") Long id,
+    public HttpEntity<?> updateTemplateStatus(@PathVariable("id") Long id,
                                                                   @RequestParam("active") boolean active)
             throws RecordNotFoundException {
         LOGGER.info("Updating template with id: " + id);
@@ -100,11 +107,13 @@ public class NotebookEntryTemplateController {
     }
 
     @PutMapping("")
-    public HttpEntity<NotebookEntryTemplate> updateEntryTemplate(@RequestBody NotebookEntryTemplate notebookEntryTemplate) {
+    public HttpEntity<NotebookEntryTemplateDetailsDto> updateEntryTemplate(
+        @RequestBody NotebookEntryTemplateDetailsDto dto) {
+        NotebookEntryTemplate notebookEntryTemplate = mapper.fromDetails(dto);
         getTemplateById(notebookEntryTemplate.getId());
         authenticateUserAndApplyTemplateOperation(Optional.empty(), notebookEntryTemplate,
                 entryTemplateService::update, EntryTemplateActivityUtils::fromUpdatedEntryTemplate);
-        return new ResponseEntity<>(notebookEntryTemplate, HttpStatus.CREATED);
+        return new ResponseEntity<>(mapper.toDetails(notebookEntryTemplate), HttpStatus.CREATED);
     }
 
     private void authenticateUserAndApplyTemplateOperation(Optional<Boolean> status, NotebookEntryTemplate notebookEntryTemplate,

@@ -1,6 +1,8 @@
 package com.decibeltx.studytracker.mapstruct.dto;
 
 import com.decibeltx.studytracker.model.Status;
+import java.util.HashSet;
+import java.util.Set;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -17,5 +19,6 @@ public class AssaySummaryDto {
   private ELNFolderDto notebookFolder;
   private FileStoreFolderDto storageFolder;
   private boolean active = true;
+  private Set<UserSlimDto> users = new HashSet<>();
 
 }

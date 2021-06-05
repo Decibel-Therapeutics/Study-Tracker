@@ -19,7 +19,11 @@ package com.decibeltx.studytracker.controller.api;
 import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.exception.StudyTrackerException;
-import com.decibeltx.studytracker.model.Activity;
+import com.decibeltx.studytracker.mapstruct.dto.ActivitySummaryDto;
+import com.decibeltx.studytracker.mapstruct.dto.AssayDetailsDto;
+import com.decibeltx.studytracker.mapstruct.dto.AssaySummaryDto;
+import com.decibeltx.studytracker.mapstruct.mapper.ActivityMapper;
+import com.decibeltx.studytracker.mapstruct.mapper.AssayMapper;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.User;
@@ -28,6 +32,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,24 +53,32 @@ public class AssayController extends AbstractAssayController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AssayController.class);
 
+  @Autowired
+  private AssayMapper assayMapper;
+
+  @Autowired
+  private ActivityMapper activityMapper;
+
   @GetMapping("")
-  public List<Assay> findAll() {
-    return getAssayService().findAll().stream()
+  public List<AssaySummaryDto> findAll() {
+    return assayMapper.toAssaySummaryList(getAssayService().findAll().stream()
         .filter(Assay::isActive)
         .filter(a -> a.getStudy().isActive())
-        .collect(Collectors.toList());
+        .collect(Collectors.toList()));
   }
 
   @GetMapping("/{id}")
-  public Assay findById(@PathVariable("id") String assayId) throws RecordNotFoundException {
-    return getAssayFromIdentifier(assayId);
+  public AssayDetailsDto findById(@PathVariable("id") String assayId) throws RecordNotFoundException {
+    return assayMapper.toAssayDetails(getAssayFromIdentifier(assayId));
   }
 
   @PutMapping("/{id}")
-  public HttpEntity<Assay> update(@PathVariable("id") Long id, @RequestBody Assay assay) {
+  public HttpEntity<AssayDetailsDto> update(@PathVariable("id") Long id, @RequestBody AssayDetailsDto dto) {
 
     LOGGER.info("Updating assay with id: " + id);
-    LOGGER.info(assay.toString());
+    LOGGER.info(dto.toString());
+
+    Assay assay = assayMapper.fromAssayDetails(dto);
 
     // Get authenticated user
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -75,7 +88,7 @@ public class AssayController extends AbstractAssayController {
 
     Assay updated = updateAssay(assay, user);
 
-    return new ResponseEntity<>(updated, HttpStatus.CREATED);
+    return new ResponseEntity<>(assayMapper.toAssayDetails(updated), HttpStatus.CREATED);
 
   }
 
@@ -123,9 +136,9 @@ public class AssayController extends AbstractAssayController {
   }
 
   @GetMapping("/{assayId}/activity")
-  public List<Activity> getAssayActivity(@PathVariable("assayId") String assayId) {
+  public List<ActivitySummaryDto> getAssayActivity(@PathVariable("assayId") String assayId) {
     Assay assay = this.getAssayFromIdentifier(assayId);
-    return getActivityService().findByAssay(assay);
+    return activityMapper.toActivitySummaryList(getActivityService().findByAssay(assay));
   }
 
 }

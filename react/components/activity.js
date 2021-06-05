@@ -426,16 +426,15 @@ const ActivityMessage = ({activity}) => {
       );
 
     case studyActions.FILE_UPLOADED.value:
-      if (activity.reference === "ASSAY") {
+      if (!!activity.assayId) {
         return (
             <React.Fragment>
               <p>
                 <a href={"/user/"
                 + activity.user.username}>{activity.user.displayName}</a>
                 &nbsp;has attached a new file to assay:&nbsp;
-                <a href={"/study/"
-                + activity.data.assay.study}>{activity.data.assay.study
-                + "/assay/" + activity.data.assay.code}
+                <a href={"/assay/" + activity.data.assay.code}>
+                  {activity.data.assay.code}
                 </a>
               </p>
               <div className="bg-light text-secondary p-3">
@@ -457,8 +456,9 @@ const ActivityMessage = ({activity}) => {
                 <a href={"/user/"
                 + activity.user.username}>{activity.user.displayName}</a>
                 &nbsp;has attached a new file to study:&nbsp;
-                <a href={"/study/"
-                + activity.data.study.code}>{activity.data.study.code}</a>
+                <a href={"/study/" + activity.data.study.code}>
+                  {activity.data.study.code}
+                </a>
               </p>
               <div className="bg-light text-secondary p-3">
                 <h3>

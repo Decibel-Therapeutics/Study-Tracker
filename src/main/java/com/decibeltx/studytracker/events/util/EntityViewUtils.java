@@ -80,7 +80,7 @@ public class EntityViewUtils {
   public static Map<String, Object> createKeywordView(Keyword keyword) {
     Map<String, Object> view = new HashMap<>();
     view.put("id", keyword.getId());
-    view.put("category", keyword.getKeyword());
+    view.put("category", keyword.getCategory());
     view.put("keyword", keyword.getKeyword());
     return view;
   }
@@ -111,7 +111,7 @@ public class EntityViewUtils {
     view.put("id", assay.getId());
     view.put("name", assay.getName());
     view.put("code", assay.getCode());
-    view.put("study", assay.getStudy().getCode());
+//    view.put("study", assay.getStudy().getCode());
     view.put("description", assay.getDescription());
     view.put("status", assay.getStatus().toString());
     view.put("owner", assay.getOwner().getDisplayName());

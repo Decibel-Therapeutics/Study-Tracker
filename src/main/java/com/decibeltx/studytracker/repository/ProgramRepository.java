@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface ProgramRepository extends JpaRepository<Program, Long> {
 
@@ -31,6 +32,9 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
 
   @EntityGraph(value = "program-with-attributes")
   Optional<Program> findByName(String name);
+
+  @Query("select p from Study s join s.program p where s.id = ?1")
+  Optional<Program> findByStudyId(Long studyId);
 
   List<Program> findByCode(String code);
 
