@@ -25,6 +25,7 @@ import com.decibeltx.studytracker.service.KeywordService;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,7 @@ public class KeywordController {
   }
 
   @PostMapping("")
-  public HttpEntity<KeywordDto> create(@RequestBody KeywordDto dto) {
+  public HttpEntity<KeywordDto> create(@RequestBody @Valid KeywordDto dto) {
     LOGGER.info("Creating keyword");
     LOGGER.info(dto.toString());
     Keyword keyword = keywordMapper.fromDto(dto);
@@ -100,7 +101,8 @@ public class KeywordController {
   }
 
   @PutMapping("/{id}")
-  public HttpEntity<KeywordDto> update(@PathVariable("id") Long id, @RequestBody KeywordDto dto) {
+  public HttpEntity<KeywordDto> update(@PathVariable("id") Long id,
+      @RequestBody @Valid KeywordDto dto) {
     LOGGER.info("Updating keyword");
     LOGGER.info(dto.toString());
     Keyword updated = keywordMapper.fromDto(dto);

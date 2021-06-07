@@ -39,7 +39,6 @@ import javax.persistence.NamedEntityGraphs;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -86,12 +85,19 @@ public class Activity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
-  @NotNull
   private User user;
 
   @Column(name = "date", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date date;
+
+  public Activity() { }
+
+  public Activity(EventType type, User user) {
+    this.eventType = type;
+    this.user = user;
+    this.date = new Date();
+  }
 
   @JsonProperty("triggeredBy")
   public String triggeredBy() {

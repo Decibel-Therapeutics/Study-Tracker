@@ -34,6 +34,7 @@ import com.decibeltx.studytracker.service.ProgramService;
 import com.decibeltx.studytracker.service.UserService;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,9 +93,9 @@ public class ProgramController {
   }
 
   @PostMapping("")
-  public HttpEntity<ProgramDetailsDto> createProgram(@RequestBody Program program) {
+  public HttpEntity<ProgramDetailsDto> createProgram(@RequestBody @Valid ProgramDetailsDto dto) {
 
-    LOGGER.info("Creating new program: " + program.toString());
+    LOGGER.info("Creating new program: " + dto.toString());
 
     // Get authenticated user
     String username = UserAuthenticationUtils
@@ -105,8 +106,7 @@ public class ProgramController {
       throw new InsufficientPrivilegesException("You do not have permission to perform this action.");
     }
 
-//    program.setCreatedBy(user);
-
+    Program program = programMapper.fromProgramDetails(dto);
     programService.create(program);
 
     // Publish events
@@ -121,7 +121,7 @@ public class ProgramController {
 
   @PutMapping("/{id}")
   public HttpEntity<ProgramDetailsDto> updateProgram(@PathVariable("id") Long programId,
-      @RequestBody Program program) {
+      @RequestBody @Valid ProgramDetailsDto dto) {
 
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
@@ -135,7 +135,7 @@ public class ProgramController {
       throw new RecordNotFoundException("Could not find program: " + programId);
     }
 
-//    program.setLastModifiedBy(user);
+    Program program = programMapper.fromProgramDetails(dto);
     programService.update(program);
 
     // Publish events

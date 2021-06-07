@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -172,7 +173,7 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @PostMapping("")
-  public HttpEntity<StudyDetailsDto> createStudy(@RequestBody StudyDetailsDto dto) {
+  public HttpEntity<StudyDetailsDto> createStudy(@RequestBody @Valid StudyDetailsDto dto) {
 
     LOGGER.info("Creating study");
     LOGGER.info(dto.toString());
@@ -213,7 +214,8 @@ public class StudyBaseController extends AbstractStudyController {
   }
 
   @PutMapping("/{id}")
-  public HttpEntity<StudyDetailsDto> updateStudy(@PathVariable("id") String id, @RequestBody StudyDetailsDto dto) {
+  public HttpEntity<StudyDetailsDto> updateStudy(@PathVariable("id") String id,
+      @RequestBody @Valid StudyDetailsDto dto) {
 
     LOGGER.info("Updating study");
     LOGGER.info(dto.toString());

@@ -3,7 +3,6 @@ package com.decibeltx.studytracker.service;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.NotebookEntryTemplate;
 import com.decibeltx.studytracker.repository.NotebookEntryTemplateRepository;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,21 +31,25 @@ public class NotebookEntryTemplateService {
         return findAll().stream().filter(NotebookEntryTemplate::isActive).collect(Collectors.toList());
     }
 
-    public void create(NotebookEntryTemplate notebookEntryTemplate) {
+    public NotebookEntryTemplate create(NotebookEntryTemplate notebookEntryTemplate) {
         LOGGER.info("Creating new entry template with name: " + notebookEntryTemplate.getName());
-
-        Date now = new Date();
-        notebookEntryTemplate.setCreatedAt(now);
-        notebookEntryTemplate.setUpdatedAt(now);
         notebookEntryTemplateRepository.save(notebookEntryTemplate);
+        return notebookEntryTemplate;
     }
 
-    public void update(NotebookEntryTemplate notebookEntryTemplate) {
+    public NotebookEntryTemplate update(NotebookEntryTemplate notebookEntryTemplate) {
         LOGGER.info("Updating entry template with name: " + notebookEntryTemplate.getName());
+        NotebookEntryTemplate t = notebookEntryTemplateRepository
+            .getOne(notebookEntryTemplate.getId());
+        t.setActive(notebookEntryTemplate.isActive());
+        t.setName(notebookEntryTemplate.getName());
+        t.setTemplateId(notebookEntryTemplate.getTemplateId());
+        notebookEntryTemplateRepository.save(t);
+        return notebookEntryTemplateRepository.findById(notebookEntryTemplate.getId())
+            .orElseThrow(RecordNotFoundException::new);
+    }
 
-        assert notebookEntryTemplate.getId() != null;
-        notebookEntryTemplateRepository.findById(notebookEntryTemplate.getId()).orElseThrow(
-            RecordNotFoundException::new);
-        notebookEntryTemplateRepository.save(notebookEntryTemplate);
+    public void delete(NotebookEntryTemplate template) {
+        notebookEntryTemplateRepository.deleteById(template.getId());
     }
 }

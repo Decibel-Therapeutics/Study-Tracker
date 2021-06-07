@@ -31,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.mapstruct.mapper.ProgramMapper;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.ProgramRepository;
@@ -72,6 +73,9 @@ public class ProgramControllerTests {
 
   @Autowired
   private ObjectMapper objectMapper;
+
+  @Autowired
+  private ProgramMapper mapper;
 
   private String username;
 
@@ -128,7 +132,7 @@ public class ProgramControllerTests {
   @Test
   public void createProgramTest() throws Exception {
 
-    User user = userRepository.findByUsername("jsmith")
+    User user = userRepository.findByUsername("rblack")
         .orElseThrow(RecordNotFoundException::new);
 
     Program program = new Program();
@@ -139,7 +143,7 @@ public class ProgramControllerTests {
     mockMvc.perform(post("/api/program/")
         .with(user(user.getUsername()))
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsBytes(program)))
+        .content(objectMapper.writeValueAsBytes(mapper.toProgramDetails(program))))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$", hasKey("id")))
         .andExpect(jsonPath("$.id", notNullValue()))
@@ -161,7 +165,7 @@ public class ProgramControllerTests {
 
     Program program = programRepository.findByName("Clinical Program A")
         .orElseThrow(RecordNotFoundException::new);
-    User user = userRepository.findByUsername("jsmith")
+    User user = userRepository.findByUsername("rblack")
         .orElseThrow(RecordNotFoundException::new);
 
     mockMvc.perform(get("/api/program/" + program.getId())
@@ -175,7 +179,7 @@ public class ProgramControllerTests {
     mockMvc.perform(put("/api/program/" + program.getId())
         .with(user(user.getUsername()))
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsBytes(program)))
+        .content(objectMapper.writeValueAsBytes(mapper.toProgramDetails(program))))
         .andExpect(status().isOk());
   }
 
@@ -194,7 +198,7 @@ public class ProgramControllerTests {
   public void deleteProgramTest() throws Exception {
     Program program = programRepository.findByName("Clinical Program A")
         .orElseThrow(RecordNotFoundException::new);
-    User user = userRepository.findByUsername("jsmith")
+    User user = userRepository.findByUsername("rblack")
         .orElseThrow(RecordNotFoundException::new);
     mockMvc.perform(delete("/api/program/" + program.getId())
         .with(user(user.getUsername())))

@@ -28,6 +28,7 @@ import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.service.StudyExternalLinkService;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -60,7 +61,7 @@ public class StudyExternalLinksController extends AbstractStudyController {
 
   @PostMapping("")
   public HttpEntity<ExternalLinkDto> addExternalLink(@PathVariable("id") String studyId,
-      @RequestBody ExternalLinkDto dto) {
+      @RequestBody @Valid ExternalLinkDto dto) {
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
@@ -79,7 +80,7 @@ public class StudyExternalLinksController extends AbstractStudyController {
 
   @PutMapping("/{linkId}")
   public HttpEntity<ExternalLinkDto> editExternalLink(@PathVariable("id") String studyId,
-      @PathVariable("linkId") Long linkId, @RequestBody ExternalLinkDto dto) {
+      @PathVariable("linkId") Long linkId, @RequestBody @Valid ExternalLinkDto dto) {
     Study study = getStudyFromIdentifier(studyId);
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());

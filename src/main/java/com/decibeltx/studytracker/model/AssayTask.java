@@ -1,6 +1,7 @@
 package com.decibeltx.studytracker.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -10,6 +11,8 @@ import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedEntityGraphs;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -44,6 +47,9 @@ public class AssayTask extends Task {
   @JoinColumn(name = "assigned_to")
   private User assignedTo;
 
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date dueDate;
+
   @JsonIgnore
   public Assay getAssay() {
     return assay;
@@ -75,5 +81,13 @@ public class AssayTask extends Task {
 
   public void setAssignedTo(User assignedTo) {
     this.assignedTo = assignedTo;
+  }
+
+  public Date getDueDate() {
+    return dueDate;
+  }
+
+  public void setDueDate(Date dueDate) {
+    this.dueDate = dueDate;
   }
 }

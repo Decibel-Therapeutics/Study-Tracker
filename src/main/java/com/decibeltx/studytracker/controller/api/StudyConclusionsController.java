@@ -28,6 +28,7 @@ import com.decibeltx.studytracker.model.StudyConclusions;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.service.StudyConclusionsService;
 import java.util.Optional;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ public class StudyConclusionsController extends AbstractStudyController {
 
   @PostMapping("")
   public HttpEntity<StudyConclusionsDto> newStudyConclusions(@PathVariable("studyId") String studyId,
-      @RequestBody StudyConclusionsDto dto) {
+      @RequestBody @Valid StudyConclusionsDto dto) {
     Study study = getStudyFromIdentifier(studyId);
     if (dto.getId() != null || study.getConclusions() != null) {
       throw new StudyTrackerException("Study conclusions object already exists.");
@@ -94,7 +95,7 @@ public class StudyConclusionsController extends AbstractStudyController {
 
   @PutMapping("")
   public HttpEntity<StudyConclusionsDto> editStudyConclusions(@PathVariable("studyId") String studyId,
-      @RequestBody StudyConclusionsDto dto) {
+      @RequestBody @Valid StudyConclusionsDto dto) {
     LOGGER.info(
         String.format("Updating conclusions for study %s: %s", studyId, dto.toString()));
     Study study = getStudyFromIdentifier(studyId);

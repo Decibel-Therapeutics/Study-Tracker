@@ -125,8 +125,8 @@ public class StudyRelationshipServiceTests {
     sourceRelationships = studyRelationshipService.findStudyRelationships(sourceStudy);
     targetRelationships = studyRelationshipService.findStudyRelationships(targetStudy);
 
-    Assert.assertEquals(0, sourceRelationships.size());
     Assert.assertEquals(0, targetRelationships.size());
+    Assert.assertEquals(0, sourceRelationships.size());
   }
 
 

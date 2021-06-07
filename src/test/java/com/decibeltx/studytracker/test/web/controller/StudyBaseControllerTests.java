@@ -31,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.mapstruct.mapper.StudyMapper;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Status;
 import com.decibeltx.studytracker.model.Study;
@@ -79,6 +80,9 @@ public class StudyBaseControllerTests {
 
   @Autowired
   private ObjectMapper objectMapper;
+
+  @Autowired
+  private StudyMapper mapper;
 
   private String username;
 
@@ -176,7 +180,7 @@ public class StudyBaseControllerTests {
 
     mockMvc.perform(post("/api/study/")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsBytes(study))
+        .content(objectMapper.writeValueAsBytes(mapper.toStudyDetails(study)))
         .with(user(user.getUsername())))
         .andExpect(status().isBadRequest());
   }
@@ -205,7 +209,7 @@ public class StudyBaseControllerTests {
     mockMvc.perform(put("/api/study/CPA-XXXXX")
         .with(user(study.getOwner().getUsername()))
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsBytes(study)))
+        .content(objectMapper.writeValueAsBytes(mapper.toStudyDetails(study))))
         .andExpect(status().isOk());
   }
 
@@ -217,7 +221,7 @@ public class StudyBaseControllerTests {
 
     mockMvc.perform(put("/api/study/CPA-10001")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsBytes(study)))
+        .content(objectMapper.writeValueAsBytes(mapper.toStudyDetails(study))))
         .andExpect(status().isUnauthorized());
   }
 

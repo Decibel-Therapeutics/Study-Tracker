@@ -30,33 +30,33 @@ import org.springframework.data.jpa.repository.Query;
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
 
   @Override
-  @EntityGraph("activity-with-user")
+  @EntityGraph("activity-details")
   Page<Activity> findAll(Pageable pageable);
 
   @Override
-  @EntityGraph("activity-with-user")
+  @EntityGraph("activity-details")
   List<Activity> findAll();
 
   @Override
-  @EntityGraph("activity-with-user")
+  @EntityGraph("activity-details")
   Optional<Activity> findById(Long id);
 
-  @EntityGraph("activity-with-user")
+  @EntityGraph("activity-details")
   List<Activity> findByEventType(EventType eventType);
 
-  @EntityGraph("activity-with-user")
+  @EntityGraph("activity-details")
   @Query("select a from Activity a where a.study.id = ?1 ")
   List<Activity> findByStudyId(Long studyId);
 
-  @EntityGraph("activity-with-user")
+  @EntityGraph("activity-details")
   @Query("select a from Activity a where a.assay.id = ?1 ")
   List<Activity> findByAssayId(Long assayId);
 
-  @EntityGraph("activity-with-user")
+  @EntityGraph("activity-details")
   @Query("select a from Activity a where a.program.id = ?1 ")
   List<Activity> findByProgramId(Long programId);
 
-  @EntityGraph("activity-with-user")
+  @EntityGraph("activity-details")
   @Query("select a from Activity a where a.user = ?1 ")
   List<Activity> findByUserId(Long userId);
 

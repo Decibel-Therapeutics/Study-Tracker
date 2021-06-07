@@ -25,7 +25,6 @@ import com.decibeltx.studytracker.repository.UserRepository;
 import com.decibeltx.studytracker.service.ProgramService;
 import java.util.List;
 import java.util.Optional;
-import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -141,7 +140,7 @@ public class ProgramServiceTests {
       e.printStackTrace();
     }
     Assert.assertNotNull(exception);
-    Assert.assertTrue(exception.getCause().getCause() instanceof ConstraintViolationException);
+    Assert.assertTrue(exception instanceof DataIntegrityViolationException);
   }
 
 }

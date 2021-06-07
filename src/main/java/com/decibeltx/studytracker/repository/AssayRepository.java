@@ -27,6 +27,10 @@ import org.springframework.data.jpa.repository.Query;
 public interface AssayRepository extends JpaRepository<Assay, Long> {
 
   @Override
+  @EntityGraph("assay-with-parents")
+  List<Assay> findAll();
+
+  @Override
   @EntityGraph("assay-with-attributes")
   Optional<Assay> findById(Long id);
 

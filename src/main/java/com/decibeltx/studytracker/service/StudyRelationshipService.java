@@ -85,8 +85,9 @@ public class StudyRelationshipService {
     Optional<StudyRelationship> optional = studyRelationshipRepository.findBySourceAndTargetStudyIds(
         sourceStudy.getId(), targetStudy.getId());
     if (optional.isPresent()) {
-      sourceStudy.removeStudyRelationship(optional.get());
-      studyRepository.save(sourceStudy);
+      StudyRelationship relationship = optional.get();
+      sourceStudy.removeStudyRelationship(relationship);
+      targetStudy.removeStudyRelationship(relationship);
 //      studyRelationshipRepository.deleteById(optional.get().getId());
     } else {
       throw new RecordNotFoundException(String.format("No study relationship found for source study "
@@ -96,13 +97,16 @@ public class StudyRelationshipService {
     optional = studyRelationshipRepository.findBySourceAndTargetStudyIds(
         targetStudy.getId(), sourceStudy.getId());
     if (optional.isPresent()) {
-      targetStudy.removeStudyRelationship(optional.get());
-      studyRepository.save(targetStudy);
+      StudyRelationship relationship = optional.get();
+      sourceStudy.removeStudyRelationship(relationship);
+      targetStudy.removeStudyRelationship(relationship);
 //      studyRelationshipRepository.deleteById(optional.get().getId());
     } else {
       throw new RecordNotFoundException(String.format("No study relationship found for source study "
           + "%s and target study %s", targetStudy.getCode(), sourceStudy.getCode()));
     }
+
+    studyRepository.save(sourceStudy);
 
 //    studyRelationshipRepository.flush();
 //

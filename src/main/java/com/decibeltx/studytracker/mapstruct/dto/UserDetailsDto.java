@@ -3,17 +3,18 @@ package com.decibeltx.studytracker.mapstruct.dto;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class UserDetailsDto {
 
   private Long id;
-  private String username;
+  private @NotNull String username;
   private String department;
   private String title;
-  private String displayName;
-  private String email;
+  private @NotNull String displayName;
+  private @NotNull String email;
   private boolean admin = false;
   private Date createdAt;
   private Date updatedAt;

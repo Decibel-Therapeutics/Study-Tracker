@@ -136,6 +136,9 @@ const ActivityIcon = ({action}) => {
 
 const ActivityMessage = ({activity}) => {
   switch (activity.eventType) {
+
+    // Notebook entry templates
+
     case studyActions.NEW_ENTRY_TEMPLATE.value:
       return (
         <>
@@ -251,7 +254,7 @@ const ActivityMessage = ({activity}) => {
             <div className="bg-light text-secondary p-3">
 
               <h5>
-                <a href={"/study/" + activity.data.assay.study + "/assay/"
+                <a href={"/study/" + activity.studyId + "/assay/"
                 + activity.data.assay.code}>
                   {activity.data.assay.code}
                 </a>
@@ -283,7 +286,7 @@ const ActivityMessage = ({activity}) => {
             <div className="bg-light text-secondary p-3">
 
               <h5>
-                <a href={"/study/" + activity.data.assay.study + "/assay/"
+                <a href={"/study/" + activity.studyId + "/assay/"
                 + activity.data.assay.code}>
                   {activity.data.assay.code}
                 </a>
@@ -334,7 +337,7 @@ const ActivityMessage = ({activity}) => {
               <a href={"/user/"
               + activity.user.username}>{activity.user.displayName}</a>
               &nbsp;has added a new task to assay&nbsp;
-              <a href={"/study/" + activity.data.assay.study + "/assay/"
+              <a href={"/study/" + activity.studyId + "/assay/"
               + activity.data.assay.code}>
                 {activity.data.assay.code}
               </a>:
@@ -353,7 +356,7 @@ const ActivityMessage = ({activity}) => {
               <a href={"/user/"
               + activity.user.username}>{activity.user.displayName}</a>
               &nbsp;has updated a task in assay&nbsp;
-              <a href={"/study/" + activity.data.assay.study + "/assay/"
+              <a href={"/study/" + activity.studyId + "/assay/"
               + activity.data.assay.code}>
                 {activity.data.assay.code}
               </a>:

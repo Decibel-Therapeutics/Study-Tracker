@@ -84,6 +84,18 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
             @NamedAttributeNode("lastModifiedBy"),
             @NamedAttributeNode("assignedTo")
         })
+    }),
+    @NamedEntityGraph(name = "assay-with-parents", attributeNodes =  {
+        @NamedAttributeNode("assayType"),
+        @NamedAttributeNode("owner"),
+        @NamedAttributeNode("notebookFolder"),
+        @NamedAttributeNode("storageFolder"),
+        @NamedAttributeNode(value = "study", subgraph = "study-summary")
+    }, subgraphs = {
+        @NamedSubgraph(name = "study-summary", attributeNodes = {
+            @NamedAttributeNode("program"),
+            @NamedAttributeNode("collaborator")
+        })
     })
 })
 public class Assay {

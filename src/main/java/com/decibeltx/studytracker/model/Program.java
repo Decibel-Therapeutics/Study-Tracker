@@ -38,7 +38,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedBy;
@@ -71,11 +70,9 @@ public class Program {
   private Long id;
 
   @Column(name = "code", nullable = false, updatable = false)
-  @NotNull(message = "Program code must not be empty")
   private String code;
 
   @Column(name = "name", nullable = false, unique = true, updatable = false)
-  @NotNull(message = "Program name must not be empty")
   private String name;
 
   @Column(name = "description", columnDefinition = "TEXT")

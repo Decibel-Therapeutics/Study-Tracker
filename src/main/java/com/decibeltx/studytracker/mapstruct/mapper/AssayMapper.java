@@ -1,6 +1,7 @@
 package com.decibeltx.studytracker.mapstruct.mapper;
 
 import com.decibeltx.studytracker.mapstruct.dto.AssayDetailsDto;
+import com.decibeltx.studytracker.mapstruct.dto.AssayParentDto;
 import com.decibeltx.studytracker.mapstruct.dto.AssaySlimDto;
 import com.decibeltx.studytracker.mapstruct.dto.AssaySummaryDto;
 import com.decibeltx.studytracker.model.Assay;
@@ -31,5 +32,12 @@ public interface AssayMapper {
   AssaySlimDto toAssaySlim(Assay assay);
   Set<AssaySlimDto> toAssaySlimSet(Set<Assay> assays);
   List<AssaySlimDto> toAssaySlimList(List<Assay> assays);
+
+  Assay fromAssayParent(AssayParentDto dto);
+  Set<Assay> fromAssayParentSet(Set<AssayParentDto> dtos);
+  List<Assay> fromAssayParentList(Set<AssayParentDto> dtos);
+  AssayParentDto toAssayParent(Assay assay);
+  Set<AssayParentDto> toAssayParentSet(Set<Assay> assays);
+  List<AssayParentDto> toAssayParentList(List<Assay> assays);
 
 }

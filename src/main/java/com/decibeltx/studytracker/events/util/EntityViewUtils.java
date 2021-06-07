@@ -126,9 +126,22 @@ public class EntityViewUtils {
         .map(User::getDisplayName)
         .collect(Collectors.toSet()));
     view.put("fields", assay.getFields());
-    view.put("tasks", assay.getTasks());
+    view.put("tasks", assay.getTasks().stream()
+        .map(EntityViewUtils::createAssayTaskView)
+        .collect(Collectors.toSet()));
     view.put("attributes", assay.getAttributes());
-    view.put("assayType", createAssayTypeView(assay.getAssayType()));
+    view.put("assayType", assay.getAssayType().getName());
+    return view;
+  }
+
+  public static Map<String, Object> createAssayTaskView(AssayTask task) {
+    Map<String, Object> view = new HashMap<>();
+    view.put("id", task.getId());
+    view.put("label", task.getLabel());
+    view.put("status", task.getStatus());
+    view.put("order", task.getOrder());
+    view.put("assignedTo", task.getAssignedTo() != null ? task.getAssignedTo().getDisplayName() : null);
+    view.put("dueDate", task.getDueDate());
     return view;
   }
 
@@ -148,15 +161,6 @@ public class EntityViewUtils {
     view.put("id", link.getId());
     view.put("label", link.getLabel());
     view.put("url", link.getUrl());
-    return view;
-  }
-
-  public static Map<String, Object> createAssayTaskView(AssayTask task) {
-    Map<String, Object> view = new HashMap<>();
-    view.put("id", task.getId());
-    view.put("label", task.getLabel());
-    view.put("status", task.getStatus());
-    view.put("order", task.getOrder());
     return view;
   }
 

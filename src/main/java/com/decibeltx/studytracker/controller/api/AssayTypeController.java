@@ -23,6 +23,7 @@ import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.service.AssayTypeService;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class AssayTypeController {
   }
 
   @PostMapping("")
-  public HttpEntity<AssayTypeDetailsDto> create(@RequestBody AssayTypeDetailsDto dto) {
+  public HttpEntity<AssayTypeDetailsDto> create(@RequestBody @Valid AssayTypeDetailsDto dto) {
     LOGGER.info("Creating assay type");
     LOGGER.info(dto.toString());
     AssayType assayType = assayTypeMapper.fromDetailsDto(dto);
@@ -78,7 +79,7 @@ public class AssayTypeController {
 
   @PutMapping("/{id}")
   public HttpEntity<AssayType> update(@PathVariable("id") String id,
-      @RequestBody AssayTypeDetailsDto dto) {
+      @RequestBody @Valid AssayTypeDetailsDto dto) {
     LOGGER.info("Updating assay type");
     LOGGER.info(dto.toString());
     AssayType assayType = assayTypeMapper.fromDetailsDto(dto);

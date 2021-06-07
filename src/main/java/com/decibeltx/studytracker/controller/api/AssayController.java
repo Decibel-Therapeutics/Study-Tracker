@@ -21,7 +21,7 @@ import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.exception.StudyTrackerException;
 import com.decibeltx.studytracker.mapstruct.dto.ActivitySummaryDto;
 import com.decibeltx.studytracker.mapstruct.dto.AssayDetailsDto;
-import com.decibeltx.studytracker.mapstruct.dto.AssaySummaryDto;
+import com.decibeltx.studytracker.mapstruct.dto.AssayParentDto;
 import com.decibeltx.studytracker.mapstruct.mapper.ActivityMapper;
 import com.decibeltx.studytracker.mapstruct.mapper.AssayMapper;
 import com.decibeltx.studytracker.model.Assay;
@@ -30,6 +30,7 @@ import com.decibeltx.studytracker.model.User;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +61,8 @@ public class AssayController extends AbstractAssayController {
   private ActivityMapper activityMapper;
 
   @GetMapping("")
-  public List<AssaySummaryDto> findAll() {
-    return assayMapper.toAssaySummaryList(getAssayService().findAll().stream()
+  public List<AssayParentDto> findAll() {
+    return assayMapper.toAssayParentList(getAssayService().findAll().stream()
         .filter(Assay::isActive)
         .filter(a -> a.getStudy().isActive())
         .collect(Collectors.toList()));
@@ -73,7 +74,8 @@ public class AssayController extends AbstractAssayController {
   }
 
   @PutMapping("/{id}")
-  public HttpEntity<AssayDetailsDto> update(@PathVariable("id") Long id, @RequestBody AssayDetailsDto dto) {
+  public HttpEntity<AssayDetailsDto> update(@PathVariable("id") Long id,
+      @RequestBody @Valid AssayDetailsDto dto) {
 
     LOGGER.info("Updating assay with id: " + id);
     LOGGER.info(dto.toString());

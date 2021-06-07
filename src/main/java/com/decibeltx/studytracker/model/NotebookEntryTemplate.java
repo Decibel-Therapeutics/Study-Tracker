@@ -16,7 +16,6 @@ import javax.persistence.NamedEntityGraphs;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -39,11 +38,9 @@ public class NotebookEntryTemplate {
     private Long id;
 
     @Column(name = "name", nullable = false, unique = true)
-    @NotNull(message = "Template name must not be empty")
     private String name;
 
     @Column(name = "template_id", nullable = false, unique = true)
-    @NotNull(message = "Template id must not be empty")
     private String templateId;
 
     @CreatedBy

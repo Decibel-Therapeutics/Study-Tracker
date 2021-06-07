@@ -3,6 +3,7 @@ package com.decibeltx.studytracker.controller.api;
 import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
 import com.decibeltx.studytracker.events.EventsService;
 import com.decibeltx.studytracker.events.util.EntryTemplateActivityUtils;
+import com.decibeltx.studytracker.exception.InsufficientPrivilegesException;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.mapstruct.dto.NotebookEntryTemplateDetailsDto;
 import com.decibeltx.studytracker.mapstruct.dto.NotebookEntryTemplateSlimDto;
@@ -14,9 +15,7 @@ import com.decibeltx.studytracker.service.ActivityService;
 import com.decibeltx.studytracker.service.NotebookEntryTemplateService;
 import com.decibeltx.studytracker.service.UserService;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,53 +82,60 @@ public class NotebookEntryTemplateController {
 
     @PostMapping("")
     public HttpEntity<NotebookEntryTemplateDetailsDto> createTemplate(
-        @RequestBody NotebookEntryTemplateDetailsDto dto) throws RecordNotFoundException {
+        @RequestBody @Valid NotebookEntryTemplateDetailsDto dto) {
         LOGGER.info("Creating new entry template : " + dto.toString());
-
+        User user = getAuthenticatedUser();
+        if (!user.isAdmin()){
+            throw new InsufficientPrivilegesException("User does not have sufficient privileges "
+                + "to perform this action: " + user.getUsername());
+        }
         NotebookEntryTemplate notebookEntryTemplate = mapper.fromDetails(dto);
-        authenticateUserAndApplyTemplateOperation(Optional.empty(), notebookEntryTemplate,
-                entryTemplateService::create, EntryTemplateActivityUtils::fromNewEntryTemplate);
+        entryTemplateService.create(notebookEntryTemplate);
+
+        Activity activity = EntryTemplateActivityUtils.fromNewEntryTemplate(notebookEntryTemplate, user);
+        activityService.create(activity);
+        eventsService.dispatchEvent(activity);
 
         return new ResponseEntity<>(mapper.toDetails(notebookEntryTemplate), HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}/status")
     public HttpEntity<?> updateTemplateStatus(@PathVariable("id") Long id,
-                                                                  @RequestParam("active") boolean active)
-            throws RecordNotFoundException {
+        @RequestParam("active") boolean active) throws RecordNotFoundException {
+
         LOGGER.info("Updating template with id: " + id);
 
+        User user = getAuthenticatedUser();
         NotebookEntryTemplate notebookEntryTemplate = getTemplateById(id);
-        authenticateUserAndApplyTemplateOperation(Optional.of(active), notebookEntryTemplate,
-                entryTemplateService::update,EntryTemplateActivityUtils::fromUpdatedEntryTemplate);
+        notebookEntryTemplate.setActive(active);
+        entryTemplateService.update(notebookEntryTemplate);
+
+        Activity activity = EntryTemplateActivityUtils.fromUpdatedEntryTemplate(notebookEntryTemplate, user);
+        activityService.create(activity);
+        eventsService.dispatchEvent(activity);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("")
     public HttpEntity<NotebookEntryTemplateDetailsDto> updateEntryTemplate(
-        @RequestBody NotebookEntryTemplateDetailsDto dto) {
+        @RequestBody @Valid NotebookEntryTemplateDetailsDto dto) {
+
+        User user = getAuthenticatedUser();
+        if (!user.isAdmin()){
+            throw new InsufficientPrivilegesException("User does not have sufficient privileges "
+                + "to perform this action: " + user.getUsername());
+        }
+
         NotebookEntryTemplate notebookEntryTemplate = mapper.fromDetails(dto);
         getTemplateById(notebookEntryTemplate.getId());
-        authenticateUserAndApplyTemplateOperation(Optional.empty(), notebookEntryTemplate,
-                entryTemplateService::update, EntryTemplateActivityUtils::fromUpdatedEntryTemplate);
+        entryTemplateService.update(notebookEntryTemplate);
+
+        Activity activity = EntryTemplateActivityUtils.fromUpdatedEntryTemplate(notebookEntryTemplate, user);
+        activityService.create(activity);
+        eventsService.dispatchEvent(activity);
+
         return new ResponseEntity<>(mapper.toDetails(notebookEntryTemplate), HttpStatus.CREATED);
     }
 
-    private void authenticateUserAndApplyTemplateOperation(Optional<Boolean> status, NotebookEntryTemplate notebookEntryTemplate,
-                                                           Consumer<NotebookEntryTemplate> templateConsumer,
-                                                           BiFunction<NotebookEntryTemplate, User, Activity> activityGenerator) {
-        User user = getAuthenticatedUser();
-        notebookEntryTemplate.setLastModifiedBy(user);
-        status.ifPresent(notebookEntryTemplate::setActive);
-        templateConsumer.accept(notebookEntryTemplate);
-        publishEvents(notebookEntryTemplate, user, activityGenerator);
-    }
-
-    private void publishEvents(NotebookEntryTemplate notebookEntryTemplate, User user,
-                               BiFunction<NotebookEntryTemplate, User, Activity> generateActivity) {
-        Activity activity = generateActivity.apply(notebookEntryTemplate, user);
-        activityService.create(activity);
-        eventsService.dispatchEvent(activity);
-    }
 }

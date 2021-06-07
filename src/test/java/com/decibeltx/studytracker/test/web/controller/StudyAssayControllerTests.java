@@ -31,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.mapstruct.mapper.AssayMapper;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.AssayType;
 import com.decibeltx.studytracker.model.Status;
@@ -87,6 +88,9 @@ public class StudyAssayControllerTests {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private AssayMapper assayMapper;
 
   private String username;
 
@@ -166,20 +170,20 @@ public class StudyAssayControllerTests {
     mockMvc.perform(post("/api/study/XXXXXX/assays/")
         .with(user(user.getUsername()))
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsBytes(assay)))
+        .content(objectMapper.writeValueAsBytes(assayMapper.toAssayDetails(assay))))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isNotFound());
 
     mockMvc.perform(post("/api/study/" + study.getCode() + "/assays/")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsBytes(assay)))
+        .content(objectMapper.writeValueAsBytes(assayMapper.toAssayDetails(assay))))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isUnauthorized());
 
     mockMvc.perform(post("/api/study/" + study.getCode() + "/assays/")
         .with(user(user.getUsername()))
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsBytes(assay)))
+        .content(objectMapper.writeValueAsBytes(assayMapper.toAssayDetails(assay))))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$", hasKey("id")))

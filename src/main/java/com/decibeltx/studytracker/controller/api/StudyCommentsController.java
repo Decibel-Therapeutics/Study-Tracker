@@ -28,6 +28,7 @@ import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.service.StudyCommentService;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ public class StudyCommentsController extends AbstractStudyController {
 
   @PostMapping("")
   public HttpEntity<CommentDto> addStudyComment(@PathVariable("studyId") String studyId,
-      @RequestBody CommentDto dto) {
+      @RequestBody @Valid CommentDto dto) {
 
     LOGGER
         .info(String.format("Creating new comment for study %s: %s", studyId, dto.toString()));
@@ -89,7 +90,7 @@ public class StudyCommentsController extends AbstractStudyController {
 
   @PutMapping("/{commentId}")
   public HttpEntity<CommentDto> editedStudyComment(@PathVariable("studyId") String studyId,
-      @PathVariable("commentId") Long commentId, @RequestBody CommentDto dto) {
+      @PathVariable("commentId") Long commentId, @RequestBody @Valid CommentDto dto) {
 
     LOGGER.info(String.format("Editing comment for study %s: %s", studyId, dto.toString()));
 

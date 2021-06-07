@@ -3,6 +3,8 @@ package com.decibeltx.studytracker.controller.api;
 import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
 import com.decibeltx.studytracker.events.util.AssayActivityUtils;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.mapstruct.dto.AssayTaskDto;
+import com.decibeltx.studytracker.mapstruct.mapper.AssayTaskMapper;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.AssayTask;
@@ -30,14 +32,18 @@ public class AssayTasksController extends AbstractAssayController {
   @Autowired
   private AssayTaskService assayTaskService;
 
+  @Autowired
+  private AssayTaskMapper mapper;
+
   @GetMapping("")
-  public List<AssayTask> fetchTasks(@PathVariable("assayId") String assayId) {
+  public List<AssayTaskDto> fetchTasks(@PathVariable("assayId") String assayId) {
     Assay assay = this.getAssayFromIdentifier(assayId);
-    return assayTaskService.findAssayTasks(assay);
+    return mapper.toDtoList(assayTaskService.findAssayTasks(assay));
   }
 
   @PostMapping("")
-  public HttpEntity<AssayTask> addTask(@PathVariable("assayId") String assayId, @RequestBody AssayTask task) {
+  public HttpEntity<AssayTaskDto> addTask(@PathVariable("assayId") String assayId,
+      @RequestBody AssayTaskDto dto) {
 
     Assay assay = this.getAssayFromIdentifier(assayId);
 
@@ -47,19 +53,20 @@ public class AssayTasksController extends AbstractAssayController {
         .orElseThrow(RecordNotFoundException::new);
     assay.setLastModifiedBy(user);
 
+    AssayTask task = mapper.fromDto(dto);
     assayTaskService.addAssayTask(task, assay);
 
     Activity activity = AssayActivityUtils.fromTaskAdded(assay, user, task);
     this.getActivityService().create(activity);
     this.getEventsService().dispatchEvent(activity);
 
-    return new ResponseEntity<>(task, HttpStatus.OK);
+    return new ResponseEntity<>(mapper.toDto(task), HttpStatus.OK);
 
   }
 
   @PutMapping("")
-  public HttpEntity<AssayTask> updateTask(@PathVariable("assayId") String assayId,
-      @RequestBody AssayTask task) {
+  public HttpEntity<AssayTaskDto> updateTask(@PathVariable("assayId") String assayId,
+      @RequestBody AssayTaskDto dto) {
 
     Assay assay = this.getAssayFromIdentifier(assayId);
 
@@ -69,18 +76,20 @@ public class AssayTasksController extends AbstractAssayController {
         .orElseThrow(RecordNotFoundException::new);
     assay.setLastModifiedBy(user);
 
+    AssayTask task = mapper.fromDto(dto);
     assayTaskService.updateAssayTask(task, assay);
 
     Activity activity = AssayActivityUtils.fromAssayTaskUpdate(assay, user, task);
     this.getActivityService().create(activity);
     this.getEventsService().dispatchEvent(activity);
 
-    return new ResponseEntity<>(task, HttpStatus.OK);
+    return new ResponseEntity<>(mapper.toDto(task), HttpStatus.OK);
 
   }
 
   @DeleteMapping("")
-  public HttpEntity<?> removeTask(@PathVariable("assayId") String assayId, @RequestBody AssayTask task) {
+  public HttpEntity<?> removeTask(@PathVariable("assayId") String assayId,
+      @RequestBody AssayTaskDto dto) {
 
     Assay assay = this.getAssayFromIdentifier(assayId);
 
@@ -90,6 +99,7 @@ public class AssayTasksController extends AbstractAssayController {
         .orElseThrow(RecordNotFoundException::new);
     assay.setLastModifiedBy(user);
 
+    AssayTask task = mapper.fromDto(dto);
     assayTaskService.deleteAssayTask(task, assay);
 
     Activity activity = AssayActivityUtils.fromTaskDeleted(assay, user, task);

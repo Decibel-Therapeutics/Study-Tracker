@@ -46,7 +46,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedBy;
@@ -99,7 +98,6 @@ public class Study {
   private Long id;
 
   @Column(name = "code", nullable = false, unique = true, updatable = false)
-  @NotNull
   private String code;
 
   @Column(name = "external_code")
@@ -107,11 +105,9 @@ public class Study {
 
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
-  @NotNull
   private Status status;
 
   @Column(name = "name", nullable = false, updatable = false)
-  @NotNull
   private String name;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -119,7 +115,6 @@ public class Study {
   private Program program;
 
   @Column(name = "description", nullable = false, columnDefinition = "TEXT")
-  @NotNull
   private String description;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -152,7 +147,6 @@ public class Study {
 
   @Column(name = "start_date", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
-  @NotNull
   private Date startDate;
 
   @Column(name = "end_date")
@@ -198,6 +192,9 @@ public class Study {
 
   @OneToMany(mappedBy = "sourceStudy", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<StudyRelationship> studyRelationships = new HashSet<>();
+
+//  @OneToMany(mappedBy = "targetStudy", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//  private Set<StudyRelationship> studyRelationships = new HashSet<>();
 
   @OneToOne(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   private StudyConclusions conclusions;

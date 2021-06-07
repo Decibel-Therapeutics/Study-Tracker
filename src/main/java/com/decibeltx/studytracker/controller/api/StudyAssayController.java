@@ -29,6 +29,7 @@ import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.User;
 import java.util.List;
 import java.util.Map;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ public class StudyAssayController extends AbstractAssayController {
 
   @PostMapping("")
   public HttpEntity<AssayDetailsDto> create(@PathVariable("studyId") String studyId,
-      @RequestBody AssayDetailsDto dto)
+      @RequestBody @Valid AssayDetailsDto dto)
           throws RecordNotFoundException, NotebookException {
 
     LOGGER.info("Creating assay");
@@ -90,7 +91,7 @@ public class StudyAssayController extends AbstractAssayController {
 
   @PutMapping("/{assayId}")
   public HttpEntity<AssayDetailsDto> update(@PathVariable("assayId") String assayId,
-      @RequestBody AssayDetailsDto dto) {
+      @RequestBody @Valid AssayDetailsDto dto) {
     LOGGER.info("Updating assay");
     LOGGER.info(dto.toString());
     String username = UserAuthenticationUtils

@@ -64,6 +64,10 @@ public class StudyExternalLinkServiceTests {
     link.setUrl(new URL("http://google.com"));
     link.setLabel("Google");
     externalLinkService.addStudyExternalLink(study, link);
+
+    study = studyService.findByCode("PPB-10001").orElseThrow(RecordNotFoundException::new);
+    Assert.assertFalse(study.getExternalLinks().isEmpty());
+    link = study.getExternalLinks().stream().findFirst().orElseThrow();
     Assert.assertNotNull(link.getId());
     Long id = link.getId();
 
