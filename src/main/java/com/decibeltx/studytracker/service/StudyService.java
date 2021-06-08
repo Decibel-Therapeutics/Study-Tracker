@@ -177,9 +177,14 @@ public class StudyService {
     LOGGER.info(String.format("Creating ELN entry for study: %s", study.getCode()));
     if (study.isLegacy()) {
       LOGGER.info(String.format("Legacy Study : %s", study.getCode()));
-      ELNFolder notebookFolder = study.getNotebookFolder();
-      notebookFolder.setName(namingService.getStudyNotebookFolderName(study));
-      study.setNotebookFolder(notebookFolder);
+      if (study.getNotebookFolder().getUrl() != null) {
+        ELNFolder notebookFolder = study.getNotebookFolder();
+        notebookFolder.setName(namingService.getStudyNotebookFolderName(study));
+        study.setNotebookFolder(notebookFolder);
+      } else {
+        LOGGER.warn("No ELN URL set, so folder reference will not be created.");
+        study.setNotebookFolder(null);
+      }
     } else {
       if (notebookService != null) {
         try {

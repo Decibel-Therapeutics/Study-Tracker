@@ -30,7 +30,6 @@ import com.decibeltx.studytracker.Application;
 import com.decibeltx.studytracker.example.ExampleDataGenerator;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.mapstruct.dto.StudyRelationshipSlimDto;
-import com.decibeltx.studytracker.mapstruct.mapper.StudyRelationshipMapper;
 import com.decibeltx.studytracker.model.RelationshipType;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyRelationship;
@@ -70,9 +69,6 @@ public class StudyRelationshipControllerTests {
 
   @Autowired
   private UserRepository userRepository;
-
-  @Autowired
-  private StudyRelationshipMapper mapper;
 
   private String username;
 
