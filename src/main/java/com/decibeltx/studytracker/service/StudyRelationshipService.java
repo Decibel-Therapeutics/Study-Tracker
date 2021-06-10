@@ -21,7 +21,6 @@ import com.decibeltx.studytracker.model.RelationshipType;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyRelationship;
 import com.decibeltx.studytracker.repository.StudyRelationshipRepository;
-import com.decibeltx.studytracker.repository.StudyRepository;
 import java.util.List;
 import java.util.Optional;
 import org.hibernate.Hibernate;
@@ -31,9 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StudyRelationshipService {
-
-  @Autowired
-  private StudyRepository studyRepository;
 
   @Autowired
   private StudyRelationshipRepository studyRelationshipRepository;
@@ -88,7 +84,7 @@ public class StudyRelationshipService {
       StudyRelationship relationship = optional.get();
       sourceStudy.removeStudyRelationship(relationship);
       targetStudy.removeStudyRelationship(relationship);
-//      studyRelationshipRepository.deleteById(optional.get().getId());
+      studyRelationshipRepository.deleteById(relationship.getId());
     } else {
       throw new RecordNotFoundException(String.format("No study relationship found for source study "
           + "%s and target study %s", sourceStudy.getCode(), targetStudy.getCode()));
@@ -100,23 +96,11 @@ public class StudyRelationshipService {
       StudyRelationship relationship = optional.get();
       sourceStudy.removeStudyRelationship(relationship);
       targetStudy.removeStudyRelationship(relationship);
-//      studyRelationshipRepository.deleteById(optional.get().getId());
+      studyRelationshipRepository.deleteById(relationship.getId());
     } else {
       throw new RecordNotFoundException(String.format("No study relationship found for source study "
           + "%s and target study %s", targetStudy.getCode(), sourceStudy.getCode()));
     }
-
-    studyRepository.save(sourceStudy);
-
-//    studyRelationshipRepository.flush();
-//
-//    Study s1 = studyRepository.getOne(sourceStudy.getId());
-//    s1.setUpdatedAt(new Date());
-//    studyRepository.save(s1);
-//
-//    Study s2 = studyRepository.getOne(targetStudy.getId());
-//    s2.setUpdatedAt(new Date());
-//    studyRepository.save(s2);
 
   }
 

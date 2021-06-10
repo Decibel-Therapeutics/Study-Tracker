@@ -57,7 +57,7 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
   List<Activity> findByProgramId(Long programId);
 
   @EntityGraph("activity-details")
-  @Query("select a from Activity a where a.user = ?1 ")
+  @Query("select a from Activity a where a.user.id = ?1 ")
   List<Activity> findByUserId(Long userId);
 
   long countByDateAfter(Date date);

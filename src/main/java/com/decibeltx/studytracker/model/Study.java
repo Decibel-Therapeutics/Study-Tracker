@@ -190,7 +190,7 @@ public class Study {
   @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<ExternalLink> externalLinks = new HashSet<>();
 
-  @OneToMany(mappedBy = "sourceStudy", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "sourceStudy", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
   private Set<StudyRelationship> studyRelationships = new HashSet<>();
 
 //  @OneToMany(mappedBy = "targetStudy", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

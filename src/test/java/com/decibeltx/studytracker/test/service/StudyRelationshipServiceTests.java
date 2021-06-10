@@ -112,21 +112,26 @@ public class StudyRelationshipServiceTests {
         .orElseThrow(RecordNotFoundException::new);
     Study targetStudy = studyService.findByCode("PPB-10001")
         .orElseThrow(RecordNotFoundException::new);
-    List<StudyRelationship> sourceRelationships
-        = studyRelationshipService.findStudyRelationships(sourceStudy);
-    List<StudyRelationship> targetRelationships
-        = studyRelationshipService.findStudyRelationships(targetStudy);
+//    List<StudyRelationship> sourceRelationships
+//        = studyRelationshipService.findStudyRelationships(sourceStudy);
+//    List<StudyRelationship> targetRelationships
+//        = studyRelationshipService.findStudyRelationships(targetStudy);
 
-    Assert.assertEquals(1, sourceRelationships.size());
-    Assert.assertEquals(1, targetRelationships.size());
+    Assert.assertEquals(1, sourceStudy.getStudyRelationships().size());
+    Assert.assertEquals(1, targetStudy.getStudyRelationships().size());
 
     studyRelationshipService.removeStudyRelationship(sourceStudy, targetStudy);
 
-    sourceRelationships = studyRelationshipService.findStudyRelationships(sourceStudy);
-    targetRelationships = studyRelationshipService.findStudyRelationships(targetStudy);
+//    sourceRelationships = studyRelationshipService.findStudyRelationships(sourceStudy);
+//    targetRelationships = studyRelationshipService.findStudyRelationships(targetStudy);
 
-    Assert.assertEquals(0, targetRelationships.size());
-    Assert.assertEquals(0, sourceRelationships.size());
+    sourceStudy = studyService.findByCode("CPA-10001")
+        .orElseThrow(RecordNotFoundException::new);
+    targetStudy = studyService.findByCode("PPB-10001")
+        .orElseThrow(RecordNotFoundException::new);
+
+    Assert.assertEquals(0, sourceStudy.getStudyRelationships().size());
+    Assert.assertEquals(0, targetStudy.getStudyRelationships().size());
   }
 
 

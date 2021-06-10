@@ -429,7 +429,7 @@ const ActivityMessage = ({activity}) => {
       );
 
     case studyActions.FILE_UPLOADED.value:
-      if (!!activity.assayId) {
+      if (!!activity.data.assay) {
         return (
             <React.Fragment>
               <p>

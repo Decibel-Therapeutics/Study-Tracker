@@ -103,29 +103,24 @@ public class StudyBaseController extends AbstractStudyController {
           .collect(Collectors.toList());
     }
 
-    // Find by user TODO
+    // Find by user
     else if (userId != null) {
       Optional<User> optional = getUserService().findById(userId);
       if (!optional.isPresent()) {
         throw new RecordNotFoundException("Cannot find user record: " + userId);
       }
       User user = optional.get();
-      studies = getStudyService().findAll()
-          .stream()
-          .filter(study -> study.getOwner().getId().equals(user.getId()) && study.isActive())
-          .collect(Collectors.toList());
+      studies = getStudyService().findByUser(user);
     }
 
-    // My studies TODO
+    //
     else if (my) {
       try {
         String username = UserAuthenticationUtils
             .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
         User user = getUserService().findByUsername(username)
             .orElseThrow(RecordNotFoundException::new);
-        studies = getStudyService().findAll().stream()
-            .filter(s -> s.getOwner().equals(user))
-            .collect(Collectors.toList());
+        studies = getStudyService().findByUser(user);
       } catch (Exception e) {
         throw new StudyTrackerException(e);
       }

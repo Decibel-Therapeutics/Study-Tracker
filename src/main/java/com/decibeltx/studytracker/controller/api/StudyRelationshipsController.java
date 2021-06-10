@@ -122,8 +122,8 @@ public class StudyRelationshipsController extends AbstractStudyController {
     Study targetStudy = getStudyFromIdentifier(relationship.getTargetStudy().getId().toString());
 
     studyRelationshipService.removeStudyRelationship(sourceStudy, targetStudy);
-    this.getStudyService().markAsUpdated(sourceStudy, user);
-    this.getStudyService().markAsUpdated(targetStudy, user);
+//    this.getStudyService().markAsUpdated(sourceStudy, user);
+//    this.getStudyService().markAsUpdated(targetStudy, user);
 
     // Publish events
     Activity sourceActivity = StudyActivityUtils.fromDeletedStudyRelationship(sourceStudy, user);

@@ -71,13 +71,24 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public UserDetailsDto getUser(@PathVariable("id") Long id) throws Exception {
-    Optional<User> optional = userService.findById(id);
+  public UserDetailsDto getUser(@PathVariable("id") String username) throws Exception {
+    Optional<User> optional = userService.findByUsername(username);
+    User user;
     if (optional.isPresent()) {
-      return userMapper.toUserDetails(optional.get());
+      user = optional.get();
     } else {
-      throw new RecordNotFoundException();
+      try {
+        optional = userService.findById(Long.parseLong(username));
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      if (optional.isPresent()) {
+        user = optional.get();
+      } else {
+        throw new RecordNotFoundException("User not found: " + username);
+      }
     }
+    return userMapper.toUserDetails(user);
   }
 
   @PostMapping("/{id}/status")

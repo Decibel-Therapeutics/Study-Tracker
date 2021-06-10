@@ -73,9 +73,9 @@ public class NamingService {
    */
   public String generateAssayCode(Assay assay) {
     Study study = assay.getStudy();
-    String prefix = study.getProgram().getCode() + "-";
-    int count = options.getAssayCodeCounterStart()
-        + assayRepository.findByCodePrefix(prefix).size();
+    String prefix = study.getCode().split("-")[0] + "-";
+    long count = options.getAssayCodeCounterStart()
+        + assayRepository.countByCodePrefix(prefix);
     return study.getCode() + "-"
         + String.format("%0" + options.getAssayCodeMinimumDigits() + "d", count);
   }

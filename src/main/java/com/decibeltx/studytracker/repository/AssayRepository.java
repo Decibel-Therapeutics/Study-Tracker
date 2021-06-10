@@ -40,8 +40,11 @@ public interface AssayRepository extends JpaRepository<Assay, Long> {
   @EntityGraph("assay-summary")
   List<Assay> findByStudyId(Long studyId);
 
-  @Query("select a from Assay a where lower(a.code) like lower(concat('%', ?1, '%'))")
+  @Query("select a from Assay a where lower(a.code) like lower(concat(?1, '%'))")
   List<Assay> findByCodePrefix(String prefix);
+
+  @Query("select count(a) from Assay a where lower(a.code) like lower(concat(?1, '%'))")
+  long countByCodePrefix(String prefix);
 
   long countByCreatedAtBefore(Date date);
 

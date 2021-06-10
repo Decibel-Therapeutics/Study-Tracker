@@ -25,10 +25,8 @@ import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.User;
 import com.decibeltx.studytracker.repository.ActivityRepository;
-import com.decibeltx.studytracker.repository.AssayRepository;
 import com.decibeltx.studytracker.repository.ProgramRepository;
 import com.decibeltx.studytracker.repository.StudyRepository;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -47,9 +45,6 @@ public class ActivityService {
 
   @Autowired
   private StudyRepository studyRepository;
-
-  @Autowired
-  private AssayRepository assayRepository;
 
   @Autowired
   private ProgramRepository programRepository;
@@ -71,11 +66,7 @@ public class ActivityService {
   }
 
   public List<Activity> findByStudy(Study study) {
-    List<Activity> activityList = activityRepository.findByStudyId(study.getId());
-    for (Assay assay : assayRepository.findByStudyId(study.getId())) {
-      activityList.addAll(this.findByAssay(assay));
-    }
-    return activityList;
+    return activityRepository.findByStudyId(study.getId());
   }
 
   public List<Activity> findByAssay(Assay assay) {
@@ -83,12 +74,7 @@ public class ActivityService {
   }
 
   public List<Activity> findByProgram(Program program) {
-    List<Activity> activities = new ArrayList<>();
-    for (Study study : studyRepository.findByProgramId(program.getId())) {
-      List<Activity> activityList = this.findByStudy(study);
-      activities.addAll(activityList);
-    }
-    return activities;
+    return activityRepository.findByProgramId(program.getId());
   }
 
   public List<Activity> findByEventType(EventType type) {

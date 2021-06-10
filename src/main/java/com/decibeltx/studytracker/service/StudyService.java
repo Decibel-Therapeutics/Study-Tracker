@@ -101,6 +101,10 @@ public class StudyService {
     return studyRepository.findByProgramId(program.getId());
   }
 
+  public List<Study> findByUser(User user) {
+    return studyRepository.findByUsersId(user.getId());
+  }
+
   /**
    * Finds a study with the unique given name.
    *

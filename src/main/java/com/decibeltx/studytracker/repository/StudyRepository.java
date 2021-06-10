@@ -52,6 +52,10 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
   @Query("select s from Assay a join a.study s where a.id = ?1")
   Optional<Study> findByAssayId(Long assayId);
 
+  @EntityGraph("study-with-attributes")
+//  @Query("select s from Study s join s.users u where u.id = ?1")
+  List<Study> findByUsersId(Long userId);
+
   /**
    * Fetches all studies that have an {@code externalCode} value that starts with the provided
    * prefix. Used in generating additional externa study codes.
