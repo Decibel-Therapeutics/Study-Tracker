@@ -190,6 +190,12 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
     </dependency>
 
     <dependency>
@@ -417,6 +423,12 @@
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.13.0</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <version>7.10.0</version>
       </plugin>
 
     </plugins>

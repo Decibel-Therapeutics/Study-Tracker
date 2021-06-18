@@ -110,7 +110,7 @@ public class Study {
   @Column(name = "name", nullable = false, updatable = false)
   private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "program_id", nullable = false, updatable = false)
   private Program program;
 
