@@ -13,6 +13,7 @@ import com.decibeltx.studytracker.service.StudyCollectionService;
 import com.decibeltx.studytracker.service.StudyService;
 import com.decibeltx.studytracker.service.UserService;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -50,12 +52,36 @@ public class StudyCollectionController {
   private StudyCollectionMapper mapper;
 
   @GetMapping("")
-  public List<StudyCollectionDto> getStudyCollections() {
-    return mapper.toDtoList(studyCollectionService.findAll());
+  public List<StudyCollectionDto> getStudyCollections(
+      @RequestParam(name = "userId", required = false) Long userId,
+      @RequestParam(name = "studyId", required = false) Long studyId,
+      @RequestParam(name = "public", required = false) Boolean isPublic
+  ) {
+    List<StudyCollection> collections;
+    if (userId != null) {
+      User user = userService.findById(userId)
+          .orElseThrow(() -> new InvalidConstraintException("User does not exist: " + userId));
+      collections = studyCollectionService.findByUser(user);
+    } else if (studyId != null) {
+      Study study = studyService.findById(studyId)
+          .orElseThrow(() -> new InvalidConstraintException("Study does not exist: " + studyId));
+      collections = studyCollectionService.findByStudy(study);
+    } else {
+      collections = studyCollectionService.findAll();
+      if (isPublic != null) {
+        collections = collections.stream()
+            .filter(c -> c.isShared() == isPublic)
+            .collect(Collectors.toList());
+      }
+    }
+
+    return mapper.toDtoList(collections);
   }
 
   @PostMapping("")
   public HttpEntity<StudyCollectionDto> createCollection(@RequestBody @Valid StudyCollectionDto payload) {
+
+    LOGGER.info("Creating new study collections: " + payload.toString());
 
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
@@ -77,6 +103,8 @@ public class StudyCollectionController {
   @PutMapping("/{id}")
   public HttpEntity<StudyCollectionDto> updateCollection(@PathVariable("id") Long id,
       @RequestBody @Valid StudyCollectionDto dto) {
+
+    LOGGER.info("Attempting to update existing study collections: " + dto.toString());
 
     studyCollectionService.findById(id)
         .orElseThrow(() -> new RecordNotFoundException("Study collection not found: " + id));
@@ -107,6 +135,8 @@ public class StudyCollectionController {
 
   @DeleteMapping("/{id}")
   public HttpEntity<?> deleteCollection(@PathVariable("id") Long id) {
+
+    LOGGER.info("Attempting to delete study collection: " + id);
 
     StudyCollection collection = studyCollectionService.findById(id)
         .orElseThrow(() -> new RecordNotFoundException("Study collection not found: " + id));

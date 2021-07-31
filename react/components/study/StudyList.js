@@ -212,7 +212,6 @@ const ExportToCsv = (props) => {
         <Button color={'primary'} onClick={handleClick}>
           Export to CSV
           &nbsp;
-          {/*<FontAwesomeIcon icon={faFile} />*/}
           <File className="feather align-middle ml-2 mb-1"/>
         </Button>
       </span>
