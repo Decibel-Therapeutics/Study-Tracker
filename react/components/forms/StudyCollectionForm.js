@@ -21,6 +21,7 @@ import {
   Row
 } from "reactstrap";
 import Select from "react-select";
+import {StudyInputs} from "./studies";
 
 export default class StudyCollectionForm extends React.Component {
 
@@ -284,6 +285,31 @@ export default class StudyCollectionForm extends React.Component {
                             Provide a brief description of the study collection.
                           </FormText>
                         </FormGroup>
+                      </Col>
+
+                    </Row>
+
+                    <Row>
+                      <Col>
+                        <hr/>
+                      </Col>
+                    </Row>
+
+                    <Row form>
+                      <Col md="12">
+                        <h5 className="card-title">Studies</h5>
+                        <h6 className="card-subtitle text-muted">
+                          Search-for and add studies to your collection. You can
+                          add as many studies as you like.
+                        </h6>
+                        <br/>
+                      </Col>
+
+                      <Col md={12}>
+                        <StudyInputs
+                            studies={this.state.collection.studies || []}
+                            onChange={this.handleFormUpdate}
+                        />
                       </Col>
 
                     </Row>

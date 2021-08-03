@@ -1,14 +1,18 @@
 package com.decibeltx.studytracker.controller.api;
 
 import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
+import com.decibeltx.studytracker.events.EventsService;
+import com.decibeltx.studytracker.events.util.StudyCollectionActivityUtils;
 import com.decibeltx.studytracker.exception.InsufficientPrivilegesException;
 import com.decibeltx.studytracker.exception.InvalidConstraintException;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.mapstruct.dto.StudyCollectionDto;
 import com.decibeltx.studytracker.mapstruct.mapper.StudyCollectionMapper;
+import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyCollection;
 import com.decibeltx.studytracker.model.User;
+import com.decibeltx.studytracker.service.ActivityService;
 import com.decibeltx.studytracker.service.StudyCollectionService;
 import com.decibeltx.studytracker.service.StudyService;
 import com.decibeltx.studytracker.service.UserService;
@@ -50,6 +54,12 @@ public class StudyCollectionController {
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private StudyCollectionMapper mapper;
+
+  @Autowired
+  private ActivityService activityService;
+
+  @Autowired
+  private EventsService eventsService;
 
   @GetMapping("")
   public List<StudyCollectionDto> getStudyCollections(
@@ -95,8 +105,14 @@ public class StudyCollectionController {
       throw new InvalidConstraintException("A study collection with this name already exists.");
     }
 
-    StudyCollectionDto output = mapper.toDto(studyCollectionService.create(collection));
-    return new ResponseEntity<>(output, HttpStatus.CREATED);
+    studyCollectionService.create(collection);
+
+    // Publish the event
+    Activity activity = StudyCollectionActivityUtils.fromNewStudyCollection(collection, currentUser);
+    activityService.create(activity);
+    eventsService.dispatchEvent(activity);
+
+    return new ResponseEntity<>(mapper.toDto(collection), HttpStatus.CREATED);
 
   }
 
@@ -129,6 +145,12 @@ public class StudyCollectionController {
 
     StudyCollection output = studyCollectionService.findById(id)
         .orElseThrow(() -> new RecordNotFoundException("Study collection not found: " + id));
+
+    // Publish the event
+    Activity activity = StudyCollectionActivityUtils.fromUpdatedStudyCollection(collection, currentUser);
+    activityService.create(activity);
+    eventsService.dispatchEvent(activity);
+
     return new ResponseEntity<>(mapper.toDto(output), HttpStatus.OK);
 
   }
@@ -152,6 +174,11 @@ public class StudyCollectionController {
 
     studyCollectionService.delete(collection);
 
+    // Publish the event
+    Activity activity = StudyCollectionActivityUtils.fromDeletedStudyCollection(collection, currentUser);
+    activityService.create(activity);
+    eventsService.dispatchEvent(activity);
+
     return new ResponseEntity<>(HttpStatus.OK);
 
   }
@@ -159,6 +186,11 @@ public class StudyCollectionController {
   @PostMapping("/{collectionId}/{studyId}")
   public HttpEntity<?> addStudyToCollection(@PathVariable("collectionId") Long collectionId,
       @PathVariable("studyId") Long studyId) {
+
+    String username = UserAuthenticationUtils
+        .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
+    User currentUser = userService.findByUsername(username)
+        .orElseThrow(RecordNotFoundException::new);
 
     StudyCollection collection = studyCollectionService.findById(collectionId)
         .orElseThrow(() -> new RecordNotFoundException("Study collection not found: " + collectionId));
@@ -168,6 +200,11 @@ public class StudyCollectionController {
     collection.addStudy(study);
     studyCollectionService.update(collection);
 
+    // Publish the event
+    Activity activity = StudyCollectionActivityUtils.fromStudyAddedToCollection(study, collection, currentUser);
+    activityService.create(activity);
+    eventsService.dispatchEvent(activity);
+
     return new ResponseEntity<>(HttpStatus.OK);
 
   }
@@ -176,6 +213,11 @@ public class StudyCollectionController {
   public HttpEntity<?> removeStudyFromCollection(@PathVariable("collectionId") Long collectionId,
       @PathVariable("studyId") Long studyId) {
 
+    String username = UserAuthenticationUtils
+        .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
+    User currentUser = userService.findByUsername(username)
+        .orElseThrow(RecordNotFoundException::new);
+
     StudyCollection collection = studyCollectionService.findById(collectionId)
         .orElseThrow(() -> new RecordNotFoundException("Study collection not found: " + collectionId));
     Study study = studyService.findById(studyId)
@@ -183,6 +225,11 @@ public class StudyCollectionController {
 
     collection.removeStudy(study);
     studyCollectionService.update(collection);
+
+    // Publish the event
+    Activity activity = StudyCollectionActivityUtils.fromStudyRemovedFromCollection(study, collection, currentUser);
+    activityService.create(activity);
+    eventsService.dispatchEvent(activity);
 
     return new ResponseEntity<>(HttpStatus.OK);
 
