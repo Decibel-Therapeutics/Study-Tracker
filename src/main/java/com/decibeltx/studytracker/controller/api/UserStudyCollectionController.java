@@ -1,7 +1,7 @@
 package com.decibeltx.studytracker.controller.api;
 
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
-import com.decibeltx.studytracker.mapstruct.dto.StudyCollectionDto;
+import com.decibeltx.studytracker.mapstruct.dto.StudyCollectionSummaryDto;
 import com.decibeltx.studytracker.mapstruct.mapper.StudyCollectionMapper;
 import com.decibeltx.studytracker.model.StudyCollection;
 import com.decibeltx.studytracker.model.User;
@@ -50,10 +50,10 @@ public class UserStudyCollectionController {
   }
 
   @GetMapping("")
-  public List<StudyCollectionDto> getUserStudyCollections(@PathVariable("userId") String userId) {
+  public List<StudyCollectionSummaryDto> getUserStudyCollections(@PathVariable("userId") String userId) {
     User user = getUserFromIdentifier(userId);
     List<StudyCollection> collections = studyCollectionService.findByUser(user);
-    return mapper.toDtoList(collections);
+    return mapper.toSummaryDtoList(collections);
   }
 
 }

@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class StudyCollectionDto {
+public class StudyCollectionSummaryDto {
 
   private Long id;
   private @NotNull String name;

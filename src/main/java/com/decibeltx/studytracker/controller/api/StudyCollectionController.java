@@ -6,7 +6,8 @@ import com.decibeltx.studytracker.events.util.StudyCollectionActivityUtils;
 import com.decibeltx.studytracker.exception.InsufficientPrivilegesException;
 import com.decibeltx.studytracker.exception.InvalidConstraintException;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
-import com.decibeltx.studytracker.mapstruct.dto.StudyCollectionDto;
+import com.decibeltx.studytracker.mapstruct.dto.StudyCollectionDetailsDto;
+import com.decibeltx.studytracker.mapstruct.dto.StudyCollectionSummaryDto;
 import com.decibeltx.studytracker.mapstruct.mapper.StudyCollectionMapper;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Study;
@@ -17,6 +18,7 @@ import com.decibeltx.studytracker.service.StudyCollectionService;
 import com.decibeltx.studytracker.service.StudyService;
 import com.decibeltx.studytracker.service.UserService;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.slf4j.Logger;
@@ -62,7 +64,7 @@ public class StudyCollectionController {
   private EventsService eventsService;
 
   @GetMapping("")
-  public List<StudyCollectionDto> getStudyCollections(
+  public List<StudyCollectionSummaryDto> getStudyCollections(
       @RequestParam(name = "userId", required = false) Long userId,
       @RequestParam(name = "studyId", required = false) Long studyId,
       @RequestParam(name = "public", required = false) Boolean isPublic
@@ -85,11 +87,21 @@ public class StudyCollectionController {
       }
     }
 
-    return mapper.toDtoList(collections);
+    return mapper.toSummaryDtoList(collections);
+  }
+
+  @GetMapping("/{id}")
+  public StudyCollectionDetailsDto findById(@PathVariable("id") Long id) {
+    Optional<StudyCollection> optional = studyCollectionService.findById(id);
+    if (optional.isPresent()) {
+      return mapper.toDetailsDto(optional.get());
+    } else {
+      throw new RecordNotFoundException("Could not find study collection: " + id);
+    }
   }
 
   @PostMapping("")
-  public HttpEntity<StudyCollectionDto> createCollection(@RequestBody @Valid StudyCollectionDto payload) {
+  public HttpEntity<StudyCollectionSummaryDto> createCollection(@RequestBody @Valid StudyCollectionSummaryDto payload) {
 
     LOGGER.info("Creating new study collections: " + payload.toString());
 
@@ -98,7 +110,7 @@ public class StudyCollectionController {
     User currentUser = userService.findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
 
-    StudyCollection collection = mapper.fromDto(payload);
+    StudyCollection collection = mapper.fromSummaryDto(payload);
 
     // Make sure a collection owned by the same user does not exist already
     if (studyCollectionService.collectionWithNameExists(collection.getName(), currentUser)) {
@@ -112,19 +124,19 @@ public class StudyCollectionController {
     activityService.create(activity);
     eventsService.dispatchEvent(activity);
 
-    return new ResponseEntity<>(mapper.toDto(collection), HttpStatus.CREATED);
+    return new ResponseEntity<>(mapper.toSummaryDto(collection), HttpStatus.CREATED);
 
   }
 
   @PutMapping("/{id}")
-  public HttpEntity<StudyCollectionDto> updateCollection(@PathVariable("id") Long id,
-      @RequestBody @Valid StudyCollectionDto dto) {
+  public HttpEntity<StudyCollectionSummaryDto> updateCollection(@PathVariable("id") Long id,
+      @RequestBody @Valid StudyCollectionSummaryDto dto) {
 
     LOGGER.info("Attempting to update existing study collections: " + dto.toString());
 
     studyCollectionService.findById(id)
         .orElseThrow(() -> new RecordNotFoundException("Study collection not found: " + id));
-    StudyCollection collection = mapper.fromDto(dto);
+    StudyCollection collection = mapper.fromSummaryDto(dto);
 
     String username = UserAuthenticationUtils
         .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
@@ -151,7 +163,7 @@ public class StudyCollectionController {
     activityService.create(activity);
     eventsService.dispatchEvent(activity);
 
-    return new ResponseEntity<>(mapper.toDto(output), HttpStatus.OK);
+    return new ResponseEntity<>(mapper.toSummaryDto(output), HttpStatus.OK);
 
   }
 

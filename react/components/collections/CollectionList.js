@@ -21,7 +21,22 @@ const myCollectionColumns = [
     dataField: "name",
     text: "Name",
     sort: true,
-    formatter: (cell, d, index, x) => d.name
+    formatter: (cell, d, index, x) => {
+      return (
+          <a href={"/collection/" + d.id}>
+            {d.name}
+          </a>
+      )
+    },
+    sortFunc: (a, b, order, dataField, rowA, rowB) => {
+      if (rowA.name > rowB.name) {
+        return order === "desc" ? -1 : 1;
+      }
+      if (rowB.name > rowA.name) {
+        return order === "desc" ? 1 : -1;
+      }
+      return 0;
+    },
   },
   {
     dataField: "description",
@@ -59,7 +74,22 @@ const publicCollectionColumns = [
     dataField: "name",
     text: "Name",
     sort: true,
-    formatter: (cell, d, index, x) => d.name
+    formatter: (cell, d, index, x) => {
+      return (
+          <a href={"/collection/" + d.id}>
+            {d.name}
+          </a>
+      )
+    },
+    sortFunc: (a, b, order, dataField, rowA, rowB) => {
+      if (rowA.name > rowB.name) {
+        return order === "desc" ? -1 : 1;
+      }
+      if (rowB.name > rowA.name) {
+        return order === "desc" ? 1 : -1;
+      }
+      return 0;
+    },
   },
   {
     dataField: "description",

@@ -1,6 +1,6 @@
 package com.decibeltx.studytracker.controller.api;
 
-import com.decibeltx.studytracker.mapstruct.dto.StudyCollectionDto;
+import com.decibeltx.studytracker.mapstruct.dto.StudyCollectionSummaryDto;
 import com.decibeltx.studytracker.mapstruct.mapper.StudyCollectionMapper;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.StudyCollection;
@@ -24,10 +24,10 @@ public class StudyStudyCollectionController extends AbstractStudyController {
   private StudyCollectionMapper mapper;
 
   @GetMapping("")
-  public List<StudyCollectionDto> getStudyStudyCollections(@PathVariable("studyId") String studyId) {
+  public List<StudyCollectionSummaryDto> getStudyStudyCollections(@PathVariable("studyId") String studyId) {
     Study study = this.getStudyFromIdentifier(studyId);
     List<StudyCollection> collections = studyCollectionService.findByStudy(study);
-    return mapper.toDtoList(collections);
+    return mapper.toSummaryDtoList(collections);
   }
 
 }
