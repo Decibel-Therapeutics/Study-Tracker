@@ -48,9 +48,10 @@ public class StudyCollectionService {
     studyCollectionRepository.deleteById(collection.getId());
   }
 
-  public boolean collectionWithNameExists(String name, User user) {
+  public boolean collectionWithNameExists(StudyCollection collection, User user) {
     return studyCollectionRepository.findByCreatedById(user.getId()).stream()
-        .anyMatch(c -> c.getName().equalsIgnoreCase(name.toLowerCase()));
+        .anyMatch(c -> c.getName().equalsIgnoreCase(collection.getName().toLowerCase())
+            && !c.getId().equals(collection.getId()));
   }
 
 }

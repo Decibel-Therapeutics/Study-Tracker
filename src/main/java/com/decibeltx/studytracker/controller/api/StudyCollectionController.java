@@ -113,7 +113,7 @@ public class StudyCollectionController {
     StudyCollection collection = mapper.fromSummaryDto(payload);
 
     // Make sure a collection owned by the same user does not exist already
-    if (studyCollectionService.collectionWithNameExists(collection.getName(), currentUser)) {
+    if (studyCollectionService.collectionWithNameExists(collection, currentUser)) {
       throw new InvalidConstraintException("A study collection with this name already exists.");
     }
 
@@ -149,7 +149,7 @@ public class StudyCollectionController {
     }
 
     // Make sure a collection owned by the same user does not exist already
-    if (studyCollectionService.collectionWithNameExists(collection.getName(), currentUser)) {
+    if (studyCollectionService.collectionWithNameExists(collection, currentUser)) {
       throw new InvalidConstraintException("A study collection with this name already exists.");
     }
 

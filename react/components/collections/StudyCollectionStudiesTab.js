@@ -40,7 +40,7 @@ const StudyCollectionStudiesTab = ({studies, user}) => {
           {/*</Col>*/}
         </Row>
 
-        <StudySummaryCards studies={studies}/>
+        <StudySummaryCards studies={studies} />
       </React.Fragment>
   );
 
