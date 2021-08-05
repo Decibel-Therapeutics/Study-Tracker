@@ -18,27 +18,29 @@ class CollectionListView extends React.Component {
     };
   }
 
-  componentDidMount() {
-    fetch("/api/studycollection?userId=" + this.props.user.id)
-    .then(response => response.json())
-    .then(userCollections => {
-      fetch("/api/studycollection?public=true")
+  componentDidUpdate(prevProps) {
+    if (prevProps.user !== this.props.user) {
+      fetch("/api/studycollection?userId=" + this.props.user.id)
       .then(response => response.json())
-      .then(publicCollections => {
+      .then(userCollections => {
+        fetch("/api/studycollection?public=true")
+        .then(response => response.json())
+        .then(publicCollections => {
+          this.setState({
+            userCollections,
+            publicCollections,
+            isLoaded: true
+          })
+        });
+      })
+      .catch(error => {
+        console.error(error);
         this.setState({
-          userCollections,
-          publicCollections,
-          isLoaded: true
-        })
+          isError: true,
+          error: error
+        });
       });
-    })
-    .catch(error => {
-      console.error(error);
-      this.setState({
-        isError: true,
-        error: error
-      });
-    });
+    }
   }
 
   render() {

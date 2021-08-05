@@ -231,7 +231,7 @@ export const CollectionList = ({myCollections, publicCollections, user}) => {
 
       <Row>
         <Col lg="12">
-          <Card>
+          <Card className="details-card">
             <CardHeader>
               <CardTitle>
                 My Collections
@@ -246,7 +246,7 @@ export const CollectionList = ({myCollections, publicCollections, user}) => {
 
       <Row>
         <Col lg="12">
-          <Card>
+          <Card className="details-card">
             <CardHeader>
               <CardTitle>
                 Public Collections

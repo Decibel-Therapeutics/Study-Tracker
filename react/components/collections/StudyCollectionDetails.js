@@ -17,6 +17,7 @@
 import {
   Breadcrumb,
   BreadcrumbItem,
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -26,20 +27,15 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  Nav,
-  NavItem,
-  NavLink,
   Row,
-  TabContent,
-  TabPane,
   UncontrolledDropdown
 } from "reactstrap";
 import React from "react";
-import {Menu} from "react-feather";
+import {File, Menu} from "react-feather";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import {history} from "../../App";
-import StudyCollectionStudiesTab from "./StudyCollectionStudiesTab";
+import {StudyListTable} from "../study/StudyList";
 
 const StudyCollectionDetailsHeader = ({collection, user}) => {
   return (
@@ -48,6 +44,21 @@ const StudyCollectionDetailsHeader = ({collection, user}) => {
           <h1>{collection.name}</h1>
         </Col>
       </Row>
+  );
+};
+
+const ExportToCsv = (props) => {
+  const handleClick = () => {
+    props.onExport();
+  };
+  return (
+      <span>
+        <Button color={'primary'} onClick={handleClick}>
+          Export to CSV
+          &nbsp;
+          <File className="feather align-middle ml-2 mb-1"/>
+        </Button>
+      </span>
   );
 };
 
@@ -97,7 +108,7 @@ class StudyCollectionDetails extends React.Component {
 
           <Row>
 
-            <Col lg={5}>
+            <Col xs={12} md={6}>
               <Card className="details-card">
 
                 <CardHeader>
@@ -143,62 +154,65 @@ class StudyCollectionDetails extends React.Component {
                 </CardHeader>
 
                 <CardBody>
+
                   <Row>
+
                     <Col xs={12}>
-
-                      <h3>{collection.name}</h3>
-
                       <h6 className="details-label">Description</h6>
                       <p>{collection.name}</p>
+                    </Col>
 
+                  </Row>
+
+                  <Row>
+
+                    <Col xs={6} sm={4}>
                       <h6 className="details-label">Created By</h6>
                       <p>{collection.createdBy.displayName}</p>
+                    </Col>
 
+                    <Col xs={6} sm={4}>
                       <h6 className="details-label">Last Modified By</h6>
                       <p>{collection.lastModifiedBy.displayName}</p>
+                    </Col>
 
+                  </Row>
+
+                  <Row>
+
+                    <Col xs={6} sm={4}>
                       <h6 className="details-label">Date Created</h6>
                       <p>{new Date(collection.createdAt).toLocaleString()}</p>
+                    </Col>
 
+                    <Col xs={6} sm={4}>
                       <h6 className="details-label">Last Updated</h6>
                       <p>{new Date(collection.updatedAt).toLocaleString()}</p>
-
                     </Col>
+
                   </Row>
+
                 </CardBody>
 
               </Card>
             </Col>
 
-            <Col lg="7">
+            <Col xs="12">
+              <Card className="details-card">
 
-              {/* Tabs */}
-              <div className="tab">
-                <Nav tabs>
+                <CardHeader>
+                  <CardTitle tag="h5" className="mb-0 text-muted">
+                    Studies
+                  </CardTitle>
+                </CardHeader>
 
-                  <NavItem>
-                    <NavLink
-                        className={this.state.activeTab === "1" ? "active" : ''}
-                        onClick={() => {
-                          this.toggle("1");
-                        }}
-                    >
-                      Studies
-                    </NavLink>
-                  </NavItem>
+                <CardBody>
+                  <StudyListTable studies={collection.studies} />
+                </CardBody>
 
-                </Nav>
-
-                <TabContent activeTab={this.state.activeTab}>
-
-                  <TabPane tabId="1">
-                    <StudyCollectionStudiesTab studies={collection.studies}
-                                        user={this.props.user}/>
-                  </TabPane>
-
-                </TabContent>
-              </div>
+              </Card>
             </Col>
+
           </Row>
         </Container>
     );
