@@ -67,8 +67,15 @@ public class StudyCollectionController {
   public List<StudyCollectionSummaryDto> getStudyCollections(
       @RequestParam(name = "userId", required = false) Long userId,
       @RequestParam(name = "studyId", required = false) Long studyId,
-      @RequestParam(name = "public", required = false) Boolean isPublic
+      @RequestParam(name = "public", required = false) Boolean isPublic,
+      @RequestParam(name = "visibleToMe", required = false) Boolean isVisibleToMe
   ) {
+
+    String username = UserAuthenticationUtils
+        .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
+    User currentUser = userService.findByUsername(username)
+        .orElseThrow(RecordNotFoundException::new);
+
     List<StudyCollection> collections;
     if (userId != null) {
       User user = userService.findById(userId)
@@ -83,6 +90,11 @@ public class StudyCollectionController {
       if (isPublic != null) {
         collections = collections.stream()
             .filter(c -> c.isShared() == isPublic)
+            .collect(Collectors.toList());
+      } else if (isVisibleToMe != null && isVisibleToMe) {
+        collections = collections.stream()
+            .filter(c -> c.isShared() == true
+                || c.getCreatedBy().getId().equals(currentUser.getId()))
             .collect(Collectors.toList());
       }
     }

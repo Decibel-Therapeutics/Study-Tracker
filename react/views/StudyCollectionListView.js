@@ -8,7 +8,7 @@ import {connect} from "react-redux";
 import {compose} from 'redux';
 import {CollectionList} from "../components/collections/CollectionList";
 
-class CollectionListView extends React.Component {
+class StudyCollectionListView extends React.Component {
 
   constructor(props) {
     super(props);
@@ -88,4 +88,4 @@ export default compose(
           user: store.user
         })
     )
-)(CollectionListView);
+)(StudyCollectionListView);

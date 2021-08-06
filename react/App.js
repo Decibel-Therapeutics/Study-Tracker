@@ -41,9 +41,9 @@ import FrontPageView from "./views/FrontPageView";
 import AssayTypeFormView from "./views/AssayTypeFormView";
 import AssayListView from "./views/AssayListView";
 import {TemplateFormView} from './views/TemplateFormView';
-import CollectionListView from "./views/CollectionListView";
 import StudyCollectionFormView from "./views/StudyCollectionFormView";
 import StudyCollectionDetailsView from "./views/StudyCollectionDetailsView";
+import StudyCollectionListView from "./views/StudyCollectionListView";
 
 export const history = createBrowserHistory();
 
@@ -145,7 +145,7 @@ export default class App extends React.Component {
                   <Route
                       exact
                       path={"/collections"}
-                      render={props => <CollectionListView {...props} />}
+                      render={props => <StudyCollectionListView {...props} />}
                   />
 
                   {/*New Collection*/}

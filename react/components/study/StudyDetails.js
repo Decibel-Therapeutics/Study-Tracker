@@ -39,7 +39,7 @@ import {SelectableStatusButton, StatusButton} from "../status";
 import React from "react";
 import {Book, Folder, Menu} from "react-feather";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faEdit, faFolderPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {history} from "../../App";
 import {StudyCollaborator, StudyKeywords, StudyTeam} from "../studyMetadata";
 import ExternalLinks from "../externalLinks";
@@ -51,6 +51,7 @@ import StudyConclusionsTab from "./StudyConclusionsTab";
 import StudyCommentsTab from "./StudyCommentsTab";
 import StudyTimelineTab from "./StudyTimelineTab";
 import swal from "sweetalert";
+import AddToStudyCollectionModal from "../modals/AddToStudyCollectionModal";
 
 const StudyDetailHeader = ({study, user}) => {
   return (
@@ -114,17 +115,26 @@ class StudyDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: "1"
+      activeTab: "1",
+      showCollectionModal: false
     };
     this.handleStudyDelete = this.handleStudyDelete.bind(this);
+    this.toggleTab = this.toggleTab.bind(this);
+    this.toggleCollectionModal = this.toggleCollectionModal.bind(this);
   }
 
-  toggle(tab) {
+  toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
         activeTab: tab
       });
     }
+  }
+
+  toggleCollectionModal() {
+    this.setState({
+      showCollectionModal: !this.state.showCollectionModal
+    });
   }
 
   handleStudyDelete() {
@@ -193,14 +203,21 @@ class StudyDetails extends React.Component {
                         <Menu/>
                       </DropdownToggle>
                       <DropdownMenu right>
+
+                        <DropdownItem onClick={() => this.toggleCollectionModal()}>
+                          <FontAwesomeIcon icon={faFolderPlus}/>
+                          &nbsp;
+                          Add to Collection
+                        </DropdownItem>
+
                         {/*<DropdownItem onClick={() => console.log("Share!")}>*/}
                         {/*  <FontAwesomeIcon icon={faShare}/>*/}
                         {/*  &nbsp;*/}
                         {/*  Share*/}
                         {/*</DropdownItem>*/}
-                        {/*{*/}
-                        {/*  !!this.props.user ? <DropdownItem divider/> : ''*/}
-                        {/*}*/}
+
+                        <DropdownItem divider/>
+
                         {
                           !!this.props.user ? (
                               <DropdownItem onClick={() => history.push(
@@ -383,7 +400,7 @@ class StudyDetails extends React.Component {
                     <NavLink
                         className={this.state.activeTab === "1" ? "active" : ''}
                         onClick={() => {
-                          this.toggle("1");
+                          this.toggleTab("1");
                         }}
                     >
                       Timeline
@@ -394,7 +411,7 @@ class StudyDetails extends React.Component {
                     <NavLink
                         className={this.state.activeTab === "2" ? "active" : ''}
                         onClick={() => {
-                          this.toggle("2");
+                          this.toggleTab("2");
                         }}
                     >
                       Assays
@@ -405,7 +422,7 @@ class StudyDetails extends React.Component {
                     <NavLink
                         className={this.state.activeTab === "3" ? "active" : ''}
                         onClick={() => {
-                          this.toggle("3");
+                          this.toggleTab("3");
                         }}
                     >
                       Files
@@ -418,7 +435,7 @@ class StudyDetails extends React.Component {
                           <NavLink
                               className={this.state.activeTab === "4" ? "active" : ''}
                               onClick={() => {
-                                this.toggle("4");
+                                this.toggleTab("4");
                               }}
                           >
                             Notebook
@@ -431,7 +448,7 @@ class StudyDetails extends React.Component {
                     <NavLink
                         className={this.state.activeTab === "5" ? "active" : ''}
                         onClick={() => {
-                          this.toggle("5");
+                          this.toggleTab("5");
                         }}
                     >
                       Conclusions
@@ -442,7 +459,7 @@ class StudyDetails extends React.Component {
                     <NavLink
                         className={this.state.activeTab === "6" ? "active" : ''}
                         onClick={() => {
-                          this.toggle("6");
+                          this.toggleTab("6");
                         }}
                     >
                       Comments
@@ -487,6 +504,34 @@ class StudyDetails extends React.Component {
               </div>
             </Col>
           </Row>
+
+          {/* Add to collection modal */}
+          <AddToStudyCollectionModal
+              toggle={this.toggleCollectionModal}
+              isOpen={this.state.showCollectionModal}
+              study={study}
+          />
+          {/*<Modal isOpen={this.state.showCollectionModal}*/}
+          {/*       toggle={() => this.toggleCollectionModal()}*/}
+          {/*       size={"md"}>*/}
+          {/*  <ModalHeader toggle={() => this.toggleCollectionModal()}>*/}
+          {/*    Add Study to Collection*/}
+          {/*  </ModalHeader>*/}
+          {/*  <ModalBody>*/}
+          {/*    <Row>*/}
+
+          {/*    </Row>*/}
+          {/*  </ModalBody>*/}
+          {/*  <ModalFooter>*/}
+          {/*    <Button color="secondary" onClick={() => this.toggleCollectionModal()}>*/}
+          {/*      Cancel*/}
+          {/*    </Button>*/}
+          {/*    <Button color="primary" onClick={() => this.handleAddToCollectionSubmit()}>*/}
+          {/*      Submit*/}
+          {/*    </Button>*/}
+          {/*  </ModalFooter>*/}
+          {/*</Modal>*/}
+
         </Container>
     );
   }
