@@ -16,11 +16,16 @@
 
 package com.decibeltx.studytracker.service;
 
+import com.decibeltx.studytracker.exception.RecordNotFoundException;
+import com.decibeltx.studytracker.model.PasswordResetToken;
 import com.decibeltx.studytracker.model.User;
+import com.decibeltx.studytracker.repository.PasswordResetTokenRepository;
 import com.decibeltx.studytracker.repository.UserRepository;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,6 +36,9 @@ public class UserService {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private PasswordResetTokenRepository passwordResetTokenRepository;
 
   public Optional<User> findById(Long id) {
     return userRepository.findById(id);
@@ -109,6 +117,41 @@ public class UserService {
 
   public long countActiveUsers() {
     return userRepository.countByActive(true);
+  }
+
+  // Password reset
+
+  public PasswordResetToken createPasswordResetToken(User user) {
+
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(new Date());
+    calendar.add(Calendar.DATE, 1);
+
+    PasswordResetToken token = new PasswordResetToken();
+    token.setToken(UUID.randomUUID().toString());
+    token.setUser(user);
+    token.setExpirationDate(calendar.getTime());
+
+    return passwordResetTokenRepository.save(token);
+
+  }
+
+  public boolean validatePasswordResetToken(String email, String token) {
+    Optional<PasswordResetToken> optional = passwordResetTokenRepository.findByToken(token);
+    if (optional.isPresent()) {
+      PasswordResetToken resetToken = optional.get();
+      final Calendar cal = Calendar.getInstance();
+      return resetToken.getUser().getEmail().equals(email)
+          && resetToken.getExpirationDate().before(cal.getTime());
+    }
+    return false;
+  }
+
+  @Transactional
+  public void deletePasswordResetToken(String token) {
+    PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
+        .orElseThrow(() -> new RecordNotFoundException("Cannot find password reset token: " + token));
+    passwordResetTokenRepository.deleteById(passwordResetToken.getId());
   }
 
 }

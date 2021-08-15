@@ -33,32 +33,15 @@ import NoNavWrapper from "../structure/NoNavWrapper";
 
 const qs = require('qs');
 
-export default class PasswordResetView extends React.Component {
+export default class PasswordResetRequestView extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       auth: {},
-      inputIsValid: false,
-      isLoaded: false,
-      isError: false
+      inputIsValid: false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    const params = qs.parse(this.props.location.search,
-        {ignoreQueryPrefix: true});
-    if (params.hasOwnProperty("token") && params.hasOwnProperty("email")) {
-      this.setState({
-        auth: {
-          email: params.email,
-          token: params.token
-        },
-        isLoaded: true
-      })
-    }
   }
 
   handleInputChange(data) {
@@ -67,19 +50,13 @@ export default class PasswordResetView extends React.Component {
       ...data
     };
     let inputIsValid = false;
-    if (auth.password != null && auth.password !== ''
-        && auth.passwordAgain != null && auth.passwordAgain !== ''
-        && auth.password === auth.passwordAgain) {
+    if (auth.email != null && auth.email !== '') {
       inputIsValid = true;
     }
     this.setState({
       auth,
       inputIsValid
     });
-  }
-
-  handleSubmit() {
-
   }
 
   render() {
@@ -95,10 +72,10 @@ export default class PasswordResetView extends React.Component {
               <Col xs="12" sm="8" md="8" lg="6" xl="4">
 
                 <div className="text-center mt-4">
-                  <h2>Password Reset</h2>
-                  <p className="lead">
-                    Please enter your username and a new password.
-                  </p>
+                  <h2>Request Password Reset</h2>
+                  <p className="lead">Please enter your email and click submit.
+                    If your account is registered, you will receive and email
+                    with instructions for resetting your password.</p>
                 </div>
 
                 <Card>
@@ -109,7 +86,7 @@ export default class PasswordResetView extends React.Component {
                         <User size={80} className="align-middle mr-2"/>
                       </div>
 
-                      <Form action={"/auth/passwordreset"} method={"post"}>
+                      <Form action={"/auth/passwordresetrequest"} method={"post"}>
 
                         <FormGroup>
                           <Label>Email</Label>
@@ -117,43 +94,9 @@ export default class PasswordResetView extends React.Component {
                               bsSize="lg"
                               type="text"
                               name="email"
-                              value={this.state.auth.email}
-                              disabled={true}
-                          />
-                        </FormGroup>
-
-                        <FormGroup hidden>
-                          <Input
-                              bsSize="lg"
-                              type="text"
-                              name="token"
-                              value={this.state.auth.token}
-                              disabled={true}
-                              style={{display: "none"}}
-                          />
-                        </FormGroup>
-
-                        <FormGroup>
-                          <Label>Password</Label>
-                          <Input
-                              bsSize="lg"
-                              type="password"
-                              name="password"
-                              placeholder="Enter your password"
+                              placeholder="Enter your email"
                               onChange={e => this.handleInputChange(
-                                  {password: e.target.value})}
-                          />
-                        </FormGroup>
-
-                        <FormGroup>
-                          <Label>Password Again</Label>
-                          <Input
-                              bsSize="lg"
-                              type="password"
-                              name="passwordAgain"
-                              placeholder="Enter your password a second time"
-                              onChange={e => this.handleInputChange(
-                                  {passwordAgain: e.target.value})}
+                                  {email: e.target.value})}
                           />
                         </FormGroup>
 
@@ -162,8 +105,7 @@ export default class PasswordResetView extends React.Component {
                               ? (
                                   <div className="text-center mt-3">
                                     <Alert color="danger" className="p-3">
-                                      Failed to reset your password. Please try
-                                      again.
+                                      There was a problem submitting your request.
                                     </Alert>
                                   </div>
                               )
@@ -178,7 +120,7 @@ export default class PasswordResetView extends React.Component {
                           <button
                               className="btn btn-lg btn-primary"
                               type="submit"
-                              disabled={!this.state.inputIsValid && !this.state.isLoaded}
+                              disabled={!this.state.inputIsValid}
                           >
                             Submit
                           </button>
