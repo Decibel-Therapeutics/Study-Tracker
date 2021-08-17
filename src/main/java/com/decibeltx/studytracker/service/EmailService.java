@@ -21,11 +21,19 @@ public class EmailService {
   @Value("#{servletContext.contextPath}")
   private String contextPath;
 
-  @Value("${email.outgoing-email-address}")
+  @Value("${email.outgoing-email-address:#{null}}")
   private String outgoingEmail;
 
-  // TODO replace this
-  private final String host = "http://localhost:8080/";
+  @Value("${server.port:8080}")
+  private Integer port;
+
+  @Value("${application.host-name:localhost}")
+  private String host;
+
+  private String getRootUrl() {
+    String protocol = port.equals(443) || port.equals(8443) ? "https" : "http";
+    return protocol + "://" + host + ":" + port + "/" + contextPath;
+  }
 
   public void sendPasswordResetEmail(String emailAddress, String token) {
 
@@ -36,7 +44,7 @@ public class EmailService {
 
     String text = "You are receiving this email because a password reset request has been made for "
         + "your account. To reset your password, click the link below and follow the provided "
-        + "instructions:\n\n" + host + contextPath + "auth/passwordreset?token="
+        + "instructions:\n\n" + getRootUrl() + "auth/passwordreset?token="
         + URLEncoder.encode(token, StandardCharsets.UTF_8)
         + "&email=" + URLEncoder.encode(emailAddress, StandardCharsets.UTF_8);
 
@@ -57,7 +65,7 @@ public class EmailService {
 
     String text = "Welcome to Study Tracker! To activate your account, click on the link below to "
         + "confirm your registration and set a new password for your account.\n\n"
-        + host + contextPath + "auth/passwordreset?token="
+        + getRootUrl() + "auth/passwordreset?token="
         + URLEncoder.encode(token, StandardCharsets.UTF_8)
         + "&email=" + URLEncoder.encode(emailAddress, StandardCharsets.UTF_8);
 
