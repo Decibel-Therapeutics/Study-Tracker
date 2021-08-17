@@ -111,14 +111,14 @@ export default class PasswordResetView extends React.Component {
 
                       <Form action={"/auth/passwordreset"} method={"post"}>
 
-                        <FormGroup>
+                        <FormGroup hidden>
                           <Label>Email</Label>
                           <Input
                               bsSize="lg"
                               type="text"
                               name="email"
-                              value={this.state.auth.email}
-                              disabled={true}
+                              defaultValue={this.state.auth.email}
+                              // disabled={true}
                           />
                         </FormGroup>
 
@@ -127,8 +127,8 @@ export default class PasswordResetView extends React.Component {
                               bsSize="lg"
                               type="text"
                               name="token"
-                              value={this.state.auth.token}
-                              disabled={true}
+                              defaultValue={this.state.auth.token}
+                              // disabled={true}
                               style={{display: "none"}}
                           />
                         </FormGroup>

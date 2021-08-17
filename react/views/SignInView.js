@@ -107,7 +107,7 @@ export default class SignInView extends React.Component {
 
                         <div className="text-center mt-3">
                           <small>
-                            <a href="/auth/passwordreset">Forgot password?</a>
+                            <a href="/auth/passwordresetrequest">Forgot password?</a>
                           </small>
                         </div>
 

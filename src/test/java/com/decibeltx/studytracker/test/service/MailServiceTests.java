@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
@@ -35,11 +36,19 @@ public class MailServiceTests {
   @Autowired
   private EmailService emailService;
 
+  @Value("${email.test-email}")
+  private String testEmail;
+
   @Test
   public void sendPasswordResetEmailTest() {
-    String email = "woemler@decibeltx.com";
     String token = UUID.randomUUID().toString();
-    emailService.sendPasswordResetEmail(email, token);
+    emailService.sendPasswordResetEmail(testEmail, token);
+  }
+
+  @Test
+  public void sendNewUserEmailTest() {
+    String token = UUID.randomUUID().toString();
+    emailService.sendNewUserEmail(testEmail, token);
   }
 
 }

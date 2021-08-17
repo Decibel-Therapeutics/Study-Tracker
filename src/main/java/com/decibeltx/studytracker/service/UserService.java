@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -33,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
   @Autowired
   private UserRepository userRepository;
@@ -121,11 +125,11 @@ public class UserService {
 
   // Password reset
 
-  public PasswordResetToken createPasswordResetToken(User user) {
+  public PasswordResetToken createPasswordResetToken(User user, int days) {
 
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(new Date());
-    calendar.add(Calendar.DATE, 1);
+    calendar.add(Calendar.DATE, days);
 
     PasswordResetToken token = new PasswordResetToken();
     token.setToken(UUID.randomUUID().toString());
@@ -136,15 +140,28 @@ public class UserService {
 
   }
 
+  public PasswordResetToken createPasswordResetToken(User user) {
+    return createPasswordResetToken(user, 1);
+  }
+
   public boolean validatePasswordResetToken(String email, String token) {
     Optional<PasswordResetToken> optional = passwordResetTokenRepository.findByToken(token);
     if (optional.isPresent()) {
       PasswordResetToken resetToken = optional.get();
       final Calendar cal = Calendar.getInstance();
-      return resetToken.getUser().getEmail().equals(email)
-          && resetToken.getExpirationDate().before(cal.getTime());
+      if (!resetToken.getUser().getEmail().equals(email)) {
+        LOGGER.warn("Supplied email address does not match token owner.");
+        return false;
+      } else if (resetToken.getExpirationDate().before(cal.getTime())) {
+        LOGGER.warn("Token has expired.");
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      LOGGER.warn("Token not found: " + token);
+      return false;
     }
-    return false;
   }
 
   @Transactional
