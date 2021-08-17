@@ -2,6 +2,8 @@ package com.decibeltx.studytracker.service;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,7 +13,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-  @Autowired
+  private static final Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
+
+  @Autowired(required = false)
   private JavaMailSender mailSender;
 
   @Value("#{servletContext.contextPath}")
@@ -24,6 +28,12 @@ public class EmailService {
   private final String host = "http://localhost:8080/";
 
   public void sendPasswordResetEmail(String emailAddress, String token) {
+
+    if (mailSender == null) {
+      LOGGER.warn("Mail service is not configured. Check config properties and restart the application if necessary.");
+      return;
+    }
+
     String text = "You are receiving this email because a password reset request has been made for "
         + "your account. To reset your password, click the link below and follow the provided "
         + "instructions:\n\n" + host + contextPath + "auth/passwordreset?token="
@@ -39,6 +49,12 @@ public class EmailService {
   }
 
   public void sendNewUserEmail(String emailAddress, String token) {
+
+    if (mailSender == null) {
+      LOGGER.warn("Mail service is not configured. Check config properties and restart the application if necessary.");
+      return;
+    }
+
     String text = "Welcome to Study Tracker! To activate your account, click on the link below to "
         + "confirm your registration and set a new password for your account.\n\n"
         + host + contextPath + "auth/passwordreset?token="
@@ -51,6 +67,7 @@ public class EmailService {
     message.setSubject("Welcome to Study Tracker");
     message.setText(text);
     mailSender.send(message);
+
   }
 
 }
