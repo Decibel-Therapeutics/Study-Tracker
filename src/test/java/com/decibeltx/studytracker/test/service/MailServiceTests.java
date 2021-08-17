@@ -36,7 +36,7 @@ public class MailServiceTests {
   @Autowired
   private EmailService emailService;
 
-  @Value("${email.test-email}")
+  @Value("${email.test-email:test@email.com}")
   private String testEmail;
 
   @Test
