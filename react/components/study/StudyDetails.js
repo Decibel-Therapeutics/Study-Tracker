@@ -52,6 +52,7 @@ import StudyCommentsTab from "./StudyCommentsTab";
 import StudyTimelineTab from "./StudyTimelineTab";
 import swal from "sweetalert";
 import AddToStudyCollectionModal from "../modals/AddToStudyCollectionModal";
+import StudyCollectionsTab from "./StudyCollectionsTab";
 
 const StudyDetailHeader = ({study, user}) => {
   return (
@@ -466,6 +467,17 @@ class StudyDetails extends React.Component {
                     </NavLink>
                   </NavItem>
 
+                  <NavItem>
+                    <NavLink
+                        className={this.state.activeTab === "7" ? "active" : ''}
+                        onClick={() => {
+                          this.toggleTab("7");
+                        }}
+                    >
+                      Collections
+                    </NavLink>
+                  </NavItem>
+
                 </Nav>
 
                 <TabContent activeTab={this.state.activeTab}>
@@ -500,6 +512,12 @@ class StudyDetails extends React.Component {
                     <StudyCommentsTab study={study} user={this.props.user}/>
                   </TabPane>
 
+                  <TabPane tabId="7">
+                    <StudyCollectionsTab
+                        toggleCollectionModal={this.toggleCollectionModal}
+                    />
+                  </TabPane>
+
                 </TabContent>
               </div>
             </Col>
@@ -511,26 +529,6 @@ class StudyDetails extends React.Component {
               isOpen={this.state.showCollectionModal}
               study={study}
           />
-          {/*<Modal isOpen={this.state.showCollectionModal}*/}
-          {/*       toggle={() => this.toggleCollectionModal()}*/}
-          {/*       size={"md"}>*/}
-          {/*  <ModalHeader toggle={() => this.toggleCollectionModal()}>*/}
-          {/*    Add Study to Collection*/}
-          {/*  </ModalHeader>*/}
-          {/*  <ModalBody>*/}
-          {/*    <Row>*/}
-
-          {/*    </Row>*/}
-          {/*  </ModalBody>*/}
-          {/*  <ModalFooter>*/}
-          {/*    <Button color="secondary" onClick={() => this.toggleCollectionModal()}>*/}
-          {/*      Cancel*/}
-          {/*    </Button>*/}
-          {/*    <Button color="primary" onClick={() => this.handleAddToCollectionSubmit()}>*/}
-          {/*      Submit*/}
-          {/*    </Button>*/}
-          {/*  </ModalFooter>*/}
-          {/*</Modal>*/}
 
         </Container>
     );
