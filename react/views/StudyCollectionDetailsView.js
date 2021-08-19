@@ -21,6 +21,7 @@ import StandardWrapper from "../structure/StandardWrapper";
 import {connect} from 'react-redux';
 import StudyCollectionDetails
   from "../components/collections/StudyCollectionDetails";
+import swal from "sweetalert";
 
 class StudyCollectionDetailsView extends React.Component {
 
@@ -31,6 +32,33 @@ class StudyCollectionDetailsView extends React.Component {
       isLoaded: false,
       isError: false
     };
+    this.handleRemoveStudy = this.handleRemoveStudy.bind(this);
+  }
+
+  handleRemoveStudy(id) {
+    swal({
+      title: "Are you sure you want to remove this study from the collection?",
+      icon: "warning",
+      buttons: true
+    })
+    .then(val => {
+      if (val) {
+        fetch("/api/studycollection/" + this.state.collection.id + "/" + id, {
+          method: 'DELETE',
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }).then(response => {
+          let collection = this.state.collection;
+          collection.studies = collection.studies.filter(s => s.id === id);
+          this.setState({collection});
+        })
+        .catch(error => {
+          console.error(error);
+        })
+      }
+    });
+
   }
 
   componentDidMount() {
@@ -57,8 +85,11 @@ class StudyCollectionDetailsView extends React.Component {
     if (this.state.isError) {
       content = <ErrorMessage/>;
     } else if (this.state.isLoaded) {
-      content = <StudyCollectionDetails collection={this.state.collection}
-                                user={this.props.user}/>;
+      content = <StudyCollectionDetails
+          collection={this.state.collection}
+          user={this.props.user}
+          handleRemoveStudy={this.handleRemoveStudy}
+      />;
     }
     return (
         <StandardWrapper {...this.props}>

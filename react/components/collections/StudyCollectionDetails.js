@@ -31,11 +31,14 @@ import {
   UncontrolledDropdown
 } from "reactstrap";
 import React from "react";
-import {File, Menu} from "react-feather";
+import {File, Menu, XCircle} from "react-feather";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import {history} from "../../App";
-import {StudyListTable} from "../study/StudyList";
+import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import {StatusBadge} from "../status";
 
 const StudyCollectionDetailsHeader = ({collection, user}) => {
   return (
@@ -86,6 +89,172 @@ class StudyCollectionDetails extends React.Component {
       return {__html: content};
     };
 
+    const columns = [
+      {
+        dataField: "code",
+        text: "Code",
+        sort: true,
+        headerStyle: {width: '10%'},
+        formatter: (cell, d, index, x) => {
+          return (
+              <a href={"/study/" + d.code}>
+                {d.code}
+              </a>
+          )
+        },
+        sortFunc: (a, b, order, dataField, rowA, rowB) => {
+          if (rowA.code > rowB.code) {
+            return order === "desc" ? -1 : 1;
+          }
+          if (rowB.code > rowA.code) {
+            return order === "desc" ? 1 : -1;
+          }
+          return 0;
+        },
+      },
+      {
+        dataField: "status",
+        text: "Status",
+        sort: true,
+        headerStyle: {width: '10%'},
+        sortFunc: (a, b, order, dataField, rowA, rowB) => {
+          if (rowA.status.label > rowB.status.label) {
+            return order === "desc" ? -1 : 1;
+          }
+          if (rowB.status.label > rowA.status.label) {
+            return order === "desc" ? 1 : -1;
+          }
+          return 0;
+        },
+        formatter: (c, d, i, x) => <StatusBadge status={d.status}/>
+      },
+      {
+        dataField: "updatedAt",
+        text: "Last Updated",
+        sort: true,
+        searchable: false,
+        headerStyle: {width: '10%'},
+        formatter: (c, d, i, x) => new Date(d.updatedAt).toLocaleDateString()
+      },
+      {
+        dataField: "program",
+        text: "Program",
+        sort: true,
+        headerStyle: {width: '10%'},
+        sortFunc: (a, b, order, dataField, rowA, rowB) => {
+          if (rowA.program.name > rowB.program.name) {
+            return order === "desc" ? -1 : 1;
+          }
+          if (rowB.program.name > rowA.program.name) {
+            return order === "desc" ? 1 : -1;
+          }
+          return 0;
+        },
+        formatter: (cell, d, i, x) => d.program.name
+      },
+      {
+        dataField: "name",
+        text: "Name",
+        sort: true,
+        headerStyle: {width: '25%'},
+        formatter: (c, d, i, x) => d.name
+      },
+      {
+        dataField: "owner",
+        text: "Owner",
+        sort: true,
+        headerStyle: {width: '10%'},
+        formatter: (c, d, i, x) => d.owner.displayName
+      },
+      {
+        dataField: "cro",
+        text: "CRO / Collaborator",
+        sort: true,
+        headerStyle: {width: '15%'},
+        sortFunc: (a, b, order, dataField, rowA, rowB) => {
+          const da = !!rowA.collaborator ? rowA.collaborator.organizationName
+              : '';
+          const db = !!rowB.collaborator ? rowB.collaborator.organizationName
+              : '';
+          if (da > db) {
+            return order === "desc" ? -1 : 1;
+          }
+          if (db > da) {
+            return order === "desc" ? 1 : -1;
+          }
+          return 0;
+        },
+        formatter: (c, d, i, x) => !!d.collaborator
+            ? (
+                <div>
+                  <p style={{fontWeight: 'bold', marginBottom: '0.2rem'}}>
+                    {d.collaborator.organizationName}
+                  </p>
+                  <p>
+                    {d.externalCode}
+                  </p>
+                </div>
+
+            ) : ''
+      },
+      {
+        dataField: "remove",
+        text: "Remove",
+        sort: false,
+        searchable: false,
+        headerStyle: {width: '10%'},
+        formatter: (c, d, i, x) => {
+          return (
+              <div>
+                <a className="text-danger" title={"Remove study from collection"}
+                   onClick={() => this.props.handleRemoveStudy(d.id)}>
+                  <XCircle className="align-middle mr-1" size={18}/>
+                </a>
+              </div>
+          )
+        }
+      },
+      {
+        dataField: 'search',
+        text: 'Search',
+        sort: false,
+        isDummyField: true,
+        hidden: true,
+        formatter: (c, d, i, x) => '',
+        filterValue: (c, d, i, x) => {
+          const CRO = !!d.collaborator
+              ? d.collaborator.organizationName +
+              ' ' +
+              d.collaborator.contactName
+              : '';
+          let text =
+              d.name +
+              ' ' +
+              d.status +
+              ' ' +
+              d.description +
+              ' ' +
+              d.program.name +
+              ' ' +
+              d.code +
+              ' ' +
+              CRO +
+              ' ' +
+              (d.createdBy.displayName || '') +
+              ' ' +
+              (d.owner.displayName || '') +
+              ' ' +
+              (d.externalCode || '');
+          if (d.keywords != null) {
+            d.keywords.forEach(keyword => {
+              text = text + ' ' + keyword.keyword;
+            });
+          }
+          return text;
+        }
+      }
+    ];
+
     return (
         <Container fluid className="animated fadeIn">
 
@@ -118,6 +287,7 @@ class StudyCollectionDetails extends React.Component {
                         <Menu/>
                       </DropdownToggle>
                       <DropdownMenu right>
+
                         {/*<DropdownItem onClick={() => console.log("Share!")}>*/}
                         {/*  <FontAwesomeIcon icon={faShare}/>*/}
                         {/*  &nbsp;*/}
@@ -145,6 +315,7 @@ class StudyCollectionDetails extends React.Component {
                         {/*      </DropdownItem>*/}
                         {/*  ) : ''*/}
                         {/*}*/}
+
                       </DropdownMenu>
                     </UncontrolledDropdown>
                   </div>
@@ -207,7 +378,48 @@ class StudyCollectionDetails extends React.Component {
                 </CardHeader>
 
                 <CardBody>
-                  <StudyListTable studies={collection.studies} />
+                  <Container fluid className="animated fadeIn">
+
+                    <Row>
+                      <Col lg="12">
+                        <ToolkitProvider
+                            keyField="id"
+                            data={this.props.collection.studies}
+                            columns={columns}
+                            search
+                            exportCSV
+                        >
+                          {props => (
+                              <div>
+                                <div className="float-right">
+                                  <ExportToCsv{...props.csvProps} />
+                                  &nbsp;&nbsp;
+                                  <Search.SearchBar
+                                      {...props.searchProps}
+                                  />
+                                </div>
+                                <BootstrapTable
+                                    bootstrap4
+                                    keyField="id"
+                                    bordered={false}
+                                    pagination={paginationFactory({
+                                      sizePerPage: 10,
+                                      sizePerPageList: [10, 20, 40, 80]
+                                    })}
+                                    defaultSorted={[{
+                                      dataField: "updatedAt",
+                                      order: "desc"
+                                    }]}
+                                    {...props.baseProps}
+                                >
+                                </BootstrapTable>
+                              </div>
+                          )}
+                        </ToolkitProvider>
+                      </Col>
+                    </Row>
+
+                  </Container>
                 </CardBody>
 
               </Card>
