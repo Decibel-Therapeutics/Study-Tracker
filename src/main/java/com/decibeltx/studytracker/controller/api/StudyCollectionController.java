@@ -66,9 +66,7 @@ public class StudyCollectionController {
   @GetMapping("")
   public List<StudyCollectionSummaryDto> getStudyCollections(
       @RequestParam(name = "userId", required = false) Long userId,
-      @RequestParam(name = "studyId", required = false) Long studyId,
-      @RequestParam(name = "public", required = false) Boolean isPublic,
-      @RequestParam(name = "visibleToMe", required = false) Boolean isVisibleToMe
+      @RequestParam(name = "studyId", required = false) Long studyId
   ) {
 
     String username = UserAuthenticationUtils
@@ -77,6 +75,7 @@ public class StudyCollectionController {
         .orElseThrow(RecordNotFoundException::new);
 
     List<StudyCollection> collections;
+
     if (userId != null) {
       User user = userService.findById(userId)
           .orElseThrow(() -> new InvalidConstraintException("User does not exist: " + userId));
@@ -87,29 +86,39 @@ public class StudyCollectionController {
       collections = studyCollectionService.findByStudy(study);
     } else {
       collections = studyCollectionService.findAll();
-      if (isPublic != null) {
-        collections = collections.stream()
-            .filter(c -> c.isShared() == isPublic)
-            .collect(Collectors.toList());
-      } else if (isVisibleToMe != null && isVisibleToMe) {
-        collections = collections.stream()
-            .filter(c -> c.isShared() == true
-                || c.getCreatedBy().getId().equals(currentUser.getId()))
-            .collect(Collectors.toList());
-      }
     }
+
+    // Filter out private collections
+    collections = collections.stream()
+        .filter(c -> c.isShared()
+            || c.getCreatedBy().getId().equals(currentUser.getId())
+            || currentUser.isAdmin())
+        .collect(Collectors.toList());
 
     return mapper.toSummaryDtoList(collections);
   }
 
   @GetMapping("/{id}")
   public StudyCollectionDetailsDto findById(@PathVariable("id") Long id) {
+
+    String username = UserAuthenticationUtils
+        .getUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
+    User currentUser = userService.findByUsername(username)
+        .orElseThrow(RecordNotFoundException::new);
+
     Optional<StudyCollection> optional = studyCollectionService.findById(id);
+
     if (optional.isPresent()) {
-      return mapper.toDetailsDto(optional.get());
-    } else {
-      throw new RecordNotFoundException("Could not find study collection: " + id);
+      StudyCollection collection = optional.get();
+      if (collection.isShared()
+          || collection.getCreatedBy().getId().equals(currentUser.getId())
+          || currentUser.isAdmin()) {
+        return mapper.toDetailsDto(collection);
+      }
     }
+
+    throw new RecordNotFoundException("Could not find study collection: " + id);
+
   }
 
   @PostMapping("")

@@ -212,7 +212,11 @@ export const PublicCollectionsTable = ({collections}) => {
   )
 }
 
-export const CollectionList = ({myCollections, publicCollections, user}) => {
+export const CollectionList = ({collections, user}) => {
+
+  const myCollections = collections.filter(c => c.createdBy.id === user.id);
+  const publicCollections = collections.filter(c => c.createdBy.id !== user.id && !!c.shared);
+
   return (
     <Container fluid className="animated fadeIn">
 

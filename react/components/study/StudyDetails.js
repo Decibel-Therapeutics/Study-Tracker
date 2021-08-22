@@ -514,6 +514,7 @@ class StudyDetails extends React.Component {
 
                   <TabPane tabId="7">
                     <StudyCollectionsTab
+                        study={study}
                         toggleCollectionModal={this.toggleCollectionModal}
                     />
                   </TabPane>

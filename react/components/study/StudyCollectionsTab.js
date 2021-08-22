@@ -30,10 +30,12 @@ class StudyCollectionsTab extends React.Component {
   }
 
   componentDidMount() {
-    fetch("/api/studycollection?visibleToMe=true")
+    fetch("/api/study/" + this.props.study.id + "/studycollection")
     .then(response => response.json())
     .then(collections => {
-      this.setState({collections})
+      this.setState({
+        collections
+      })
     })
   }
 

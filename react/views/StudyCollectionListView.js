@@ -20,18 +20,13 @@ class StudyCollectionListView extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.user !== this.props.user) {
-      fetch("/api/studycollection?userId=" + this.props.user.id)
+      fetch("/api/studycollection")
       .then(response => response.json())
-      .then(userCollections => {
-        fetch("/api/studycollection?public=true")
-        .then(response => response.json())
-        .then(publicCollections => {
-          this.setState({
-            userCollections,
-            publicCollections,
-            isLoaded: true
-          })
-        });
+      .then(collections => {
+        this.setState({
+          collections,
+          isLoaded: true
+        })
       })
       .catch(error => {
         console.error(error);
@@ -52,8 +47,7 @@ class StudyCollectionListView extends React.Component {
         content = <ErrorMessage/>;
       } else if (this.state.isLoaded) {
         content = <CollectionList
-            myCollections={this.state.userCollections}
-            publicCollections={this.state.publicCollections}
+            collections={this.state.collections}
             user={this.props.user}
         /> ;
 
