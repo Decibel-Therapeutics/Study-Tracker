@@ -26,6 +26,7 @@ import com.decibeltx.studytracker.repository.ProgramRepository;
 import com.decibeltx.studytracker.storage.StorageFolder;
 import com.decibeltx.studytracker.storage.StudyStorageService;
 import com.decibeltx.studytracker.storage.exception.StudyStorageException;
+import com.decibeltx.studytracker.storage.exception.StudyStorageNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -134,6 +135,27 @@ public class ProgramService {
 
   public long countBetweenDates(Date startDate, Date endDate) {
     return programRepository.countByCreatedAtBetween(startDate, endDate);
+  }
+
+  @Transactional
+  public void repairStorageFolder(Program program) {
+
+    // Find or create the storage folder
+    StorageFolder folder;
+    try {
+      folder = studyStorageService.getProgramFolder(program);
+    } catch (StudyStorageNotFoundException e) {
+      try {
+        folder = studyStorageService.createProgramFolder(program);
+      } catch (Exception ex) {
+        throw new StudyTrackerException(ex);
+      }
+    }
+
+    // Update the  program record
+    Program p = programRepository.getOne(program.getId());
+    p.setStorageFolder(FileStoreFolder.from(folder));
+    programRepository.save(p);
   }
 
 }

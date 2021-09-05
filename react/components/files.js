@@ -34,6 +34,7 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {CardLoadingMessage} from "./loading";
 import {DismissableAlert} from "./errors";
+import {RefreshCw} from "react-feather";
 
 const baseStyle = {
   flex: 1,
@@ -319,3 +320,17 @@ export const UploadFilesModal = ({isOpen, toggleModal, handleSubmit}) => {
       </Modal>
   )
 };
+
+export const RepairableStorageFolderLink = ({folder, repairUrl}) => {
+  if (!!folder && !!folder.path && !!folder.url) {
+    return <a href={folder.url} target="_blank">Files Folder</a>
+  } else {
+    return (
+        <Button color="warning" onClick={() => console.log("Click!")}>
+          <RefreshCw size={14} className="mb-1"/>
+          &nbsp;
+          Repair Folder
+        </Button>
+    )
+  }
+}
