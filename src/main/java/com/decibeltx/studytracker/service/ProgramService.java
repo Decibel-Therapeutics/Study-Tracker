@@ -22,6 +22,7 @@ import com.decibeltx.studytracker.exception.StudyTrackerException;
 import com.decibeltx.studytracker.model.ELNFolder;
 import com.decibeltx.studytracker.model.FileStoreFolder;
 import com.decibeltx.studytracker.model.Program;
+import com.decibeltx.studytracker.repository.FileStoreFolderRepository;
 import com.decibeltx.studytracker.repository.ProgramRepository;
 import com.decibeltx.studytracker.storage.StorageFolder;
 import com.decibeltx.studytracker.storage.StudyStorageService;
@@ -49,6 +50,9 @@ public class ProgramService {
 
   @Autowired(required = false)
   private StudyNotebookService studyNotebookService;
+
+  @Autowired
+  private FileStoreFolderRepository fileStoreFolderRepository;
 
   public Optional<Program> findById(Long id) {
     return programRepository.findById(id);
@@ -153,9 +157,11 @@ public class ProgramService {
     }
 
     // Update the  program record
-    Program p = programRepository.getOne(program.getId());
-    p.setStorageFolder(FileStoreFolder.from(folder));
-    programRepository.save(p);
+    FileStoreFolder f = fileStoreFolderRepository.getOne(program.getStorageFolder().getId());
+    f.setName(folder.getName());
+    f.setPath(folder.getPath());
+    f.setUrl(folder.getUrl());
+    fileStoreFolderRepository.save(f);
   }
 
 }

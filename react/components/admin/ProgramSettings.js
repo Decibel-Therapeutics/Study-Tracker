@@ -322,7 +322,10 @@ const ProgramDetailsModal = ({program, isOpen, toggle}) => {
             <Col xs={6}>
               <h4>File Storage</h4>
               <p>
-                <RepairableStorageFolderLink folder={program.storageFolder} />
+                <RepairableStorageFolderLink
+                    folder={program.storageFolder}
+                    repairUrl={"/api/program/" + program.id + "/storage"}
+                />
               </p>
             </Col>
 
