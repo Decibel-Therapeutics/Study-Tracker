@@ -85,7 +85,7 @@ public class ProgramController {
   @Autowired
   private StudyStorageService storageService;
 
-  @Autowired
+  @Autowired(required = false)
   private StudyNotebookService notebookService;
 
   @GetMapping("")
@@ -300,7 +300,8 @@ public class ProgramController {
     Program program = optional.get();
 
     // Check that the folder exists
-    Optional<NotebookFolder> folderOptional = notebookService.findProgramFolder(program);
+    Optional<NotebookFolder> folderOptional = Optional.ofNullable(notebookService)
+        .flatMap(service -> service.findProgramFolder(program));
     if (!folderOptional.isPresent()) {
       throw new RecordNotFoundException("Cannot find notebook folder for program: " + programId);
     }
