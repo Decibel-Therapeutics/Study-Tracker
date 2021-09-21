@@ -151,7 +151,7 @@ public class ProgramService {
     // Find or create the storage folder
     StorageFolder folder;
     try {
-      folder = studyStorageService.getProgramFolder(program);
+      folder = studyStorageService.getProgramFolder(program, false);
     } catch (StudyStorageNotFoundException e) {
       try {
         folder = studyStorageService.createProgramFolder(program);

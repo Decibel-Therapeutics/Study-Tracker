@@ -351,7 +351,7 @@ public class StudyService {
     // Find or create the storage folder
     StorageFolder folder;
     try {
-      folder = studyStorageService.getStudyFolder(study);
+      folder = studyStorageService.getStudyFolder(study, false);
     } catch (StudyStorageNotFoundException e) {
       try {
         folder = studyStorageService.createStudyFolder(study);

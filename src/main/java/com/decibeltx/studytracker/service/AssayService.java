@@ -274,7 +274,7 @@ public class AssayService {
     // Find or create the storage folder
     StorageFolder folder;
     try {
-      folder = storageService.getAssayFolder(assay);
+      folder = storageService.getAssayFolder(assay, false);
     } catch (StudyStorageNotFoundException e) {
       try {
         folder = storageService.createAssayFolder(assay);
