@@ -67,8 +67,7 @@ export default class SignInView extends React.Component {
 
                 <div className="text-center mt-4">
                   <h2>Welcome to Study Tracker</h2>
-                  <p className="lead">Sign in with your username and password to
-                    continue</p>
+                  <p className="lead">Please sign-in to continue</p>
                 </div>
 
                 <Card>
@@ -82,12 +81,12 @@ export default class SignInView extends React.Component {
                       <Form action={"/login"} method={"post"}>
 
                         <FormGroup>
-                          <Label>Username</Label>
+                          <Label>Username or email</Label>
                           <Input
                               bsSize="lg"
                               type="text"
                               name="username"
-                              placeholder="Enter your username"
+                              placeholder="Enter your username or email address"
                               onChange={e => this.handleInputChange(
                                   {username: e.target.value})}
                           />
