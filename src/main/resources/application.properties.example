@@ -91,6 +91,7 @@ sso.url=
 saml.audience=
 saml.idp=
 saml.metadata-url=
+saml.metadata-base-url=
 saml.keystore.location=
 saml.keystore.alias=
 saml.keystore.password=

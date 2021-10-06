@@ -256,6 +256,9 @@ public class WebSecurityConfiguration {
     @Value("${saml.metadata-url}")
     private String metadataUrl;
 
+    @Value("${saml.metadata-base-url}")
+    private String metadataBaseUrl;
+
     @Autowired
     private AppUserDetailsService appUserDetailsService;
 
@@ -508,6 +511,7 @@ public class WebSecurityConfiguration {
       metadataGenerator.setExtendedMetadata(extendedMetadata());
       metadataGenerator.setIncludeDiscoveryExtension(false);
       metadataGenerator.setKeyManager(keyManager());
+      metadataGenerator.setEntityBaseURL(metadataBaseUrl);
       return metadataGenerator;
     }
 
