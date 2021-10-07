@@ -87,7 +87,7 @@ server.ssl.key-store-password=
 #security.sso=okta-saml
 
 # Okta
-sso.url=
+sso.okta.url=
 saml.audience=
 saml.idp=
 saml.metadata-url=
