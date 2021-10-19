@@ -50,20 +50,20 @@ const SidebarCategory = withRouter(
 
       return (
           <li className={"sidebar-item " + getSidebarItemClass(to)}>
-        <span
-            data-toggle="collapse"
-            className={"sidebar-link " + (!isOpen ? "collapsed" : "")}
-            onClick={onClick}
-            aria-expanded={isOpen ? "true" : "false"}
-        >
-          <Icon size={18} className="align-middle mr-3"/>
-          <span className="align-middle">{name}</span>
-          {badgeColor && badgeText ? (
-              <Badge color={badgeColor} size={18} className="sidebar-badge">
-                {badgeText}
-              </Badge>
-          ) : null}
-        </span>
+            <span
+                data-toggle="collapse"
+                className={"sidebar-link " + (!isOpen ? "collapsed" : "")}
+                onClick={onClick}
+                aria-expanded={isOpen ? "true" : "false"}
+            >
+              <Icon size={18} className="align-middle mr-3"/>
+              <span className="align-middle">{name}</span>
+              {badgeColor && badgeText ? (
+                  <Badge color={badgeColor} size={18} className="sidebar-badge">
+                    {badgeText}
+                  </Badge>
+              ) : null}
+            </span>
             <Collapse isOpen={isOpen}>
               <ul id="item" className={"sidebar-dropdown list-unstyled"}>
                 {children}
@@ -171,7 +171,7 @@ class Sidebar extends React.Component {
                 <li className="sidebar-header">Search</li>
 
                 <li className="sidebar-item">
-                  <Form className="ml-3 mr-3">
+                  <Form className="ml-3 mr-3" target={"/search"} method={"get"}>
                     <InputGroup className="mb-3 sidebar-search">
                       <Input
                           type="text"
