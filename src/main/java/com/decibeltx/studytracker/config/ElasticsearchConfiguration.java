@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
@@ -22,18 +21,11 @@ public class ElasticsearchConfiguration {
 
   @Bean
   public RestHighLevelClient client() {
-//    return new RestHighLevelClient(RestClient.builder(
-//        new HttpHost(env.getRequiredProperty("elasticsearch.host"))));
     ClientConfiguration configuration = ClientConfiguration.builder()
         .connectedTo(env.getRequiredProperty("elasticsearch.host"))
         .usingSsl()
         .build();
     return RestClients.create(configuration).rest();
-  }
-
-  @Bean(name = "elasticsearchTemplate")
-  public ElasticsearchRestTemplate elasticsearchTemplate(){
-    return new ElasticsearchRestTemplate(client());
   }
 
   @Bean

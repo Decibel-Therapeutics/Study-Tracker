@@ -5,20 +5,16 @@ import com.decibeltx.studytracker.mapstruct.mapper.ElasticsearchDocumentMapper;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.search.SearchService;
 import com.decibeltx.studytracker.search.StudySearchHits;
+import java.util.Arrays;
 import java.util.Collection;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 public class ElasticsearchSearchService implements SearchService<ElasticsearchStudyDocument, Long> {
 
-  @Autowired
-  private ElasticsearchRestTemplate elasticsearchRestTemplate;
+  private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchSearchService.class);
 
   @Autowired
   private StudyIndexRepository studyIndexRepository;
@@ -27,26 +23,18 @@ public class ElasticsearchSearchService implements SearchService<ElasticsearchSt
   @Autowired
   private ElasticsearchDocumentMapper documentMapper;
 
-  @Value("${elasticsearch.index}")
-  private String indexName;
-
   @Override
   public StudySearchHits<ElasticsearchStudyDocument> search(String keyword) {
-    NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
-        .withQuery(new QueryStringQueryBuilder(keyword))
-        .build();
-    SearchHits<ElasticsearchStudyDocument> hits = elasticsearchRestTemplate.search(
-        nativeSearchQuery, ElasticsearchStudyDocument.class, IndexCoordinates.of(indexName));
+    LOGGER.info("Searching study index for keyword: {}", keyword);
+    SearchHits<ElasticsearchStudyDocument> hits = studyIndexRepository.findDocumentsByKeyword(keyword);
     return StudySearchHits.fromElasticsearchHits(hits);
   }
 
   @Override
   public StudySearchHits<ElasticsearchStudyDocument> search(String keyword, String field) {
-    NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
-        .withQuery(new QueryStringQueryBuilder(keyword).field(field))
-        .build();
-    SearchHits<ElasticsearchStudyDocument> hits = elasticsearchRestTemplate.search(
-        nativeSearchQuery, ElasticsearchStudyDocument.class, IndexCoordinates.of(indexName));
+    LOGGER.info("Searching study index for keyword: {}  field: {}", keyword, field);
+    SearchHits<ElasticsearchStudyDocument> hits =
+        studyIndexRepository.findDocumentsByKeywordAndField(keyword, Arrays.asList(field));
     return StudySearchHits.fromElasticsearchHits(hits);
   }
 

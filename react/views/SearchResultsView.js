@@ -19,7 +19,6 @@ import LoadingMessage from "../structure/LoadingMessage";
 import ErrorMessage from "../structure/ErrorMessage";
 import {connect} from 'react-redux';
 import {compose} from 'redux';
-import StudyFilters from '../components/filters/studyFilters'
 import {withRouter} from 'react-router-dom';
 import SideBar from "../structure/SideBar";
 import NavBar from "../structure/NavBar";
@@ -43,8 +42,8 @@ class SearchResultsView extends React.Component {
     const params = qs.parse(this.props.location.search,
         {ignoreQueryPrefix: true});
     let query = '';
-    if (!!params.search) {
-      query = "?keyword=" + params.search;
+    if (!!params.q) {
+      query = "?keyword=" + params.q;
     }
 
     fetch("/api/search" + query)
@@ -67,8 +66,7 @@ class SearchResultsView extends React.Component {
 
       this.setState({
         hits: hits,
-        isLoaded: true,
-        title: title
+        isLoaded: true
       });
 
     })
@@ -131,7 +129,6 @@ class SearchResultsView extends React.Component {
               <Footer/>
             </div>
           </div>
-          <StudyFilters/>
         </React.Fragment>
     );
 

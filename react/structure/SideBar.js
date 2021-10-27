@@ -15,19 +15,12 @@
  */
 
 import React from 'react';
-import {
-  Badge,
-  Collapse,
-  Form,
-  Input,
-  InputGroup,
-  InputGroupAddon
-} from "reactstrap";
+import {Badge, Collapse} from "reactstrap";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {NavLink, withRouter} from "react-router-dom";
 import sidebarRoutes from "../config/sidebarRoutes";
 import {connect} from "react-redux";
-import {Search} from "react-feather";
+import {SidebarSearch} from "../components/search";
 
 const SidebarCategory = withRouter(
     ({
@@ -171,22 +164,7 @@ class Sidebar extends React.Component {
                 <li className="sidebar-header">Search</li>
 
                 <li className="sidebar-item">
-                  <Form className="ml-3 mr-3" target={"/search"} method={"get"}>
-                    <InputGroup className="mb-3 sidebar-search">
-                      <Input
-                          type="text"
-                          placeholder="Enter keywords here..."
-                          aria-label="Search"
-                          className="form-control-no-border"
-                          name={"search"}
-                      />
-                      <InputGroupAddon addonType={"append"}>
-                        <button type={"submit"} className={"btn btn-primary"}>
-                          <Search className={"feather align-middle"}/>
-                        </button>
-                      </InputGroupAddon>
-                    </InputGroup>
-                  </Form>
+                  <SidebarSearch />
                 </li>
 
                 {sidebarRoutes.map((category, index) => {

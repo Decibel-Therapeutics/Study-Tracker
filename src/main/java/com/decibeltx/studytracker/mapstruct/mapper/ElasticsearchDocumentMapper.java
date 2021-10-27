@@ -19,6 +19,7 @@ import com.decibeltx.studytracker.model.Keyword;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Study;
 import com.decibeltx.studytracker.model.User;
+import java.net.URL;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;
@@ -62,6 +63,9 @@ public interface ElasticsearchDocumentMapper {
   List<ElasticsearchUserDocument> fromUserList(List<User> users);
   Set<ElasticsearchUserDocument> fromUserSet(Set<User> users);
 
-
+  /** For mapping the {@link ExternalLink#getUrl()} field to a String **/
+  default String map(URL url) {
+    return url.toString();
+  }
 
 }

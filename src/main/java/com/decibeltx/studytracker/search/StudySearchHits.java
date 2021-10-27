@@ -14,8 +14,6 @@ public class StudySearchHits<T extends StudySearchDocument<?>> {
   private Float maxScore;
   private List<StudySearchHit<T>> hits = new ArrayList<>();
 
-  private StudySearchHits() {}
-
   public static StudySearchHits<ElasticsearchStudyDocument> fromElasticsearchHits(SearchHits<ElasticsearchStudyDocument> searchHits) {
     StudySearchHits<ElasticsearchStudyDocument> studySearchHits = new StudySearchHits<>();
     studySearchHits.setNumHits(searchHits.getTotalHits());
