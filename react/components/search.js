@@ -53,6 +53,31 @@ export class SidebarSearch extends React.Component {
 
 export const SearchHits = ({hits}) => {
 
+  if (hits.hits.length === 0) {
+    return (
+        <Container fluid className="animated fadeIn">
+          <Row className="justify-content-between align-items-center">
+
+            <Col xs="12">
+              <h1>Search Hits</h1>
+            </Col>
+
+            <Col xs="12">
+              <Card className={"illustration"}>
+                <CardBody>
+                  <div className="alert-message">
+                    <h4 className="alert-heading">Your search did not return any results.</h4>
+                    <p>Try broadening your search and try again.</p>
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
+
+          </Row>
+        </Container>
+    )
+  }
+
   const list = hits.hits
   .filter(h => !!h.document.active)
   .sort((a, b) => {
