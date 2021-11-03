@@ -54,6 +54,7 @@ export class SidebarSearch extends React.Component {
 export const SearchHits = ({hits}) => {
 
   const list = hits.hits
+  .filter(h => !!h.document.active)
   .sort((a, b) => {
     if (a.score < b.score) return 1;
     if (a.score > b.score) return -1;
