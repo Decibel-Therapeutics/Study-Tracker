@@ -121,13 +121,11 @@ const SearchHitHighlight = ({field, text}) => {
 const SearchHitHighlights = ({hit}) => {
   let list = [];
   for (const [field, highlight] of Object.entries(hit.highlightFields)) {
-    // const bits = field.split(".");
-    // const field = bits[bits.length-1];
-    highlight.forEach(h => {
+    highlight.forEach((h, i) => {
       const text = h.replace("<em>", "<mark>").replace("</em>", "</mark>");
       list.push(
           <SearchHitHighlight
-            key={"search-highlight-" + hit.document.id + "-" + field}
+            key={"search-highlight-" + hit.document.id + "-" + field + "-" + i}
             field={field}
             text={text}
           />
