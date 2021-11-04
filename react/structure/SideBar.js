@@ -15,19 +15,12 @@
  */
 
 import React from 'react';
-import {
-  Badge,
-  Collapse,
-  Form,
-  Input,
-  InputGroup,
-  InputGroupAddon
-} from "reactstrap";
+import {Badge, Collapse} from "reactstrap";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {NavLink, withRouter} from "react-router-dom";
 import sidebarRoutes from "../config/sidebarRoutes";
 import {connect} from "react-redux";
-import {Search} from "react-feather";
+import {SidebarSearch} from "../components/search";
 
 const SidebarCategory = withRouter(
     ({
@@ -50,20 +43,20 @@ const SidebarCategory = withRouter(
 
       return (
           <li className={"sidebar-item " + getSidebarItemClass(to)}>
-        <span
-            data-toggle="collapse"
-            className={"sidebar-link " + (!isOpen ? "collapsed" : "")}
-            onClick={onClick}
-            aria-expanded={isOpen ? "true" : "false"}
-        >
-          <Icon size={18} className="align-middle mr-3"/>
-          <span className="align-middle">{name}</span>
-          {badgeColor && badgeText ? (
-              <Badge color={badgeColor} size={18} className="sidebar-badge">
-                {badgeText}
-              </Badge>
-          ) : null}
-        </span>
+            <span
+                data-toggle="collapse"
+                className={"sidebar-link " + (!isOpen ? "collapsed" : "")}
+                onClick={onClick}
+                aria-expanded={isOpen ? "true" : "false"}
+            >
+              <Icon size={18} className="align-middle mr-3"/>
+              <span className="align-middle">{name}</span>
+              {badgeColor && badgeText ? (
+                  <Badge color={badgeColor} size={18} className="sidebar-badge">
+                    {badgeText}
+                  </Badge>
+              ) : null}
+            </span>
             <Collapse isOpen={isOpen}>
               <ul id="item" className={"sidebar-dropdown list-unstyled"}>
                 {children}
@@ -171,22 +164,7 @@ class Sidebar extends React.Component {
                 <li className="sidebar-header">Search</li>
 
                 <li className="sidebar-item">
-                  <Form className="ml-3 mr-3">
-                    <InputGroup className="mb-3 sidebar-search">
-                      <Input
-                          type="text"
-                          placeholder="Enter keywords here..."
-                          aria-label="Search"
-                          className="form-control-no-border"
-                          name={"search"}
-                      />
-                      <InputGroupAddon addonType={"append"}>
-                        <button type={"submit"} className={"btn btn-primary"}>
-                          <Search className={"feather align-middle"}/>
-                        </button>
-                      </InputGroupAddon>
-                    </InputGroup>
-                  </Form>
+                  <SidebarSearch />
                 </li>
 
                 {sidebarRoutes.map((category, index) => {

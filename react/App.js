@@ -45,6 +45,7 @@ import StudyCollectionFormView from "./views/StudyCollectionFormView";
 import StudyCollectionDetailsView from "./views/StudyCollectionDetailsView";
 import StudyCollectionListView from "./views/StudyCollectionListView";
 import PasswordResetRequestView from "./views/PasswordResetRequestView";
+import SearchResultsView from "./views/SearchResultsView";
 
 export const history = createBrowserHistory();
 
@@ -188,6 +189,11 @@ export default class App extends React.Component {
 
                   <Route exact path={"/admin"}
                          render={props => <AdminDashboardView {...props} />}/>
+
+                  {/* Search */}
+
+                  <Route exact path={"/search"}
+                         render={props => <SearchResultsView {...props} />}/>
 
                   {/* Error */}
                   <Route exact path={"/error"}

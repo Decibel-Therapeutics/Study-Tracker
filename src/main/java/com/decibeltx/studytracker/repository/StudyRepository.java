@@ -30,6 +30,10 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
   @EntityGraph("study-summary")
   List<Study> findAll();
 
+  @EntityGraph("study-with-attributes")
+  @Query("select s from Study s")
+  List<Study> findAllWithDetails();
+
   @Override
   @EntityGraph("study-with-attributes")
   Optional<Study> findById(Long id);
@@ -53,7 +57,6 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
   Optional<Study> findByAssayId(Long assayId);
 
   @EntityGraph("study-with-attributes")
-//  @Query("select s from Study s join s.users u where u.id = ?1")
   List<Study> findByUsersId(Long userId);
 
   /**
@@ -68,6 +71,9 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 
   @Query("select s from Study s where lower(s.name) like lower(concat('%', ?1, '%')) or lower(s.code) like lower(concat('%', ?1, '%'))")
   List<Study> findByNameOrCodeLike(String keyword);
+
+  @EntityGraph("study-with-attributes")
+  List<Study> findByUpdatedAtAfter(Date date);
 
   long countByCreatedAtBefore(Date date);
 
