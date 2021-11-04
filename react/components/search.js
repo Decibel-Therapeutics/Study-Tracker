@@ -53,54 +53,52 @@ export class SidebarSearch extends React.Component {
 
 export const SearchHits = ({hits}) => {
 
-  if (hits.hits.length === 0) {
-    return (
-        <Container fluid className="animated fadeIn">
-          <Row className="justify-content-between align-items-center">
+  let content = (
+      <Row>
+        <Col lg="12">
+          <Card className={"illustration"}>
+            <CardBody>
+              <div className="alert-message">
+                <h4 className="alert-heading">Your search did not return any results.</h4>
+                <p>Try broadening your search and try again.</p>
+              </div>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+  );
 
-            <Col xs="12">
-              <h1>Search Hits</h1>
-            </Col>
+  if (hits.hits.length > 0) {
 
-            <Col xs="12">
-              <Card className={"illustration"}>
-                <CardBody>
-                  <div className="alert-message">
-                    <h4 className="alert-heading">Your search did not return any results.</h4>
-                    <p>Try broadening your search and try again.</p>
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
+    const list = hits.hits
+    .filter(h => !!h.document.active)
+    .sort((a, b) => {
+      if (a.score < b.score) return 1;
+      if (a.score > b.score) return -1;
+      return 0;
+    })
+    .map((hit, i) => <SearchHit key={"search-hit-" + i} hit={hit}/>);
 
-          </Row>
-        </Container>
+    content = (
+        <Row>
+          <Col lg="12">
+            {list}
+          </Col>
+        </Row>
     )
-  }
 
-  const list = hits.hits
-  .filter(h => !!h.document.active)
-  .sort((a, b) => {
-    if (a.score < b.score) return 1;
-    if (a.score > b.score) return -1;
-    return 0;
-  })
-  .map((hit, i) => <SearchHit key={"search-hit-" + i} hit={hit} /> );
+  }
 
   return (
       <Container fluid className="animated fadeIn">
 
         <Row className="justify-content-between align-items-center">
           <Col xs="12">
-            <h1>Search Hits</h1>
+            <h1>Search Results</h1>
           </Col>
         </Row>
 
-        <Row>
-          <Col lg="12">
-            {list}
-          </Col>
-        </Row>
+        {content}
 
       </Container>
   )
