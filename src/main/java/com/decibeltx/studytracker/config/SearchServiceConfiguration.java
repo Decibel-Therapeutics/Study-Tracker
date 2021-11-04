@@ -9,11 +9,13 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
+import org.springframework.data.elasticsearch.client.ClientConfiguration.ClientConfigurationBuilderWithRequiredEndpoint;
+import org.springframework.data.elasticsearch.client.ClientConfiguration.MaybeSecureClientConfigurationBuilder;
 import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -28,15 +30,36 @@ public class SearchServiceConfiguration {
   @ConditionalOnProperty(name = "search.mode", havingValue = "elasticsearch")
   public static class ElasticsearchConfiguration {
 
-    @Autowired
-    private Environment env;
+    @Value("${elasticsearch.host}")
+    private String host;
+
+    @Value("${elasticsearch.use-ssl:#{false}}")
+    private Boolean useSsl;
+
+    @Value("${elasticsearch.username:#{null}}")
+    private String username;
+
+    @Value("${elasticsearch.password:#{null}}")
+    private String password;
 
     @Bean
     public RestHighLevelClient client() {
-      ClientConfiguration configuration = ClientConfiguration.builder()
-          .connectedTo(env.getRequiredProperty("elasticsearch.host"))
-          .usingSsl()
-          .build();
+      ClientConfigurationBuilderWithRequiredEndpoint builder = ClientConfiguration.builder();
+      MaybeSecureClientConfigurationBuilder sBuilder = builder.connectedTo(host);
+      ClientConfiguration configuration;
+      if (useSsl != null && useSsl && username != null && password != null) {
+        configuration = sBuilder.usingSsl()
+            .withBasicAuth(username, password)
+            .build();
+      } else if (useSsl != null && useSsl) {
+        configuration = sBuilder.usingSsl()
+            .build();
+      } else if (username != null && password != null) {
+        configuration = sBuilder.withBasicAuth(username, password)
+            .build();
+      } else {
+        configuration = sBuilder.build();
+      }
       return RestClients.create(configuration).rest();
     }
 
