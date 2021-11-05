@@ -18,8 +18,7 @@ import React from "react";
 import {Button, Input, Media} from "reactstrap";
 import {User} from 'react-feather';
 import swal from "sweetalert";
-
-const dateFormat = require('dateformat');
+import dateFormat from "dateformat";
 
 export class Comment extends React.Component {
 

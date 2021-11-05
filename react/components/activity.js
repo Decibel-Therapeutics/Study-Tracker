@@ -34,8 +34,7 @@ import {StatusBadge} from "./status";
 import {KeywordBadgeList} from "./keywords";
 import {AssayTaskCard} from "./assayTasks";
 import {relationshipTypes} from "../config/studyRelationshipConstants";
-
-const dateFormat = require('dateformat');
+import dateFormat from "dateformat";
 
 const createMarkup = (content) => {
   return {__html: content};

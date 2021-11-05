@@ -30,8 +30,8 @@ export class SidebarSearch extends React.Component {
               history.go(0);
             })}
         >
-          <Form className="ml-3 mr-3" >
-            <InputGroup className="mb-3 sidebar-search">
+          <Form className="d-none d-sm-inline-block" >
+            <InputGroup className="input-group-navbar">
               <Field
                   name={"q"}
                   placeholder={"Enter keywords here..."}
