@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  Button,
-  Col,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row
-} from "reactstrap";
+import {Modal, ModalBody, ModalFooter, ModalHeader,} from "reactstrap";
+import {Button, Col, Row} from "react-bootstrap";
 import React, {useMemo} from "react";
 import {useDropzone} from 'react-dropzone';
 import {
@@ -362,7 +355,7 @@ export const RepairableStorageFolderLink = ({folder, repairUrl}) => {
     return <a href={folder.url} target="_blank">Storage Folder</a>
   } else {
     return (
-        <Button color="warning" onClick={() => handleFolderRepairRequest(repairUrl)}>
+        <Button variant="warning" onClick={() => handleFolderRepairRequest(repairUrl)}>
           <RefreshCw size={14} className="mb-1"/>
           &nbsp;
           Repair Folder
@@ -384,7 +377,7 @@ export const RepairableStorageFolderButton = ({folder, repairUrl}) => {
     )
   } else {
     return (
-        <Button color="warning" onClick={() => handleFolderRepairRequest(repairUrl)}>
+        <Button variant="warning" onClick={() => handleFolderRepairRequest(repairUrl)}>
           <RefreshCw size={14} className="mb-1"/>
           &nbsp;
           Repair Folder

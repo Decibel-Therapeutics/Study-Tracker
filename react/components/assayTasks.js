@@ -7,7 +7,7 @@ export const AssayTaskCard = ({task, user, handleUpdate}) => {
     return (
         <Card className="mb-3 bg-light border">
           <CardBody
-              className={"p-3 pt-0 cursor-pointer"}
+              className={"p-3 cursor-pointer"}
               onClick={() => handleUpdate(task)}
           >
             <div>
@@ -20,7 +20,7 @@ export const AssayTaskCard = ({task, user, handleUpdate}) => {
   } else {
     return (
         <Card className="mb-3 bg-light border">
-          <CardBody className={"p-3 pt-0"}>
+          <CardBody className={"p-3"}>
             <div>
               <TaskIcon status={task.status}/>
               {task.label}

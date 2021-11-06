@@ -34,6 +34,7 @@ import {
   XCircle
 } from 'react-feather';
 import {statuses} from "../config/statusConstants";
+import {Badge} from "react-bootstrap";
 
 export const StatusButton = ({status}) => {
   const config = statuses[status];
@@ -116,7 +117,7 @@ export class SelectableStatusButton extends React.Component {
 export const StatusBadge = ({status}) => {
   const config = statuses[status];
   return (
-      <span className={"badge badge-" + config.color}>{config.label}</span>
+      <Badge bg={config.color}>{config.label}</Badge>
   )
 };
 

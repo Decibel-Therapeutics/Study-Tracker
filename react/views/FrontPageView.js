@@ -122,7 +122,6 @@ class FrontPageView extends React.Component {
               <Footer/>
             </div>
           </div>
-          {/*<StudyFilters/>*/}
         </React.Fragment>
     );
 

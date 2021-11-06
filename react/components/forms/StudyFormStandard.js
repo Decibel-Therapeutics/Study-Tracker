@@ -18,6 +18,7 @@ import React from "react";
 import {ProgramDropdown} from "./programs";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import {Col, Form, Row} from "react-bootstrap";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -26,16 +27,12 @@ import {
   CardBody,
   CardHeader,
   CardTitle,
-  Col,
   Container,
   CustomInput,
-  Form,
   FormFeedback,
   FormGroup,
   FormText,
   Input,
-  Label,
-  Row
 } from "reactstrap";
 import {StatusDropdown} from "./status";
 import {statuses} from "../../config/statusConstants";
@@ -301,7 +298,7 @@ export default class StudyForm extends React.Component {
           </Row>
 
           <Row>
-            <Col xs="12">
+            <Col xs={12}>
               <Card>
 
                 <CardHeader>
@@ -321,9 +318,9 @@ export default class StudyForm extends React.Component {
                     {/*Overview*/}
                     <Row form>
 
-                      <Col md="7">
-                        <FormGroup>
-                          <Label>Name *</Label>
+                      <Col md={7}>
+                        <Form.Group>
+                          <Form.Label>Name *</Form.Label>
                           <Input
                               type="text"
                               invalid={!this.state.validation.nameIsValid}
@@ -334,10 +331,10 @@ export default class StudyForm extends React.Component {
                           />
                           <FormFeedback>Name must not be empty.</FormFeedback>
                           <FormText>Must be unique.</FormText>
-                        </FormGroup>
+                        </Form.Group>
                       </Col>
 
-                      <Col md="5">
+                      <Col md={5}>
                         <ProgramDropdown
                             programs={this.props.programs}
                             selectedProgram={!!this.state.study.program
@@ -352,9 +349,9 @@ export default class StudyForm extends React.Component {
                     </Row>
 
                     <Row form>
-                      <Col md="7">
-                        <FormGroup>
-                          <Label>Description *</Label>
+                      <Col md={7}>
+                        <Form.Group>
+                          <Form.Label>Description *</Form.Label>
                           <ReactQuill
                               theme="snow"
                               defaultValue={this.state.study.description || ''}
@@ -364,17 +361,17 @@ export default class StudyForm extends React.Component {
                           <FormFeedback>
                             Description must not be empty.
                           </FormFeedback>
-                        </FormGroup>
+                        </Form.Group>
                       </Col>
-                      <Col md="5">
+                      <Col md={5}>
 
                         <StatusDropdown
                             selected={this.state.study.status}
                             onChange={this.handleFormUpdate}
                         />
 
-                        <FormGroup>
-                          <Label>Start Date *</Label>
+                        <Form.Group>
+                          <Form.Label>Start Date *</Form.Label>
                           <DatePicker
                               maxlength="2"
                               className={"form-control"}
@@ -391,10 +388,10 @@ export default class StudyForm extends React.Component {
                             Date.</FormFeedback>
                           <FormText>Select the date your study began or is
                             expected to begin.</FormText>
-                        </FormGroup>
+                        </Form.Group>
 
-                        <FormGroup>
-                          <Label>End Date</Label>
+                        <Form.Group>
+                          <Form.Label>End Date</Form.Label>
                           <DatePicker
                               maxlength="2"
                               className="form-control"
@@ -408,7 +405,7 @@ export default class StudyForm extends React.Component {
                           />
                           <FormText>Select the date your study was
                             completed.</FormText>
-                        </FormGroup>
+                        </Form.Group>
 
                       </Col>
                     </Row>
@@ -427,7 +424,7 @@ export default class StudyForm extends React.Component {
                               <React.Fragment>
                                 <Row form>
 
-                                  <Col md="12">
+                                  <Col md={12}>
                                     <h5 className="card-title">Legacy Study</h5>
                                     <h6 className="card-subtitle text-muted">Studies
                                       created
@@ -440,8 +437,8 @@ export default class StudyForm extends React.Component {
                                     <br/>
                                   </Col>
 
-                                  <Col md="12">
-                                    <FormGroup>
+                                  <Col md={12}>
+                                    <Form.Group>
                                       <CustomInput
                                           id="legacy-check"
                                           type="checkbox"
@@ -451,10 +448,10 @@ export default class StudyForm extends React.Component {
                                           defaultChecked={!!this.state.study.id
                                           && !!this.state.study.legacy}
                                       />
-                                    </FormGroup>
+                                    </Form.Group>
                                   </Col>
 
-                                  <Col md="12" id="legacy-input-container"
+                                  <Col md={12} id="legacy-input-container"
                                        style={{
                                          display: !!this.state.study.id
                                          && !!this.state.study.legacy ? "block"
@@ -463,9 +460,9 @@ export default class StudyForm extends React.Component {
 
                                     <Row form>
 
-                                      <Col md="6">
-                                        <FormGroup>
-                                          <Label>Study Code *</Label>
+                                      <Col md={6}>
+                                        <Form.Group>
+                                          <Form.Label>Study Code *</Form.Label>
                                           <Input
                                               type="text"
                                               invalid={false}
@@ -481,12 +478,12 @@ export default class StudyForm extends React.Component {
                                           <FormText>Provide the existing code or ID
                                             for the
                                             study.</FormText>
-                                        </FormGroup>
+                                        </Form.Group>
                                       </Col>
 
-                                      <Col md="6">
-                                        <FormGroup>
-                                          <Label>Notebook URL</Label>
+                                      <Col md={6}>
+                                        <Form.Group>
+                                          <Form.Label>Notebook URL</Form.Label>
                                           <Input
                                               type="text"
                                               disabled={!!this.state.study.id}
@@ -506,7 +503,7 @@ export default class StudyForm extends React.Component {
                                           <FormText>If the study already has an ELN
                                             entry,
                                             provide the URL here.</FormText>
-                                        </FormGroup>
+                                        </Form.Group>
                                       </Col>
 
                                     </Row>
@@ -541,7 +538,7 @@ export default class StudyForm extends React.Component {
 
                     {/*Study Team*/}
                     <Row form>
-                      <Col md="12">
+                      <Col md={12}>
                         <h5 className="card-title">Study Team</h5>
                         <h6 className="card-subtitle text-muted">Who will be
                           working on this study? One user must be assigned as
@@ -570,7 +567,7 @@ export default class StudyForm extends React.Component {
 
                     {/*Keywords*/}
                     <Row form>
-                      <Col md="12">
+                      <Col md={12}>
                         <h5 className="card-title">Keywords</h5>
                         <h6 className="card-subtitle text-muted">Tag your study
                           with keywords to make it more searchable and

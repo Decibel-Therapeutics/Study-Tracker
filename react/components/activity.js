@@ -15,7 +15,6 @@
  */
 
 import React from "react";
-import {Media, Table} from 'reactstrap';
 import {
   Bell,
   CheckSquare,
@@ -49,7 +48,7 @@ const LegacyStudyLabel = ({user, legacyStudy, text}) => {
         </p>
         <div className="bg-light text-secondary p-3">
           <h5><a href={"/study/" + legacyStudy.code}>{legacyStudy.code}</a></h5>
-          <h3>{legacyStudy.name}</h3>
+          <h4>{legacyStudy.name}</h4>
         </div>
       </React.Fragment>
   )
@@ -164,7 +163,7 @@ const ActivityMessage = ({activity}) => {
           </p>
           <div className="bg-light text-secondary p-3">
             <h5>TemplateId: { activity.data.entryTemplate.templateId }</h5>
-            <h3>Name: { activity.data.entryTemplate.name }</h3>
+            <h4>Name: { activity.data.entryTemplate.name }</h4>
             <p>Active: { String(activity.data.entryTemplate.active) }</p>
           </div>
         </>
@@ -180,7 +179,7 @@ const ActivityMessage = ({activity}) => {
           </p>
           <div className="bg-light text-secondary p-3">
             <h5>TemplateId: { activity.data.entryTemplate.templateId }</h5>
-            <h3>Name: { activity.data.entryTemplate.name }</h3>
+            <h4>Name: { activity.data.entryTemplate.name }</h4>
             <p>Active: { String(activity.data.entryTemplate.active) }</p>
           </div>
         </>
@@ -210,7 +209,7 @@ const ActivityMessage = ({activity}) => {
               <div className="bg-light text-secondary p-3">
                 <h5><a href={"/study/"
                 + activity.data.study.code}>{activity.data.study.code}</a></h5>
-                <h3>{activity.data.study.name}</h3>
+                <h4>{activity.data.study.name}</h4>
                 <h5 className="text-muted">{activity.data.study.program}</h5>
                 <div dangerouslySetInnerHTML={createMarkup(
                     activity.data.study.description)}/>
@@ -248,7 +247,7 @@ const ActivityMessage = ({activity}) => {
               <div className="bg-light text-secondary p-3">
                 <h5><a href={"/study/"
                 + activity.data.study.code}>{activity.data.study.code}</a></h5>
-                <h3>{activity.data.study.name}</h3>
+                <h4>{activity.data.study.name}</h4>
                 <h5 className="text-muted">{activity.data.study.program}</h5>
                 <div dangerouslySetInnerHTML={createMarkup(
                     activity.data.study.description)}/>
@@ -348,7 +347,7 @@ const ActivityMessage = ({activity}) => {
                   </a>
                 </h5>
 
-                <h3>{activity.data.assay.name}</h3>
+                <h4>{activity.data.assay.name}</h4>
 
                 <h5 className="text-muted">
                   {activity.data.assay.assayType.name}
@@ -395,7 +394,7 @@ const ActivityMessage = ({activity}) => {
                   </a>
                 </h5>
 
-                <h3>{activity.data.assay.name}</h3>
+                <h4>{activity.data.assay.name}</h4>
 
                 <h5 className="text-muted">
                   {activity.data.assay.assayType.name}
@@ -514,11 +513,11 @@ const ActivityMessage = ({activity}) => {
 
             <div className="bg-light text-secondary p-3">
 
-              <h3>
+              <h4>
                 <a href={"/program/" + activity.data.program.id}>
                   {activity.data.program.name}
                 </a>
-              </h3>
+              </h4>
 
               <div dangerouslySetInnerHTML={createMarkup(
                   activity.data.program.description)}/>
@@ -540,11 +539,11 @@ const ActivityMessage = ({activity}) => {
 
             <div className="bg-light text-secondary p-3">
 
-              <h3>
+              <h4>
                 <a href={"/program/" + activity.data.program.id}>
                   {activity.data.program.name}
                 </a>
-              </h3>
+              </h4>
 
               <div dangerouslySetInnerHTML={createMarkup(
                   activity.data.program.description)}/>
@@ -587,13 +586,13 @@ const ActivityMessage = ({activity}) => {
                 </a>
               </p>
               <div className="bg-light text-secondary p-3">
-                <h3>
+                <h4>
                   <a href={activity.data.file.url} target="_blank">
                     <File size={24}/>
                     &nbsp;
                     {activity.data.file.name}
                   </a>
-                </h3>
+                </h4>
               </div>
             </React.Fragment>
 
@@ -610,13 +609,13 @@ const ActivityMessage = ({activity}) => {
                 </a>
               </p>
               <div className="bg-light text-secondary p-3">
-                <h3>
+                <h4>
                   <a href={activity.data.file.url} target="_blank">
                     <File size={24}/>
                     &nbsp;
                     {activity.data.file.name}
                   </a>
-                </h3>
+                </h4>
               </div>
             </React.Fragment>
 
@@ -990,11 +989,13 @@ const ActivityMessage = ({activity}) => {
 
 export const StudyTimelineActivity = ({activity}) => {
   return (
-      <Media>
+      <div className="d-flex">
 
-        <ActivityIcon action={activity.eventType}/>
+        <div className="stat">
+          <ActivityIcon action={activity.eventType}/>
+        </div>
 
-        <Media body>
+        <div className="flex-grow-1 ms-3">
 
           <small className="float-right text-navy">
             {dateFormat(new Date(activity.date), 'mm/dd/yy @ h:MM TT')}
@@ -1012,8 +1013,8 @@ export const StudyTimelineActivity = ({activity}) => {
 
           <ActivityMessage activity={activity}/>
 
-        </Media>
-      </Media>
+        </div>
+      </div>
   )
 };
 
@@ -1054,40 +1055,4 @@ export const Timeline = ({activities}) => {
       </React.Fragment>
   );
 
-};
-
-export const ActivityTable = ({activity}) => {
-  const rows = activity
-  .sort((a, b) => {
-    if (a.date > b.date) {
-      return -1;
-    } else if (a.date < b.date) {
-      return 1;
-    } else {
-      return 0;
-    }
-  })
-  .map(a => {
-    return (
-        <tr key={'activity-' + a.date}>
-          <td>{a.user.displayName}</td>
-          <td>{a.eventType}</td>
-          <td>{new Date(a.date).toLocaleString()}</td>
-        </tr>
-    );
-  });
-  return (
-      <Table striped>
-        <thead>
-        <tr>
-          <th>User</th>
-          <th>Action</th>
-          <th>Date</th>
-        </tr>
-        </thead>
-        <tbody>
-        {rows}
-        </tbody>
-      </Table>
-  )
 };

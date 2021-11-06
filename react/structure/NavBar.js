@@ -74,7 +74,7 @@ class NavBarComponent extends React.Component {
                 history.go(0);
               })}
           >
-            <Form inline="true" className="d-none d-sm-inline-block" >
+            <Form inline="true" className="d-none d-sm-inline-block">
               <InputGroup className="input-group-navbar">
                 <Form.Control
                     name={"q"}
