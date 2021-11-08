@@ -263,8 +263,8 @@ export default class ProgramForm extends React.Component {
 
           <Row className="justify-content-end align-items-center">
             <Col>
-              <h1>{!!this.state.program.id ? "Edit Program"
-                  : "New Program"}</h1>
+              <h3>{!!this.state.program.id ? "Edit Program"
+                  : "New Program"}</h3>
             </Col>
           </Row>
 

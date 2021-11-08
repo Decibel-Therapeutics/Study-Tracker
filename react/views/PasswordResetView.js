@@ -106,7 +106,7 @@ export default class PasswordResetView extends React.Component {
                     <div className="m-sm-4">
 
                       <div className="text-center">
-                        <User size={80} className="align-middle mr-2"/>
+                        <User size={80} className="align-middle me-2"/>
                       </div>
 
                       <Form action={"/auth/passwordreset"} method={"post"}>

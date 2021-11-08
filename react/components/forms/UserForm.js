@@ -250,13 +250,13 @@ export default class UserForm extends React.Component {
 
           <Row className="justify-content-end align-items-center">
             <Col>
-              <h1>
+              <h3>
                 {
                   !!this.state.user.id
                       ? "Edit User"
                       : "New User"
                 }
-              </h1>
+              </h3>
             </Col>
           </Row>
 

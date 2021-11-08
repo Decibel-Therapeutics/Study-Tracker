@@ -124,7 +124,7 @@ export class UserInputs extends React.Component {
               >
                 <FontAwesomeIcon
                     icon={faTimesCircle}
-                    className="align-middle mr-2 text-danger"
+                    className="align-middle me-2 text-danger"
                 />
               </a>
             </Col>

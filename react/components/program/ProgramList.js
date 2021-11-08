@@ -81,7 +81,7 @@ const ExportToCsv = (props) => {
         <Button color={'primary'} onClick={handleClick}>
           Export to CSV
           &nbsp;
-          <File className="feather align-middle ml-2 mb-1"/>
+          <File className="feather align-middle ms-2 mb-1"/>
         </Button>
       </span>
   );
@@ -94,7 +94,7 @@ const ProgramList = ({title, user, programs}) => {
 
         <Row className="justify-content-between align-items-center">
           <Col xs="8">
-            <h1>{title}</h1>
+            <h3>{title}</h3>
           </Col>
         </Row>
 
@@ -111,7 +111,7 @@ const ProgramList = ({title, user, programs}) => {
                 >
                   {props => (
                       <div>
-                        <div className="float-right">
+                        <div className="float-end">
                           <ExportToCsv{...props.csvProps} />
                           &nbsp;&nbsp;
                           <Search.SearchBar

@@ -50,7 +50,7 @@ const StudyDetailHeader = ({study, user}) => {
   return (
       <Row className="justify-content-between align-items-center">
         <Col>
-          <h1>{study.name}</h1>
+          <h3>{study.name}</h3>
           <h5 className="text-muted">{study.code}</h5>
         </Col>
         <Col className="col-auto">
@@ -59,9 +59,9 @@ const StudyDetailHeader = ({study, user}) => {
                 ? (
                     <React.Fragment>
                       <Button
-                          size="lg"
-                          className="mr-1 mb-1"
+                          className="me-1 mb-1"
                           variant="outline-info"
+                          disabled
                       >
                         External Study
                       </Button>
@@ -72,9 +72,9 @@ const StudyDetailHeader = ({study, user}) => {
           {
             !study.active
                 ? <Button
-                    size="lg"
-                    className="mr-1 mb-1"
+                    className="me-1 mb-1"
                     variant="outline-danger"
+                    disabled
                   >
                     Inactive Study
                   </Button>
@@ -83,9 +83,9 @@ const StudyDetailHeader = ({study, user}) => {
           {
             study.legacy
                 ? <Button
-                    size="lg"
-                    className="mr-1 mb-1"
+                    className="me-1 mb-1"
                     variant="outline-warning"
+                    disabled
                 >
                   Legacy Study
                 </Button>
@@ -114,7 +114,7 @@ class StudyDetails extends React.Component {
     };
     this.handleStudyDelete = this.handleStudyDelete.bind(this);
     this.toggleTab = this.toggleTab.bind(this);
-    this.toggleCollectionModal = this.toggleCollectionModal.bind(this);
+    this.showCollectionModal = this.showCollectionModal.bind(this);
   }
 
   toggleTab(tab) {
@@ -125,9 +125,9 @@ class StudyDetails extends React.Component {
     }
   }
 
-  toggleCollectionModal() {
+  showCollectionModal(bool) {
     this.setState({
-      showCollectionModal: !this.state.showCollectionModal
+      showCollectionModal: bool
     });
   }
 
@@ -194,7 +194,7 @@ class StudyDetails extends React.Component {
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
 
-                        <Dropdown.Item onClick={() => this.toggleCollectionModal()}>
+                        <Dropdown.Item onClick={() => this.showCollectionModal(true)}>
                           <FontAwesomeIcon icon={faFolderPlus}/>
                           &nbsp;
                           Add to Collection
@@ -458,7 +458,7 @@ class StudyDetails extends React.Component {
                     <Tab.Pane eventKey={"collections"}>
                       <StudyCollectionsTab
                           study={study}
-                          toggleCollectionModal={this.toggleCollectionModal}
+                          showCollectionModal={this.showCollectionModal}
                       />
                     </Tab.Pane>
 
@@ -470,7 +470,7 @@ class StudyDetails extends React.Component {
 
           {/* Add to collection modal */}
           <AddToStudyCollectionModal
-              toggle={this.toggleCollectionModal}
+              showModal={this.showCollectionModal}
               isOpen={this.state.showCollectionModal}
               study={study}
           />

@@ -213,7 +213,7 @@ export const StudyListTable = ({studies}) => {
       >
         {props => (
             <div>
-              <div className="float-right">
+              <div className="float-end">
                 <ExportToCsv{...props.csvProps} />
                 &nbsp;&nbsp;
                 <Search.SearchBar
@@ -248,14 +248,14 @@ const StudyList = ({studies, title, filters, user}) => {
 
         <Row className="justify-content-between align-items-center">
           <Col xs="8">
-            <h1>{title}</h1>
+            <h3>Studies</h3>
           </Col>
           <Col className="col-auto">
             {
               !!user
                   ? (
                       <a href="/studies/new">
-                        <Button color="primary" className="mr-1 mb-1">
+                        <Button color="primary" className="me-1 mb-1">
                           <FontAwesomeIcon icon={faPlusCircle}/> New Study
                         </Button>
                       </a>
@@ -278,7 +278,7 @@ const StudyList = ({studies, title, filters, user}) => {
                 {/*>*/}
                 {/*  {props => (*/}
                 {/*      <div>*/}
-                {/*        <div className="float-right">*/}
+                {/*        <div className="float-end">*/}
                 {/*          <ExportToCsv{...props.csvProps} />*/}
                 {/*          &nbsp;&nbsp;*/}
                 {/*          <Search.SearchBar*/}

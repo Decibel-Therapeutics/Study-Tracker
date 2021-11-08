@@ -53,7 +53,7 @@ export const Conclusions = ({conclusions, toggleModal, isSignedIn}) => {
 
           <Clipboard
               size={36}
-              className="align-middle text-primary mr-4"
+              className="align-middle text-primary me-4"
           />
 
           <Media body>

@@ -32,7 +32,7 @@ const FrontPageTimeline = ({activity, stats, user, pageNumber, pageSize, hasNext
 
           <Col xs="auto" className="ms-auto text-end mt-n1">
             <a href="/studies/new">
-              <Button color="primary" className="mr-1 mb-1">
+              <Button color="primary" className="me-1 mb-1">
                 <FontAwesomeIcon icon={faPlusCircle}/> New Study
               </Button>
             </a>
@@ -91,7 +91,7 @@ const FrontPageTimeline = ({activity, stats, user, pageNumber, pageSize, hasNext
                               href={"/?size=" + pageSize + "&page=" + (pageNumber
                                   - 1)} className="btn btn-primary">
                             <ArrowLeft
-                                className="feather align-middle mr-2"/> Previous
+                                className="feather align-middle me-2"/> Previous
                             Page
                           </a>
                           : ''
@@ -103,9 +103,9 @@ const FrontPageTimeline = ({activity, stats, user, pageNumber, pageSize, hasNext
                       !!hasNextPage
                           ? <a
                               href={"/?size=" + pageSize + "&page=" + (pageNumber
-                                  + 1)} className="btn btn-primary float-right">
+                                  + 1)} className="btn btn-primary float-end">
                             Next Page <ArrowRight
-                              className="feather align-middle mr-2"/>
+                              className="feather align-middle me-2"/>
                           </a>
                           : ''
                     }

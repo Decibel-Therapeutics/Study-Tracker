@@ -94,7 +94,7 @@ export const SearchHits = ({hits}) => {
 
         <Row className="justify-content-between align-items-center">
           <Col xs="12">
-            <h1>Search Results</h1>
+            <h3>Search Results</h3>
           </Col>
         </Row>
 
@@ -160,7 +160,7 @@ const SearchHit = ({hit}) => {
 
             <Col sm={4} md={2}>
               <p className="text-muted">
-                <span className="float-right">{study.program.name}</span>
+                <span className="float-end">{study.program.name}</span>
               </p>
             </Col>
 

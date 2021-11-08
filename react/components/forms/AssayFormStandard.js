@@ -302,7 +302,7 @@ export default class AssayForm extends React.Component {
 
           <Row className="justify-content-end align-items-center">
             <Col>
-              <h1>{!!this.state.assay.id ? "Edit Assay" : "New Assay"}</h1>
+              <h3>{!!this.state.assay.id ? "Edit Assay" : "New Assay"}</h3>
             </Col>
           </Row>
 

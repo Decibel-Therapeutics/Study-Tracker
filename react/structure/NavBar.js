@@ -102,7 +102,7 @@ class NavBarComponent extends React.Component {
                     ) : (
                         <li>
                           <a href="/login" className="btn btn-info">
-                            Sign In <LogIn className="feather align-middle mr-2"/>
+                            Sign In <LogIn className="feather align-middle me-2"/>
                           </a>
                         </li>
                     )
@@ -179,28 +179,28 @@ const NavbarUser = ({isAdmin, userName, displayName}) => {
                 ? (
                     <Dropdown.Item as={"a"} href={"/admin"}>
                         <Settings size={18}
-                                  className="align-middle mr-2"/>
+                                  className="align-middle me-2"/>
                         Admin Dashboard
                     </Dropdown.Item>
                 ) : ''
           }
 
           <Dropdown.Item as={"a"} href={"/user/" + userName}>
-              <User size={18} className="align-middle mr-2"/>
+              <User size={18} className="align-middle me-2"/>
               Profile
           </Dropdown.Item>
 
           {/*<DropdownItem>*/}
           {/*  <a href="#">*/}
           {/*    <HelpCircle size={18}*/}
-          {/*                className="align-middle mr-2"/>*/}
+          {/*                className="align-middle me-2"/>*/}
           {/*    Help*/}
           {/*  </a>*/}
           {/*</DropdownItem>*/}
 
           <Dropdown.Item as={"a"} href={"/logout"}>
               <LogOut size={18}
-                      className="align-middle mr-2"/>
+                      className="align-middle me-2"/>
               Sign out
           </Dropdown.Item>
 

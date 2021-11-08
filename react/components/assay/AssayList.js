@@ -16,7 +16,7 @@
 
 import React from "react";
 import {StatusBadge} from "../status";
-import {Button, Card, CardBody, Col, Container, Row} from "reactstrap";
+import {Button, Card, Col, Container, Row} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit';
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -214,11 +214,11 @@ const ExportToCsv = (props) => {
   };
   return (
       <span>
-        <Button color={'primary'} onClick={handleClick}>
+        <Button variant={'primary'} onClick={handleClick}>
           Export to CSV
           &nbsp;
           {/*<FontAwesomeIcon icon={faFile} />*/}
-          <File className="feather align-middle ml-2 mb-1"/>
+          <File className="feather align-middle ms-2 mb-1"/>
         </Button>
       </span>
   );
@@ -231,14 +231,14 @@ const AssayList = ({assays, title, filters, user}) => {
 
         <Row className="justify-content-between align-items-center">
           <Col>
-            <h1>{title}</h1>
+            <h3>Assays</h3>
           </Col>
         </Row>
 
         <Row>
-          <Col lg="12">
+          <Col lg={12}>
             <Card>
-              <CardBody>
+              <Card.Body>
                 <ToolkitProvider
                     keyField="id"
                     data={assays}
@@ -248,7 +248,7 @@ const AssayList = ({assays, title, filters, user}) => {
                 >
                   {props => (
                       <div>
-                        <div className="float-right">
+                        <div className="float-end">
                           <ExportToCsv{...props.csvProps} />
                           &nbsp;&nbsp;
                           <Search.SearchBar
@@ -273,7 +273,7 @@ const AssayList = ({assays, title, filters, user}) => {
                       </div>
                   )}
                 </ToolkitProvider>
-              </CardBody>
+              </Card.Body>
             </Card>
           </Col>
         </Row>

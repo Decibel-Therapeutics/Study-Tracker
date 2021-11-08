@@ -57,92 +57,92 @@ const LegacyStudyLabel = ({user, legacyStudy, text}) => {
 const ActivityIcon = ({action}) => {
   switch (action) {
     case studyActions.NEW_ENTRY_TEMPLATE.value:
-      return <Star size={36} className="align-middle text-warning mr-4"/>;
+      return <Star size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.UPDATED_ENTRY_TEMPLATE.value:
-      return <Edit size={36} className="align-middle text-warning mr-4"/>;
+      return <Edit size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.NEW_STUDY.value:
-      return <Star size={36} className="align-middle text-warning mr-4"/>;
+      return <Star size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.UPDATED_STUDY.value:
-      return <Edit size={36} className="align-middle text-warning mr-4"/>;
+      return <Edit size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.DELETED_STUDY.value:
-      return <Trash2 size={36} className="align-middle text-danger mr-4"/>;
+      return <Trash2 size={36} className="align-middle text-danger me-4"/>;
 
     case studyActions.STUDY_STATUS_CHANGED.value:
-      return <Bell size={36} className="align-middle text-info mr-4"/>;
+      return <Bell size={36} className="align-middle text-info me-4"/>;
 
     case studyActions.NEW_ASSAY.value:
-      return <Star size={36} className="align-middle text-warning mr-4"/>;
+      return <Star size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.UPDATED_ASSAY.value:
-      return <Edit size={36} className="align-middle text-warning mr-4"/>;
+      return <Edit size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.DELETED_ASSAY.value:
-      return <Trash2 size={36} className="align-middle text-danger mr-4"/>;
+      return <Trash2 size={36} className="align-middle text-danger me-4"/>;
 
     case studyActions.ASSAY_STATUS_CHANGED.value:
-      return <Bell size={36} className="align-middle text-info mr-4"/>;
+      return <Bell size={36} className="align-middle text-info me-4"/>;
 
     case studyActions.NEW_PROGRAM.value:
-      return <Star size={36} className="align-middle text-warning mr-4"/>;
+      return <Star size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.UPDATED_PROGRAM.value:
-      return <Edit size={36} className="align-middle text-warning mr-4"/>;
+      return <Edit size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.DELETED_PROGRAM.value:
-      return <Trash2 size={36} className="align-middle text-danger mr-4"/>;
+      return <Trash2 size={36} className="align-middle text-danger me-4"/>;
 
     case studyActions.FILE_UPLOADED.value:
-      return <FilePlus size={36} className="align-middle text-primary mr-4"/>;
+      return <FilePlus size={36} className="align-middle text-primary me-4"/>;
 
     case studyActions.NEW_STUDY_CONCLUSIONS.value:
-      return <FileText size={36} className="align-middle text-primary mr-4"/>;
+      return <FileText size={36} className="align-middle text-primary me-4"/>;
 
     case studyActions.EDITED_STUDY_CONCLUSIONS.value:
-      return <Edit size={36} className="align-middle text-warning mr-4"/>;
+      return <Edit size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.DELETED_STUDY_CONCLUSIONS.value:
-      return <Trash2 size={36} className="align-middle text-danger mr-4"/>;
+      return <Trash2 size={36} className="align-middle text-danger me-4"/>;
 
     case studyActions.NEW_COMMENT.value:
-      return <MessageCircle size={36} className="align-middle text-info mr-4"/>;
+      return <MessageCircle size={36} className="align-middle text-info me-4"/>;
 
     case studyActions.EDITED_COMMENT.value:
-      return <MessageCircle size={36} className="align-middle text-info mr-4"/>;
+      return <MessageCircle size={36} className="align-middle text-info me-4"/>;
 
     case studyActions.DELETED_COMMENT.value:
-      return <Trash2 size={36} className="align-middle text-danger mr-4"/>;
+      return <Trash2 size={36} className="align-middle text-danger me-4"/>;
 
     case studyActions.NEW_STUDY_RELATIONSHIP.value:
-      return <Link size={36} className="align-middle text-primary mr-4"/>;
+      return <Link size={36} className="align-middle text-primary me-4"/>;
 
     case studyActions.UPDATED_STUDY_RELATIONSHIP.value:
-      return <Edit size={36} className="align-middle text-warning mr-4"/>;
+      return <Edit size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.DELETED_STUDY_RELATIONSHIP.value:
-      return <Trash2 size={36} className="align-middle text-danger mr-4"/>;
+      return <Trash2 size={36} className="align-middle text-danger me-4"/>;
 
     case studyActions.NEW_STUDY_EXTERNAL_LINK.value:
       return <ExternalLink size={36}
-                           className="align-middle text-primary mr-4"/>;
+                           className="align-middle text-primary me-4"/>;
 
     case studyActions.UPDATED_STUDY_EXTERNAL_LINK.value:
-      return <Edit size={36} className="align-middle text-warning mr-4"/>;
+      return <Edit size={36} className="align-middle text-warning me-4"/>;
 
     case studyActions.DELETED_STUDY_EXTERNAL_LINK.value:
-      return <Trash2 size={36} className="align-middle text-danger mr-4"/>;
+      return <Trash2 size={36} className="align-middle text-danger me-4"/>;
 
     case studyActions.ASSAY_TASK_ADDED.value:
-      return <CheckSquare size={36} className="align-middle text-info mr-4"/>;
+      return <CheckSquare size={36} className="align-middle text-info me-4"/>;
 
     case studyActions.ASSAY_TASK_UPDATED.value:
-      return <CheckSquare size={36} className="align-middle text-info mr-4"/>;
+      return <CheckSquare size={36} className="align-middle text-info me-4"/>;
 
     default:
-      return <Bell size={36} className="align-middle text-info mr-4"/>;
+      return <Bell size={36} className="align-middle text-info me-4"/>;
 
   }
 };
@@ -991,13 +991,13 @@ export const StudyTimelineActivity = ({activity}) => {
   return (
       <div className="d-flex">
 
-        <div className="stat">
+        <div className="stat stat-transparent">
           <ActivityIcon action={activity.eventType}/>
         </div>
 
         <div className="flex-grow-1 ms-3">
 
-          <small className="float-right text-navy">
+          <small className="float-end text-navy">
             {dateFormat(new Date(activity.date), 'mm/dd/yy @ h:MM TT')}
           </small>
 

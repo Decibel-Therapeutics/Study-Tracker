@@ -1,12 +1,12 @@
 import React from 'react';
-import {Card, CardBody, Col, Row} from "reactstrap";
+import {Card, Col, Row} from "react-bootstrap";
 import {CheckSquare, Square, XSquare} from "react-feather";
 
 export const AssayTaskCard = ({task, user, handleUpdate}) => {
   if (!!user && !!handleUpdate) {
     return (
         <Card className="mb-3 bg-light border">
-          <CardBody
+          <Card.Body
               className={"p-3 cursor-pointer"}
               onClick={() => handleUpdate(task)}
           >
@@ -14,18 +14,18 @@ export const AssayTaskCard = ({task, user, handleUpdate}) => {
               <TaskIcon status={task.status}/>
               {task.label}
             </div>
-          </CardBody>
+          </Card.Body>
         </Card>
     );
   } else {
     return (
         <Card className="mb-3 bg-light border">
-          <CardBody className={"p-3"}>
+          <Card.Body className={"p-3"}>
             <div>
               <TaskIcon status={task.status}/>
               {task.label}
             </div>
-          </CardBody>
+          </Card.Body>
         </Card>
     )
   }
@@ -62,11 +62,11 @@ export const AssayTaskList = ({tasks, handleUpdate, user}) => {
 
 const TaskIcon = ({status}) => {
   if (status === "TODO") {
-    return <Square className="mr-3"/>;
+    return <Square className="me-3"/>;
   } else if (status === "COMPLETE") {
     return <CheckSquare
-        className="mr-3 text-success"/>;
+        className="me-3 text-success"/>;
   } else {
-    return <XSquare className="mr-3 text-danger"/>;
+    return <XSquare className="me-3 text-danger"/>;
   }
 }

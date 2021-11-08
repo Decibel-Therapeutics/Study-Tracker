@@ -39,7 +39,7 @@ const AssaySummaryCard = ({studyCode, assay}) => {
           <Row>
             <Col xs={12}>
 
-              <span className="float-right">
+              <span className="float-end">
                 <h5>
                   {assay.assayType.name}
                 </h5>

@@ -118,7 +118,7 @@ class UserFilters extends React.Component {
               User Status
             </small>
 
-            <FormGroup className="mb-2 ml-4">
+            <FormGroup className="mb-2 ms-4">
               <Label check>
                 <Input
                     type="radio"
@@ -139,7 +139,7 @@ class UserFilters extends React.Component {
               </Label>
             </FormGroup>
 
-            <FormGroup className="mb-2 ml-4">
+            <FormGroup className="mb-2 ms-4">
               <Label check>
                 <Input
                     type="radio"
@@ -157,7 +157,7 @@ class UserFilters extends React.Component {
               </Label>
             </FormGroup>
 
-            <FormGroup className="mb-2 ml-4">
+            <FormGroup className="mb-2 ms-4">
               <Label check>
                 <Input
                     type="radio"

@@ -45,7 +45,7 @@ const AssayTypeFieldInputCard = ({field, index, handleFieldUpdate, handleRemoveF
       <Card className="mb-3 bg-light cursor-grab border">
 
         <CardHeader className="bg-light pt-0 pb-0">
-          <div className="card-actions float-right">
+          <div className="card-actions float-end">
             <a className="text-danger" title={"Remove field"}
                onClick={() => handleRemoveField(index)}>
               <XCircle className="align-middle mt-3" size={12}/>
@@ -107,7 +107,7 @@ const AssayTypeFieldInputCard = ({field, index, handleFieldUpdate, handleRemoveF
             </Col>
 
             <Col md={6} lg={1}>
-              <Label check className="ml-4 mt-3">
+              <Label check className="ms-4 mt-3">
                 <Input
                     type="checkbox"
                     onChange={(e) => {

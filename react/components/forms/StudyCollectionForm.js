@@ -192,8 +192,8 @@ export default class StudyCollectionForm extends React.Component {
 
           <Row className="justify-content-end align-items-center">
             <Col>
-              <h1>{!!this.state.collection.id ? "Edit Collection"
-                  : "New Collection"}</h1>
+              <h3>{!!this.state.collection.id ? "Edit Collection"
+                  : "New Collection"}</h3>
             </Col>
           </Row>
 

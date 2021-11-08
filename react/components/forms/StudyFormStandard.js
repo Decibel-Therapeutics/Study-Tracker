@@ -293,7 +293,7 @@ export default class StudyForm extends React.Component {
 
           <Row className="justify-content-end align-items-center">
             <Col>
-              <h1>{!!this.state.study.id ? "Edit Study" : "New Study"}</h1>
+              <h3>{!!this.state.study.id ? "Edit Study" : "New Study"}</h3>
             </Col>
           </Row>
 

@@ -186,7 +186,7 @@ export default class App extends React.Component {
 
                   {/* Admin */}
 
-                  <Route exact path={"/admin"}
+                  <Route path={"/admin"}
                          render={props => <AdminDashboardView {...props} />}/>
 
                   {/* Search */}

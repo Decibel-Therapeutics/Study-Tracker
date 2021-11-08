@@ -45,7 +45,7 @@ const TaskInputCard = ({task, index, handleTaskUpdate, handleRemoveTaskClick}) =
       <Card className="mb-3 bg-light cursor-grab border">
 
         <CardHeader className="bg-light pt-0 pb-0">
-          <div className="card-actions float-right">
+          <div className="card-actions float-end">
             <a className="text-danger" title={"Remove field"}
                onClick={() => handleRemoveTaskClick(index)}>
               <XCircle className="align-middle mt-3" size={12}/>

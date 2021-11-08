@@ -30,7 +30,7 @@ const StudyAssaysTab = ({study, user}) => {
             {
               !!user
                   ? (
-                      <span className="float-right">
+                      <span className="float-end">
                         <Button color="info" onClick={() => history.push(
                             "/study/" + study.code + "/assays/new")}>
                           New Assay

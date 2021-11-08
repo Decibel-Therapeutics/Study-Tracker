@@ -72,10 +72,10 @@ class StudyCollectionsTab extends React.Component {
 
           <Row className="justify-content-between align-items-center mb-4">
             <Col>
-              <span className="float-right">
+              <span className="float-end">
                 <Button
                     color="info"
-                    onClick={() => this.props.toggleCollectionModal()}
+                    onClick={() => this.props.showCollectionModal(true)}
                 >
                   Add to Collection
                   &nbsp;

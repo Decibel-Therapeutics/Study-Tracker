@@ -119,7 +119,7 @@ class ProgramFilters extends React.Component {
               Program Status
             </small>
 
-            <FormGroup className="mb-2 ml-4">
+            <FormGroup className="mb-2 ms-4">
               <Label check>
                 <Input
                     type="radio"
@@ -140,7 +140,7 @@ class ProgramFilters extends React.Component {
               </Label>
             </FormGroup>
 
-            <FormGroup className="mb-2 ml-4">
+            <FormGroup className="mb-2 ms-4">
               <Label check>
                 <Input
                     type="radio"
@@ -158,7 +158,7 @@ class ProgramFilters extends React.Component {
               </Label>
             </FormGroup>
 
-            <FormGroup className="mb-2 ml-4">
+            <FormGroup className="mb-2 ms-4">
               <Label check>
                 <Input
                     type="radio"

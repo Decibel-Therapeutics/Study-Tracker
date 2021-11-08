@@ -51,7 +51,7 @@ export class FilterSidebar extends React.Component {
                 <div className="settings-title d-flex align-items-center">
                   <button
                       type="button"
-                      className="btn-close float-right js-settings-toggle"
+                      className="btn-close float-end js-settings-toggle"
                       aria-label="Close"
                       onClick={() => this.toggleSidebar()}
                   ></button>

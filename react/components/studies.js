@@ -37,7 +37,7 @@ const StudySummaryCard = ({study}) => {
           <Row>
             <Col xs={12}>
 
-              <span className="float-right">
+              <span className="float-end">
                 <h5>{study.program.name}</h5>
               </span>
 

@@ -16,13 +16,7 @@
 
 import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {
-  Button,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledButtonDropdown
-} from "reactstrap";
+import {Badge, Button, Dropdown} from 'react-bootstrap';
 import swal from "sweetalert";
 import {
   AlertCircle,
@@ -34,12 +28,11 @@ import {
   XCircle
 } from 'react-feather';
 import {statuses} from "../config/statusConstants";
-import {Badge} from "react-bootstrap";
 
 export const StatusButton = ({status}) => {
   const config = statuses[status];
   return (
-      <Button size="lg" className="mr-1" color={config.color}>
+      <Button className="me-1" variant={config.color} disabled>
         <FontAwesomeIcon icon={config.icon}
                          className="align-middle"/> {config.label}
       </Button>
@@ -90,26 +83,26 @@ export class SelectableStatusButton extends React.Component {
     for (const k in statuses) {
       const s = statuses[k];
       options.push(
-          <DropdownItem
+          <Dropdown.Item
               key={'status-option-' + s.label}
               onClick={this.handleChange}
               data-value={s.value}
           >
             {s.label}
-          </DropdownItem>
+          </Dropdown.Item>
       );
     }
     return (
-        <UncontrolledButtonDropdown className="mr-1 mb-1">
-          <DropdownToggle caret size={"lg"} color={config.color}>
+        <Dropdown className="me-1 mb-1">
+          <Dropdown.Toggle variant={config.color}>
             <FontAwesomeIcon icon={config.icon}/>
             &nbsp;&nbsp;
             {config.label}
-          </DropdownToggle>
-          <DropdownMenu>
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
             {options}
-          </DropdownMenu>
-        </UncontrolledButtonDropdown>
+          </Dropdown.Menu>
+        </Dropdown>
     )
   }
 }
@@ -128,7 +121,7 @@ export const StatusIcon = ({status}) => {
           <span title="In planning">
             <Clock
                 size={36}
-                className="align-middle text-info mr-4"
+                className="align-middle text-info me-4"
             />
           </span>
       );
@@ -137,7 +130,7 @@ export const StatusIcon = ({status}) => {
           <span title="Active">
             <PlayCircle
                 size={36}
-                className="align-middle text-primary mr-4"
+                className="align-middle text-primary me-4"
             />
           </span>
       );
@@ -146,7 +139,7 @@ export const StatusIcon = ({status}) => {
           <span title="Complete">
             <CheckCircle
                 size={36}
-                className="align-middle text-success mr-4"
+                className="align-middle text-success me-4"
             />
           </span>
       );
@@ -155,7 +148,7 @@ export const StatusIcon = ({status}) => {
           <span title="On hold">
             <XCircle
                 size={36}
-                className="align-middle text-warning mr-4"
+                className="align-middle text-warning me-4"
             />
           </span>
       );
@@ -164,7 +157,7 @@ export const StatusIcon = ({status}) => {
           <span title="Deprioritized">
             <ArrowDownCircle
                 size={36}
-                className="align-middle text-danger mr-4"
+                className="align-middle text-danger me-4"
             />
           </span>
       );
@@ -173,7 +166,7 @@ export const StatusIcon = ({status}) => {
           <span title="Needs attention">
             <AlertCircle
                 size={36}
-                className="align-middle text-warning mr-4"
+                className="align-middle text-warning me-4"
             />
           </span>
       );
@@ -182,7 +175,7 @@ export const StatusIcon = ({status}) => {
           <span>
             <HelpCircle
                 size={36}
-                className="align-middle text-warning mr-4"
+                className="align-middle text-warning me-4"
                 title="Unknown status"
             />
           </span>
