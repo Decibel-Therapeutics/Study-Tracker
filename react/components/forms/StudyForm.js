@@ -18,22 +18,8 @@ import React from "react";
 import {ProgramDropdown} from "./programs";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import {Col, Form, Row} from "react-bootstrap";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Container,
-  CustomInput,
-  FormFeedback,
-  FormGroup,
-  FormText,
-  Input,
-} from "reactstrap";
+import {FormGroup} from "./common";
+import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import {StatusDropdown} from "./status";
 import {statuses} from "../../config/statusConstants";
 import {UserInputs} from "./users";
@@ -43,6 +29,7 @@ import KeywordInputs from "./keywords";
 import CollaboratorInputs from "./collaborators";
 import ReactQuill from "react-quill";
 import {LoadingOverlay} from "../loading";
+import {Breadcrumbs} from "../common";
 
 export default class StudyForm extends React.Component {
 
@@ -267,25 +254,17 @@ export default class StudyForm extends React.Component {
               {
                 !!this.state.study.id
                     ? (
-                        <Breadcrumb>
-                          <BreadcrumbItem>
-                            <a href={"/"}>Home</a>
-                          </BreadcrumbItem>
-                          <BreadcrumbItem>
-                            <a href={"/study/" + this.state.study.code}>
-                              Study Detail
-                            </a>
-                          </BreadcrumbItem>
-                          <BreadcrumbItem active>Edit Study</BreadcrumbItem>
-                        </Breadcrumb>
+                        <Breadcrumbs crumbs={[
+                          {label: "Home", url: "/"},
+                          {label: "Study Detail", url: "/study/" + this.state.study.code},
+                          {label: "Edit Study"}
+                        ]} />
                     )
                     : (
-                        <Breadcrumb>
-                          <BreadcrumbItem>
-                            <a href={"/"}>Home</a>
-                          </BreadcrumbItem>
-                          <BreadcrumbItem active>New Study</BreadcrumbItem>
-                        </Breadcrumb>
+                        <Breadcrumbs crumbs={[
+                          {label: "Home", url: "/"},
+                          {label: "New Study"}
+                        ]} />
                     )
               }
             </Col>
@@ -301,8 +280,8 @@ export default class StudyForm extends React.Component {
             <Col xs={12}>
               <Card>
 
-                <CardHeader>
-                  <CardTitle tag="h5">Study Overview</CardTitle>
+                <Card.Header>
+                  <Card.Title tag="h5">Study Overview</Card.Title>
                   <h6 className="card-subtitle text-muted">Tell us something
                     about your study. Study names should be unique. Describe the
                     objective of your study in one or two sentences. Select the
@@ -310,28 +289,28 @@ export default class StudyForm extends React.Component {
                     Choose the date your study is expected to start. If the
                     study has already completed, you may select an end
                     date.</h6>
-                </CardHeader>
+                </Card.Header>
 
-                <CardBody>
+                <Card.Body>
                   <Form className="study-form">
 
                     {/*Overview*/}
-                    <Row form>
+                    <Row>
 
                       <Col md={7}>
-                        <Form.Group>
+                        <FormGroup>
                           <Form.Label>Name *</Form.Label>
-                          <Input
+                          <Form.Control
                               type="text"
-                              invalid={!this.state.validation.nameIsValid}
+                              isInvalid={!this.state.validation.nameIsValid}
                               defaultValue={this.state.study.name || ''}
                               onChange={(e) => this.handleFormUpdate(
                                   {"name": e.target.value})}
                               disabled={!!this.state.study.id}
                           />
-                          <FormFeedback>Name must not be empty.</FormFeedback>
-                          <FormText>Must be unique.</FormText>
-                        </Form.Group>
+                          <Form.Control.Feedback type={"invalid"}>Name must not be empty.</Form.Control.Feedback>
+                          <Form.Text>Must be unique.</Form.Text>
+                        </FormGroup>
                       </Col>
 
                       <Col md={5}>
@@ -348,9 +327,9 @@ export default class StudyForm extends React.Component {
 
                     </Row>
 
-                    <Row form>
+                    <Row>
                       <Col md={7}>
-                        <Form.Group>
+                        <FormGroup>
                           <Form.Label>Description *</Form.Label>
                           <ReactQuill
                               theme="snow"
@@ -358,11 +337,12 @@ export default class StudyForm extends React.Component {
                               onChange={content => this.handleFormUpdate(
                                   {"description": content})}
                           />
-                          <FormFeedback>
+                          <Form.Control.Feedback type={"invalid"}>
                             Description must not be empty.
-                          </FormFeedback>
-                        </Form.Group>
+                          </Form.Control.Feedback>
+                        </FormGroup>
                       </Col>
+
                       <Col md={5}>
 
                         <StatusDropdown
@@ -370,7 +350,7 @@ export default class StudyForm extends React.Component {
                             onChange={this.handleFormUpdate}
                         />
 
-                        <Form.Group>
+                        <FormGroup>
                           <Form.Label>Start Date *</Form.Label>
                           <DatePicker
                               maxlength="2"
@@ -384,13 +364,15 @@ export default class StudyForm extends React.Component {
                               dateFormat=" MM / dd / yyyy"
                               placeholderText="MM / DD / YYYY"
                           />
-                          <FormFeedback>You must select a Start
-                            Date.</FormFeedback>
-                          <FormText>Select the date your study began or is
-                            expected to begin.</FormText>
-                        </Form.Group>
+                          <Form.Control.Feedback type={"invalid"}>
+                            You must select a Start Date.
+                          </Form.Control.Feedback>
+                          <Form.Text>
+                            Select the date your study began or is expected to begin.
+                          </Form.Text>
+                        </FormGroup>
 
-                        <Form.Group>
+                        <FormGroup>
                           <Form.Label>End Date</Form.Label>
                           <DatePicker
                               maxlength="2"
@@ -403,14 +385,15 @@ export default class StudyForm extends React.Component {
                               dateFormat=" MM / dd / yyyy"
                               placeholderText="MM / DD / YYYY"
                           />
-                          <FormText>Select the date your study was
-                            completed.</FormText>
-                        </Form.Group>
+                          <Form.Text>
+                            Select the date your study was completed.
+                          </Form.Text>
+                        </FormGroup>
 
                       </Col>
                     </Row>
 
-                    <Row form>
+                    <Row>
                       <Col>
                         <hr/>
                       </Col>
@@ -422,7 +405,7 @@ export default class StudyForm extends React.Component {
                           ? ""
                           : (
                               <React.Fragment>
-                                <Row form>
+                                <Row>
 
                                   <Col md={12}>
                                     <h5 className="card-title">Legacy Study</h5>
@@ -438,8 +421,8 @@ export default class StudyForm extends React.Component {
                                   </Col>
 
                                   <Col md={12}>
-                                    <Form.Group>
-                                      <CustomInput
+                                    <FormGroup>
+                                      <Form.Check
                                           id="legacy-check"
                                           type="checkbox"
                                           label="Is this a legacy study?"
@@ -448,7 +431,7 @@ export default class StudyForm extends React.Component {
                                           defaultChecked={!!this.state.study.id
                                           && !!this.state.study.legacy}
                                       />
-                                    </Form.Group>
+                                    </FormGroup>
                                   </Col>
 
                                   <Col md={12} id="legacy-input-container"
@@ -458,33 +441,35 @@ export default class StudyForm extends React.Component {
                                              : "none"
                                        }}>
 
-                                    <Row form>
+                                    <Row>
 
                                       <Col md={6}>
-                                        <Form.Group>
+                                        <FormGroup>
                                           <Form.Label>Study Code *</Form.Label>
-                                          <Input
+                                          <Form.Control
                                               type="text"
-                                              invalid={false}
+                                              isInvalid={false}
                                               disabled={!!this.state.study.id}
                                               defaultValue={this.state.study.code
                                               || ''}
                                               onChange={(e) => this.handleFormUpdate(
                                                   {"code": e.target.value})}
                                           />
-                                          <FormFeedback>Legacy studies must be
-                                            provided a
-                                            Study Code.</FormFeedback>
-                                          <FormText>Provide the existing code or ID
-                                            for the
-                                            study.</FormText>
-                                        </Form.Group>
+                                          <Form.Control.Feedback type={"invalid"}>
+                                            Legacy studies must be provided a
+                                            Study Code.
+                                          </Form.Control.Feedback>
+                                          <Form.Text>
+                                            Provide the existing code or ID
+                                            for the study.
+                                          </Form.Text>
+                                        </FormGroup>
                                       </Col>
 
                                       <Col md={6}>
-                                        <Form.Group>
+                                        <FormGroup>
                                           <Form.Label>Notebook URL</Form.Label>
-                                          <Input
+                                          <Form.Control
                                               type="text"
                                               disabled={!!this.state.study.id}
                                               defaultValue={
@@ -500,10 +485,11 @@ export default class StudyForm extends React.Component {
                                                     }
                                                   })}
                                           />
-                                          <FormText>If the study already has an ELN
-                                            entry,
-                                            provide the URL here.</FormText>
-                                        </Form.Group>
+                                          <Form.Text>
+                                            If the study already has an ELN
+                                            entry, provide the URL here.
+                                          </Form.Text>
+                                        </FormGroup>
                                       </Col>
 
                                     </Row>
@@ -517,6 +503,7 @@ export default class StudyForm extends React.Component {
                                     <hr/>
                                   </Col>
                                 </Row>
+
                               </React.Fragment>
                           )
                     }
@@ -537,7 +524,7 @@ export default class StudyForm extends React.Component {
                     </Row>
 
                     {/*Study Team*/}
-                    <Row form>
+                    <Row>
                       <Col md={12}>
                         <h5 className="card-title">Study Team</h5>
                         <h6 className="card-subtitle text-muted">Who will be
@@ -566,7 +553,7 @@ export default class StudyForm extends React.Component {
                     </Row>
 
                     {/*Keywords*/}
-                    <Row form>
+                    <Row>
                       <Col md={12}>
                         <h5 className="card-title">Keywords</h5>
                         <h6 className="card-subtitle text-muted">Tag your study
@@ -595,20 +582,20 @@ export default class StudyForm extends React.Component {
                     </Row>
 
                     {/*Buttons*/}
-                    <Row form>
+                    <Row>
                       <Col className="text-center">
                         <FormGroup>
-                          <Button size="lg" color="primary"
+                          <Button size="lg" variant="primary"
                                   onClick={this.handleSubmit}>Submit</Button>
                           &nbsp;&nbsp;
-                          <Button size="lg" color="secondary"
+                          <Button size="lg" variant="secondary"
                                   onClick={this.handleCancel}>Cancel</Button>
                         </FormGroup>
                       </Col>
                     </Row>
 
                   </Form>
-                </CardBody>
+                </Card.Body>
               </Card>
             </Col>
           </Row>

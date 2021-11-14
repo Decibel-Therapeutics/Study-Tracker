@@ -42,18 +42,27 @@
 
 // Navbar
 nav.navbar {
-  padding: 0.2rem 1.0rem;
+
+  form {
+    margin-block-end: auto;
+  }
+
+  .navbar-brand {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
 }
 
 // Sidebar
 
 @media (min-width: 1px) and (max-width: 1199.8px) {
   .sidebar {
-    margin-left: -256px;
+    margin-left: -260px;
   }
 
   .sidebar .sidebar-content {
-    left: -256px;
+    left: -260px;
   }
 
   .sidebar.toggled {
@@ -64,20 +73,20 @@ nav.navbar {
     left: 0;
   }
 
-  .sidebar-collapsed {
-    margin-left: 0;
+  .sidebar.collapsed {
+    margin-left: 0 !important;
   }
 
-  .sidebar-collapsed .sidebar-content {
+  .sidebar.collapsed .sidebar-content {
     left: 0;
   }
 
-  .sidebar-collapsed.toggled {
-    margin-left: -256px;
+  .sidebar.collapsed.toggled {
+    margin-left: -260px;
   }
 
-  .sidebar-collapsed.toggled .sidebar-content {
-    left: -256px;
+  .sidebar.collapsed.toggled .sidebar-content {
+    left: -260px;
   }
 }
 
@@ -232,4 +241,10 @@ nav ol.breadcrumb {
 
 .ql-container {
   height: 70%
+}
+
+// Forms
+
+.form-label {
+  font-weight: 500;
 }

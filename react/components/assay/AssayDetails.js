@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Breadcrumb,
   Button,
   Card,
   Col,
@@ -23,6 +22,7 @@ import swal from "sweetalert";
 import {AssayTaskList} from "../assayTasks";
 import {RepairableStorageFolderButton} from "../files";
 import {RepairableNotebookFolderButton} from "../eln";
+import {Breadcrumbs} from "../common";
 
 const createMarkup = (content) => {
   return {__html: content};
@@ -251,17 +251,11 @@ export default class AssayDetails extends React.Component {
 
           <Row>
             <Col>
-              <Breadcrumb>
-
-                <Breadcrumb.Item href={"/"}>Home</Breadcrumb.Item>
-
-                <Breadcrumb.Item href={"/study/" + study.code}>
-                    Study {study.code}
-                </Breadcrumb.Item>
-
-                <Breadcrumb.Item>Assay Detail</Breadcrumb.Item>
-
-              </Breadcrumb>
+              <Breadcrumbs crumbs={[
+                {label: "Home", url: "/"},
+                {label: "Study " + study.code, url: "/study/" + study.code},
+                {label: "Assay Details"}
+              ]} />
             </Col>
           </Row>
 

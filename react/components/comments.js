@@ -15,8 +15,7 @@
  */
 
 import React from "react";
-import {Button} from "react-bootstrap";
-import {Input} from "reactstrap";
+import {Button, Form} from "react-bootstrap";
 import {User} from 'react-feather';
 import swal from "sweetalert";
 import dateFormat from "dateformat";
@@ -108,9 +107,10 @@ export class Comment extends React.Component {
               <div hidden={!this.state.showInput}>
 
                 <div className="mb-2">
-                  <Input
+                  <Form.Control
                       ref={this.textInput}
-                      type={'textarea'}
+                      as={'textarea'}
+                      rows={3}
                       defaultValue={this.props.comment.text}
                       onChange={(e) => this.handleUpdate(e.target.value)}
                   />

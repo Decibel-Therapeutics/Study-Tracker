@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import {Button, Col, Media, Row} from "reactstrap";
+import {Button, Col, Row} from "react-bootstrap";
 import {StatusIcon} from "./status";
 import {history} from '../App';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -28,11 +28,13 @@ const createMarkup = (content) => {
 
 const StudySummaryCard = ({study}) => {
   return (
-      <Media className="assay-card">
+      <div className="d-flex assay-card">
 
-        <StatusIcon status={study.status}/>
+        <div className="stat stat-transparent">
+          <StatusIcon status={study.status}/>
+        </div>
 
-        <Media body>
+        <div className="flex-grow-1 ms-3">
 
           <Row>
             <Col xs={12}>
@@ -102,7 +104,7 @@ const StudySummaryCard = ({study}) => {
 
           <Row className="mt-2">
             <Col>
-              <Button outline size="md" color="primary"
+              <Button size="md" variant="outline-primary"
                       onClick={() => history.push("/study/" + study.code)}>
                 Details
                 &nbsp;
@@ -111,18 +113,20 @@ const StudySummaryCard = ({study}) => {
             </Col>
           </Row>
 
-        </Media>
-      </Media>
+        </div>
+      </div>
   );
 };
 
 const StudySlimCard = ({study}) => {
   return (
-      <Media className="assay-card">
+      <div className="d-flex assay-card">
 
-        <StatusIcon status={study.status}/>
+        <div className="stat stat-transparent">
+          <StatusIcon status={study.status}/>
+        </div>
 
-        <Media body>
+        <div className="flex-grow-1 ms-3">
 
           <Row>
 
@@ -173,8 +177,8 @@ const StudySlimCard = ({study}) => {
 
           </Row>
 
-        </Media>
-      </Media>
+        </div>
+      </div>
   );
 };
 

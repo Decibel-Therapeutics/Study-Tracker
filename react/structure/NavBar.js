@@ -63,29 +63,53 @@ class NavBarComponent extends React.Component {
                     >
                     <i className="hamburger align-self-center"/>
                   </span>
-                ) : ''
+                ) : (
+                    <Navbar.Brand href={"/"}>
+                      <img
+                          width="40"
+                          height="30"
+                          className="d-inline-block align-top"
+                          alt="Study Tracker"
+                          src={"/static/images/logo-icon.png"}
+                      />
+                    </Navbar.Brand>
+                )
 
           }
 
           <Formik
               initialValues={{q: ''}}
               onSubmit={(values => {
+                console.log("Searching for: " + values.q);
                 history.push("/search?q=" + values.q);
                 history.go(0);
               })}
           >
-            <Form inline="true" className="d-none d-sm-inline-block">
-              <InputGroup className="input-group-navbar">
-                <Form.Control
-                    name={"q"}
-                    placeholder={"Search"}
-                    aria-label={"Search"}
-                />
-                <Button variant="">
-                  <Search className={"feather"}/>
-                </Button>
-              </InputGroup>
-            </Form>
+            {({
+              handleSubmit,
+              handleChange,
+              values
+            }) => (
+                <Form
+                    inline="true"
+                    className="d-none d-sm-inline-block"
+                    onSubmit={handleSubmit}
+                >
+                  <InputGroup className="input-group-navbar">
+                    <Form.Control
+                        type="text"
+                        name={"q"}
+                        placeholder={"Search"}
+                        aria-label={"Search"}
+                        onChange={handleChange}
+                    />
+                    <Button type="submit" variant="">
+                      <Search className={"feather"}/>
+                    </Button>
+                  </InputGroup>
+                </Form>
+            )}
+
           </Formik>
 
           <Navbar.Collapse>

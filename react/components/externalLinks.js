@@ -20,7 +20,6 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLink, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
 import swal from 'sweetalert';
 import {PlusCircle} from "react-feather";
-import {Input} from "reactstrap";
 
 class ExternalLinks extends React.Component {
 
@@ -198,7 +197,7 @@ class ExternalLinks extends React.Component {
                 <Col sm={12}>
                   <Form.Group>
                     <Form.Label>Label *</Form.Label>
-                    <Input
+                    <Form.Control
                         type="text"
                         defaultValue={this.state.newLink.label}
                         onChange={(e) => this.handleNewLinkChange({
@@ -211,8 +210,8 @@ class ExternalLinks extends React.Component {
                 <Col sm={12}>
                   <Form.Group>
                     <Form.Label>URL *</Form.Label>
-                    <Input
-                        type="url"
+                    <Form.Control
+                        type="text"
                         defaultValue={this.state.newLink.url}
                         onChange={(e) => this.handleNewLinkChange({
                           url: e.target.value

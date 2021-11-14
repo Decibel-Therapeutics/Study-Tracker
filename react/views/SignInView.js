@@ -16,18 +16,7 @@
 
 import React from "react";
 
-import {
-  Alert,
-  Card,
-  CardBody,
-  Col,
-  Container,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-  Row
-} from "reactstrap";
+import {Alert, Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import {User} from "react-feather";
 import NoNavWrapper from "../structure/NoNavWrapper";
 
@@ -82,7 +71,7 @@ export default class SignInView extends React.Component {
         <NoNavWrapper>
           <Container fluid className="animated fadeIn">
             <Row className="justify-content-center">
-              <Col xs="12" sm="8" md="8" lg="6" xl="4">
+              <Col xs={12} sm={8} md={8} lg={6} xl={4}>
 
                 <div className="text-center mt-4">
                   <h2>Welcome to Study Tracker</h2>
@@ -90,7 +79,7 @@ export default class SignInView extends React.Component {
                 </div>
 
                 <Card>
-                  <CardBody>
+                  <Card.Body>
                     <div className="m-sm-4">
 
                       <div className="text-center">
@@ -99,29 +88,29 @@ export default class SignInView extends React.Component {
 
                       <Form action={"/login"} method={"post"}>
 
-                        <FormGroup>
-                          <Label>Username or email</Label>
-                          <Input
-                              bsSize="lg"
+                        <Form.Group>
+                          <Form.Label>Username or email</Form.Label>
+                          <Form.Control
+                              size="lg"
                               type="text"
                               name="username"
                               placeholder="Enter your username or email address"
                               onChange={e => this.handleInputChange(
                                   {username: e.target.value})}
                           />
-                        </FormGroup>
+                        </Form.Group>
 
-                        <FormGroup>
-                          <Label>Password</Label>
-                          <Input
-                              bsSize="lg"
+                        <Form.Group>
+                          <Form.Label>Password</Form.Label>
+                          <Form.Control
+                              size="lg"
                               type="password"
                               name="password"
                               placeholder="Enter your password"
                               onChange={e => this.handleInputChange(
                                   {password: e.target.value})}
                           />
-                        </FormGroup>
+                        </Form.Group>
 
                         <div className="text-center mt-3">
                           <small>
@@ -133,7 +122,7 @@ export default class SignInView extends React.Component {
                           !!message
                               ? (
                                   <div className="text-center mt-3">
-                                    <Alert color="success" className="p-3">
+                                    <Alert variant="success" className="p-3">
                                       {message}
                                     </Alert>
                                   </div>
@@ -145,7 +134,7 @@ export default class SignInView extends React.Component {
                           isError
                               ? (
                                   <div className="text-center mt-3">
-                                    <Alert color="danger" className="p-3">
+                                    <Alert variant="danger" className="p-3">
                                       Failed to sign you in. Please check your
                                       credentials and try again.
                                     </Alert>
@@ -155,14 +144,14 @@ export default class SignInView extends React.Component {
                         }
 
                         <div className="text-center mt-3">
-                          <a href={"/"} className="btn btn-lg btn-secondary">
+                          <Button href={"/"} size="lg" variant="secondary">
                             Cancel
-                          </a>
+                          </Button>
                           &nbsp;&nbsp;
-                          <button className="btn btn-lg btn-primary"
+                          <Button size="lg" variant="primary"
                                   type="submit">
                             Sign In
-                          </button>
+                          </Button>
                         </div>
 
                         {
@@ -170,17 +159,20 @@ export default class SignInView extends React.Component {
                           && !!this.state.options.sso.okta
                             ? (
                                   <div className="text-center mt-3">
-                                    <a href={this.state.options.sso.okta}
-                                       className="btn btn-lg btn-outline-primary">
+                                    <Button
+                                        href={this.state.options.sso.okta}
+                                        size={"lg"}
+                                        variant="outline-primary"
+                                    >
                                       Sign in with Okta
-                                    </a>
+                                    </Button>
                                   </div>
                             ) : ''
                         }
 
                       </Form>
                     </div>
-                  </CardBody>
+                  </Card.Body>
                 </Card>
 
               </Col>

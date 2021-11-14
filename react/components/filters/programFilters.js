@@ -1,5 +1,6 @@
 import React from "react";
-import {CustomInput, FormGroup, Input, Label} from 'reactstrap';
+import {Form} from 'react-bootstrap';
+import {FormGroup} from '../forms/common'
 import {setFilters} from "../../redux/actions/filterActions";
 import {connect} from 'react-redux';
 import {compose} from 'redux';
@@ -100,7 +101,7 @@ class ProgramFilters extends React.Component {
                     </small>
 
                     <FormGroup>
-                      <CustomInput
+                      <Form.Check
                           id="my-programs-check"
                           type="checkbox"
                           label="My Programs"
@@ -120,29 +121,27 @@ class ProgramFilters extends React.Component {
             </small>
 
             <FormGroup className="mb-2 ms-4">
-              <Label check>
-                <Input
-                    type="radio"
-                    name="program-status"
-                    checked={
-                      !this.state.filters[labels.ACTIVE]
-                      && !this.state.filters[labels.INACTIVE]
-                    }
-                    onChange={() => {
-                      this.updateFilters({
-                        [labels.ACTIVE]: null,
-                        [labels.INACTIVE]: null
-                      })
-                    }}
-                />
-                {" "}
-                Show all programs
-              </Label>
+              <Form.Check
+                  type="radio"
+                  name="program-status"
+                  checked={
+                    !this.state.filters[labels.ACTIVE]
+                    && !this.state.filters[labels.INACTIVE]
+                  }
+                  onChange={() => {
+                    this.updateFilters({
+                      [labels.ACTIVE]: null,
+                      [labels.INACTIVE]: null
+                    })
+                  }}
+                  label={"Show all programs"}
+              />
             </FormGroup>
 
             <FormGroup className="mb-2 ms-4">
-              <Label check>
-                <Input
+
+                <Form.Check
+                    label={"Active programs only"}
                     type="radio"
                     name="program-status"
                     checked={!!this.state.filters[labels.ACTIVE]}
@@ -153,27 +152,21 @@ class ProgramFilters extends React.Component {
                       })
                     }}
                 />
-                {" "}
-                Active programs only
-              </Label>
             </FormGroup>
 
             <FormGroup className="mb-2 ms-4">
-              <Label check>
-                <Input
-                    type="radio"
-                    name="program-status"
-                    checked={!!this.state.filters[labels.INACTIVE]}
-                    onChange={() => {
-                      this.updateFilters({
-                        [labels.ACTIVE]: null,
-                        [labels.INACTIVE]: true
-                      })
-                    }}
-                />
-                {" "}
-                Inactive programs only
-              </Label>
+              <Form.Check
+                  label={"Inactive programs only"}
+                  type="radio"
+                  name="program-status"
+                  checked={!!this.state.filters[labels.INACTIVE]}
+                  onChange={() => {
+                    this.updateFilters({
+                      [labels.ACTIVE]: null,
+                      [labels.INACTIVE]: true
+                    })
+                  }}
+              />
             </FormGroup>
 
           </div>

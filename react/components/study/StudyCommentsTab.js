@@ -16,7 +16,6 @@
 
 import React from 'react';
 import {Button, Col, Form, Row} from 'react-bootstrap';
-import {Input} from "reactstrap";
 import {Comment} from "../comments";
 import {MessageCircle} from 'react-feather';
 import swal from 'sweetalert';
@@ -197,9 +196,10 @@ class StudyCommentsTab extends React.Component {
 
                     <Form.Group className="mb-2">
                       <Form.Label>New Comment</Form.Label>
-                      <Input
+                      <Form.Control
                           ref={this.textInput}
-                          type={'textarea'}
+                          as={'textarea'}
+                          rows={3}
                           value={this.state.newComment}
                           onChange={(e) => this.handleUpdate(e.target.value)}
                       />

@@ -1,5 +1,6 @@
 import React from "react";
-import {CustomInput, FormGroup} from 'reactstrap';
+import {FormGroup} from '../forms/common';
+import {Form} from 'react-bootstrap';
 import {setFilters} from "../../redux/actions/filterActions";
 import {connect} from 'react-redux';
 import {statuses} from "../../config/statusConstants";
@@ -187,7 +188,7 @@ class AssayFilters extends React.Component {
             {
               !!this.props.user ? (
                   <FormGroup>
-                    <CustomInput
+                    <Form.Check
                         id="my-assays-check"
                         type="checkbox"
                         label="My Assays"
@@ -202,7 +203,7 @@ class AssayFilters extends React.Component {
             }
 
             <FormGroup>
-              <CustomInput
+              <Form.Check
                   id="legacy-study-check"
                   type="checkbox"
                   label="Legacy Studies"
@@ -214,7 +215,7 @@ class AssayFilters extends React.Component {
             </FormGroup>
 
             <FormGroup>
-              <CustomInput
+              <Form.Check
                   id="cro-study-check"
                   type="checkbox"
                   label="External Studies"
@@ -237,7 +238,7 @@ class AssayFilters extends React.Component {
                 {
                   Object.values(statuses).map(status => {
                     return (
-                        <CustomInput
+                        <Form.Check
                             key={"status-checkbox-" + status.value}
                             id={"status-checkbox-" + status.value}
                             type={"checkbox"}
@@ -273,7 +274,7 @@ class AssayFilters extends React.Component {
                       {
                         this.state.programs.map(program => {
                           return (
-                              <CustomInput
+                              <Form.Check
                                   key={"program-checkbox-" + program.id}
                                   id={"program-checkbox-" + program.id}
                                   type={"checkbox"}
@@ -310,7 +311,7 @@ class AssayFilters extends React.Component {
                       {
                         this.state.assayTypes.map(assayType => {
                           return (
-                              <CustomInput
+                              <Form.Check
                                   key={"assay-type-checkbox-" + assayType.id}
                                   id={"assay-type-checkbox-" + assayType.id}
                                   type={"checkbox"}

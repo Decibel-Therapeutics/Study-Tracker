@@ -1,5 +1,4 @@
 import React from 'react';
-import {Input} from 'reactstrap';
 import {Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
 import {Edit, Tag} from 'react-feather';
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
@@ -313,37 +312,31 @@ const ModalInputs = ({
       <Row>
 
         <Col xs={12} sm={4}>
-          <FormGroup check className="mb-2">
-            <Label check>
-              <Input
-                  type={"radio"}
-                  name={"category-radio"}
-                  value={"select"}
-                  checked={categoryInput === "select"}
-                  onChange={toggleCategoryInput}
-              />
-              {" "}Use existing category
-            </Label>
-          </FormGroup>
-          <FormGroup check className="mb-2">
-            <Label check>
-              <Input
-                  type={"radio"}
-                  name={"category-radio"}
-                  value={"input"}
-                  checked={categoryInput === "input"}
-                  onChange={toggleCategoryInput}
-              />
-              {" "}Create new category
-            </Label>
-          </FormGroup>
+          <Form.Group className="mb-2">
+            <Form.Check
+                label={"Use existing category"}
+                type={"radio"}
+                name={"category-radio"}
+                value={"select"}
+                checked={categoryInput === "select"}
+                onChange={toggleCategoryInput}
+            />
+          </Form.Group>
+          <Form.Group className="mb-2">
+            <Form.Check
+                label={"Create new category"}
+                type={"radio"}
+                name={"category-radio"}
+                value={"input"}
+                checked={categoryInput === "input"}
+                onChange={toggleCategoryInput}
+            />
+          </Form.Group>
         </Col>
 
         <Col xs={12} sm={4}>
-          <FormGroup style={{
-            display: categoryInput === "select" ? "block" : "none"
-          }}>
-            <Label>Category</Label>
+          <Form.Group hidden={categoryInput !== "select"}>
+            <Form.Label>Category</Form.Label>
             <Select
                 className="react-select-container"
                 classNamePrefix="react-select"
@@ -355,25 +348,25 @@ const ModalInputs = ({
                 onChange={(selected) => handleUpdate(
                     {category: selected.value})}
             />
-          </FormGroup>
-          <FormGroup style={{
-            display: categoryInput === "input" ? "block" : "none"
-          }}>
-            <Label>Category</Label>
-            <Input
+          </Form.Group>
+          <Form.Group hidden={categoryInput !== "input"}>
+            <Form.Label>Category</Form.Label>
+            <Form.Control
+                type={"text"}
                 onChange={(e) => handleUpdate({category: e.target.value})}
             />
-          </FormGroup>
+          </Form.Group>
         </Col>
 
         <Col xs={12} sm={4}>
-          <FormGroup>
-            <Label>Keyword</Label>
-            <Input
+          <Form.Group>
+            <Form.Label>Keyword</Form.Label>
+            <Form.Control
+                type={"text"}
                 defaultValue={keyword.keyword}
                 onChange={(e) => handleUpdate({keyword: e.target.value})}
             />
-          </FormGroup>
+          </Form.Group>
         </Col>
 
       </Row>

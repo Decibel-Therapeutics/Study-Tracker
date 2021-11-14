@@ -271,8 +271,8 @@ class StudyCollectionDetails extends React.Component {
 
                 <Card.Header>
                   <div className="card-actions float-end">
-                    <Dropdown>
-                      <Dropdown.Toggle tag="a">
+                    <Dropdown align="end">
+                      <Dropdown.Toggle as="a" bsPrefix="-">
                         <Menu/>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>

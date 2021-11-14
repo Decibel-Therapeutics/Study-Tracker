@@ -74,7 +74,6 @@
     "react-router-dom": "^5.3.0",
     "react-select": "5.1.0",
     "react-transition-group": "4.4.2",
-    "reactstrap": "8.10.1",
     "redux": "4.1.2",
     "sweetalert": "^2.1.2"
   },

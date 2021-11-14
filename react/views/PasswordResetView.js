@@ -16,18 +16,7 @@
 
 import React from "react";
 
-import {
-  Alert,
-  Card,
-  CardBody,
-  Col,
-  Container,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-  Row
-} from "reactstrap";
+import {Alert, Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import {User} from "react-feather";
 import NoNavWrapper from "../structure/NoNavWrapper";
 
@@ -92,7 +81,7 @@ export default class PasswordResetView extends React.Component {
         <NoNavWrapper>
           <Container fluid className="animated fadeIn">
             <Row className="justify-content-center">
-              <Col xs="12" sm="8" md="8" lg="6" xl="4">
+              <Col xs={12} sm={8} md={8} lg={6} xl={4}>
 
                 <div className="text-center mt-4">
                   <h2>Password Reset</h2>
@@ -102,7 +91,7 @@ export default class PasswordResetView extends React.Component {
                 </div>
 
                 <Card>
-                  <CardBody>
+                  <Card.Body>
                     <div className="m-sm-4">
 
                       <div className="text-center">
@@ -111,57 +100,55 @@ export default class PasswordResetView extends React.Component {
 
                       <Form action={"/auth/passwordreset"} method={"post"}>
 
-                        <FormGroup hidden>
-                          <Label>Email</Label>
-                          <Input
-                              bsSize="lg"
+                        <Form.Group hidden>
+                          <Form.Label>Email</Form.Label>
+                          <Form.Control
+                              size="lg"
                               type="text"
                               name="email"
                               defaultValue={this.state.auth.email}
-                              // disabled={true}
                           />
-                        </FormGroup>
+                        </Form.Group>
 
-                        <FormGroup hidden>
-                          <Input
-                              bsSize="lg"
+                        <Form.Group hidden>
+                          <Form.Control
+                              size="lg"
                               type="text"
                               name="token"
                               defaultValue={this.state.auth.token}
-                              // disabled={true}
                               style={{display: "none"}}
                           />
-                        </FormGroup>
+                        </Form.Group>
 
-                        <FormGroup>
-                          <Label>Password</Label>
-                          <Input
-                              bsSize="lg"
+                        <Form.Group>
+                          <Form.Label>Password</Form.Label>
+                          <Form.Control
+                              size="lg"
                               type="password"
                               name="password"
                               placeholder="Enter your password"
                               onChange={e => this.handleInputChange(
                                   {password: e.target.value})}
                           />
-                        </FormGroup>
+                        </Form.Group>
 
-                        <FormGroup>
-                          <Label>Password Again</Label>
-                          <Input
-                              bsSize="lg"
+                        <Form.Group>
+                          <Form.Label>Password Again</Form.Label>
+                          <Form.Control
+                              size="lg"
                               type="password"
                               name="passwordAgain"
                               placeholder="Enter your password a second time"
                               onChange={e => this.handleInputChange(
                                   {passwordAgain: e.target.value})}
                           />
-                        </FormGroup>
+                        </Form.Group>
 
                         {
                           isError
                               ? (
                                   <div className="text-center mt-3">
-                                    <Alert color="danger" className="p-3">
+                                    <Alert variant="danger" className="p-3">
                                       Failed to reset your password. Please try
                                       again.
                                     </Alert>
@@ -175,18 +162,19 @@ export default class PasswordResetView extends React.Component {
                             Cancel
                           </a>
                           &nbsp;&nbsp;
-                          <button
-                              className="btn btn-lg btn-primary"
+                          <Button
+                              size={"lg"}
+                              variant="primary"
                               type="submit"
                               disabled={!this.state.inputIsValid && !this.state.isLoaded}
                           >
                             Submit
-                          </button>
+                          </Button>
                         </div>
 
                       </Form>
                     </div>
-                  </CardBody>
+                  </Card.Body>
                 </Card>
 
               </Col>

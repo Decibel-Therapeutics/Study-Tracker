@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import {Button, Col, Row, Table} from "reactstrap";
+import {Badge, Button, Col, Row, Table} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 
@@ -59,8 +59,8 @@ class StudyCollectionsTab extends React.Component {
             <td>
               {
                 !!collection.shared
-                  ? <div className="badge badge-success">Public</div>
-                  : <div className="badge badge-warning">Private</div>
+                  ? <Badge bg="success">Public</Badge>
+                  : <Badge bg="warning">Private</Badge>
               }
             </td>
           </tr>
@@ -74,7 +74,7 @@ class StudyCollectionsTab extends React.Component {
             <Col>
               <span className="float-end">
                 <Button
-                    color="info"
+                    variant="info"
                     onClick={() => this.props.showCollectionModal(true)}
                 >
                   Add to Collection
