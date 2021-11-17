@@ -63,7 +63,11 @@ const AssayDetailHeader = ({assay, user}) => {
 const AssayFieldData = ({assay}) => {
 
   let fields = [];
-  const assayTypeFields = assay.assayType.fields;
+  const assayTypeFields = assay.assayType.fields.sort((a,b) => {
+    if (a.id > b.id) return 1;
+    else if (a.id < b.id) return -1;
+    else return 0;
+  });
   const assayFields = assay.fields;
   for (let f of assayTypeFields) {
     if (assayFields.hasOwnProperty(f.fieldName)) {
