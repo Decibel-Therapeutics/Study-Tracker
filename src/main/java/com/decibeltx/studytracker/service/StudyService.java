@@ -197,7 +197,6 @@ public class StudyService {
     }
 
     // Create the ELN folder
-    LOGGER.info(String.format("Creating ELN entry for study: %s", study.getCode()));
     if (study.isLegacy()) {
       LOGGER.info(String.format("Legacy Study : %s", study.getCode()));
       if (study.getNotebookFolder().getUrl() != null) {
@@ -210,6 +209,7 @@ public class StudyService {
       }
     } else {
       if (notebookService != null) {
+        LOGGER.info(String.format("Creating ELN entry for study: %s", study.getCode()));
         if (program.getNotebookFolder() != null) {
           try {
             NotebookFolder notebookFolder = notebookService.createStudyFolder(study);
@@ -222,11 +222,15 @@ public class StudyService {
         } else {
           LOGGER.warn(String.format("Study program %s does not have ELN folder set.", program.getName()));
         }
+      } else {
+        study.setNotebookFolder(null);
       }
     }
 
     try {
       studyRepository.save(study);
+      LOGGER.info(String.format("Successfully created new study with code %s and ID %s",
+          study.getCode(), study.getId()));
     } catch (Exception e) {
       if (e instanceof ConstraintViolationException) {
         throw new InvalidConstraintException(e);
@@ -234,9 +238,6 @@ public class StudyService {
         throw e;
       }
     }
-
-    LOGGER.info(String.format("Successfully created new study with code %s and ID %s",
-        study.getCode(), study.getId()));
 
   }
 
