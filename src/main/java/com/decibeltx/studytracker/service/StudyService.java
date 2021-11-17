@@ -397,12 +397,25 @@ public class StudyService {
     }
 
     // Update the record
-    ELNFolder f = elnFolderRepository.getOne(study.getNotebookFolder().getId());
+    ELNFolder f;
+    boolean isNew = false;
+    try {
+      f = elnFolderRepository.getOne(study.getNotebookFolder().getId());
+    } catch (NullPointerException e) {
+      f = new ELNFolder();
+      isNew = true;
+    }
     f.setName(folder.getName());
     f.setPath(folder.getPath());
     f.setUrl(folder.getUrl());
     f.setReferenceId(folder.getReferenceId());
     elnFolderRepository.save(f);
+
+    if (isNew) {
+      Study s = studyRepository.getById(study.getId());
+      s.setNotebookFolder(f);
+      studyRepository.save(s);
+    }
 
   }
 
