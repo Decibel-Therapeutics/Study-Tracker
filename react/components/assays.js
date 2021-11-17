@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import {Button, Col, Media, Row} from "reactstrap";
+import {Button, Col, Row} from "react-bootstrap";
 import ErrorMessage from "../structure/ErrorMessage";
 import LoadingMessage from "../structure/LoadingMessage";
 import {StatusIcon} from "./status";
@@ -30,16 +30,18 @@ const createMarkup = (content) => {
 
 const AssaySummaryCard = ({studyCode, assay}) => {
   return (
-      <Media className="assay-card">
+      <div className="d-flex assay-card">
 
-        <StatusIcon status={assay.status}/>
+        <div className="stat stat-transparent">
+          <StatusIcon status={assay.status}/>
+        </div>
 
-        <Media body>
+        <div className="flex-grow-1 ms-3">
 
           <Row>
             <Col xs={12}>
 
-              <span className="float-right">
+              <span className="float-end">
                 <h5>
                   {assay.assayType.name}
                 </h5>
@@ -116,8 +118,8 @@ const AssaySummaryCard = ({studyCode, assay}) => {
             </Col>
           </Row>
 
-        </Media>
-      </Media>
+        </div>
+      </div>
   );
 };
 

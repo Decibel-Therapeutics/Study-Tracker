@@ -1,5 +1,6 @@
 import React from "react";
-import {CustomInput, FormGroup} from 'reactstrap';
+import {Form} from 'react-bootstrap';
+import {FormGroup} from '../forms/common';
 import {setFilters} from "../../redux/actions/filterActions";
 import {connect} from 'react-redux';
 import {statuses} from "../../config/statusConstants";
@@ -155,7 +156,7 @@ class StudyFilters extends React.Component {
             {
               !!this.props.user ? (
                   <FormGroup>
-                    <CustomInput
+                    <Form.Check
                         id="my-studies-check"
                         type="checkbox"
                         label="My Studies"
@@ -170,7 +171,7 @@ class StudyFilters extends React.Component {
             }
 
             <FormGroup>
-              <CustomInput
+              <Form.Check
                   id="legacy-study-check"
                   type="checkbox"
                   label="Legacy Studies"
@@ -182,7 +183,7 @@ class StudyFilters extends React.Component {
             </FormGroup>
 
             <FormGroup>
-              <CustomInput
+              <Form.Check
                   id="cro-study-check"
                   type="checkbox"
                   label="External Studies"
@@ -205,7 +206,7 @@ class StudyFilters extends React.Component {
                 {
                   Object.values(statuses).map(status => {
                     return (
-                        <CustomInput
+                        <Form.Check
                             key={"status-checkbox-" + status.value}
                             id={"status-checkbox-" + status.value}
                             type={"checkbox"}
@@ -241,7 +242,7 @@ class StudyFilters extends React.Component {
                       {
                         this.state.programs.map(program => {
                           return (
-                              <CustomInput
+                              <Form.Check
                                   key={"program-checkbox-" + program.id}
                                   id={"program-checkbox-" + program.id}
                                   type={"checkbox"}

@@ -16,7 +16,7 @@
 
 import React from "react";
 import {StatusBadge} from "../status";
-import {Button, Card, CardBody, Col, Container, Row} from "reactstrap";
+import {Button, Card, Col, Container, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -213,7 +213,7 @@ export const StudyListTable = ({studies}) => {
       >
         {props => (
             <div>
-              <div className="float-right">
+              <div className="float-end">
                 <ExportToCsv{...props.csvProps} />
                 &nbsp;&nbsp;
                 <Search.SearchBar
@@ -247,15 +247,15 @@ const StudyList = ({studies, title, filters, user}) => {
       <Container fluid className="animated fadeIn">
 
         <Row className="justify-content-between align-items-center">
-          <Col xs="8">
-            <h1>{title}</h1>
+          <Col xs={8}>
+            <h3>Studies</h3>
           </Col>
           <Col className="col-auto">
             {
               !!user
                   ? (
                       <a href="/studies/new">
-                        <Button color="primary" className="mr-1 mb-1">
+                        <Button color="primary" className="me-1 mb-1">
                           <FontAwesomeIcon icon={faPlusCircle}/> New Study
                         </Button>
                       </a>
@@ -265,47 +265,11 @@ const StudyList = ({studies, title, filters, user}) => {
         </Row>
 
         <Row>
-          <Col lg="12">
+          <Col lg={12}>
             <Card>
-              <CardBody>
+              <Card.Body>
                 <StudyListTable studies={studies} />
-                {/*<ToolkitProvider*/}
-                {/*    keyField="id"*/}
-                {/*    data={studies}*/}
-                {/*    columns={columns}*/}
-                {/*    search*/}
-                {/*    exportCSV*/}
-                {/*>*/}
-                {/*  {props => (*/}
-                {/*      <div>*/}
-                {/*        <div className="float-right">*/}
-                {/*          <ExportToCsv{...props.csvProps} />*/}
-                {/*          &nbsp;&nbsp;*/}
-                {/*          <Search.SearchBar*/}
-                {/*              {...props.searchProps}*/}
-                {/*          />*/}
-                {/*        </div>*/}
-                {/*        <BootstrapTable*/}
-                {/*            bootstrap4*/}
-                {/*            keyField="id"*/}
-                {/*            // data={studies}*/}
-                {/*            // columns={columns}*/}
-                {/*            bordered={false}*/}
-                {/*            pagination={paginationFactory({*/}
-                {/*              sizePerPage: 10,*/}
-                {/*              sizePerPageList: [10, 20, 40, 80]*/}
-                {/*            })}*/}
-                {/*            defaultSorted={[{*/}
-                {/*              dataField: "updatedAt",*/}
-                {/*              order: "desc"*/}
-                {/*            }]}*/}
-                {/*            {...props.baseProps}*/}
-                {/*        >*/}
-                {/*        </BootstrapTable>*/}
-                {/*      </div>*/}
-                {/*  )}*/}
-                {/*</ToolkitProvider>*/}
-              </CardBody>
+              </Card.Body>
             </Card>
           </Col>
         </Row>

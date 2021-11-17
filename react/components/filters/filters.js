@@ -17,7 +17,6 @@
 import React from "react";
 import {Filter, RefreshCw} from 'react-feather';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import {Button} from "reactstrap";
 
 export class FilterSidebar extends React.Component {
 
@@ -35,19 +34,28 @@ export class FilterSidebar extends React.Component {
 
   render() {
     return (
-        <div className={"settings " + (this.state.isOpen ? "open" : "")}>
+        <div className={"settings js-settings " + (this.state.isOpen ? "open" : "")}>
 
-          <div className="settings-toggle" onClick={() => this.toggleSidebar()}>
-            <Filter size={24}/>
+          <div className="settings-toggle">
+            <div className="settings-toggle-option settings-toggle-option-text js-settings-toggle" onClick={() => this.toggleSidebar()}>
+              <Filter size={24} className="feather align-middle" />
+              &nbsp;
+              Filters
+            </div>
           </div>
 
           <div className="settings-panel">
             <div className="settings-content">
               <PerfectScrollbar>
 
-                <div className="settings-title">
-                  <Button close onClick={() => this.toggleSidebar()}/>
-                  <h4>
+                <div className="settings-title d-flex align-items-center">
+                  <button
+                      type="button"
+                      className="btn-close float-end js-settings-toggle"
+                      aria-label="Close"
+                      onClick={() => this.toggleSidebar()}
+                  ></button>
+                  <h4 className="mb-0 ms-2 d-inline-block">
                     Filters
                     &nbsp;&nbsp;
                     <a
@@ -57,7 +65,6 @@ export class FilterSidebar extends React.Component {
                     >
                       <RefreshCw size={16}/>
                     </a>
-
                   </h4>
                 </div>
 

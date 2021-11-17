@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import {Button, Card, CardBody, Col, Container, Row,} from "reactstrap";
+import {Badge, Button, Card, Col, Container, Row} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit';
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -80,17 +80,9 @@ const columns = [
     // headerStyle: {width: '10%'},
     formatter: (c, d, i, x) => {
       if (d.active) {
-        return (
-            <div className="badge badge-success">
-              Active
-            </div>
-        )
+        return <Badge bg="success">Active</Badge>
       } else {
-        return (
-            <div className="badge badge-warning">
-              Inactive
-            </div>
-        )
+        return <Badge bg="warning">Inactive</Badge>
       }
     }
   }
@@ -102,10 +94,10 @@ const ExportToCsv = (props) => {
   };
   return (
       <span>
-        <Button color={'primary'} onClick={handleClick}>
+        <Button variant={'primary'} onClick={handleClick}>
           Export to CSV
           &nbsp;
-          <File className="feather align-middle ml-2 mb-1"/>
+          <File className="feather align-middle ms-2 mb-1"/>
         </Button>
       </span>
   );
@@ -122,7 +114,7 @@ export const UserTable = ({users}) => {
       >
         {props => (
             <div>
-              <div className="float-right">
+              <div className="float-end">
                 <ExportToCsv{...props.csvProps} />
                 &nbsp;&nbsp;
                 <Search.SearchBar
@@ -156,15 +148,15 @@ const UserList = ({title, user, users}) => {
       <Container fluid className="animated fadeIn">
 
         <Row className="justify-content-between align-items-center">
-          <Col xs="8">
-            <h1>{title}</h1>
+          <Col xs={8}>
+            <h3>Users</h3>
           </Col>
-          <Col className="col-auto">
+          <Col xs="auto">
             {
               !!user && !!user.admin
                   ? (
                       <a href={"/users/new"}>
-                        <Button color="primary" className="mr-1 mb-1">
+                        <Button color="primary" className="me-1 mb-1">
                           <FontAwesomeIcon icon={faPlusCircle}/> New User
                         </Button>
                       </a>
@@ -176,9 +168,9 @@ const UserList = ({title, user, users}) => {
         <Row>
           <Col lg="12">
             <Card>
-              <CardBody>
+              <Card.Body>
                 <UserTable users={users}/>
-              </CardBody>
+              </Card.Body>
             </Card>
           </Col>
         </Row>

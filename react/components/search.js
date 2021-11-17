@@ -1,55 +1,5 @@
 import React, {useState} from 'react';
-import {Field, Form, Formik} from 'formik';
-import {
-  Card,
-  CardBody,
-  Col,
-  Container,
-  InputGroup,
-  InputGroupAddon,
-  Row
-} from "reactstrap";
-import {Search} from "react-feather";
-import {history} from "../App";
-
-export class SidebarSearch extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      "q": ""
-    };
-  }
-
-  render() {
-    return (
-        <Formik
-            initialValues={{q: ''}}
-            onSubmit={(values => {
-              history.push("/search?q=" + values.q);
-              history.go(0);
-            })}
-        >
-          <Form className="ml-3 mr-3" >
-            <InputGroup className="mb-3 sidebar-search">
-              <Field
-                  name={"q"}
-                  placeholder={"Enter keywords here..."}
-                  aria-label={"Search"}
-                  className={"form-control form-control-no-border"}
-              />
-              <InputGroupAddon addonType={"append"}>
-                <button type={"submit"} className={"btn-primary btn"}>
-                  <Search className={"feather align-middle"}/>
-                </button>
-              </InputGroupAddon>
-            </InputGroup>
-          </Form>
-        </Formik>
-    )
-  }
-
-}
+import {Card, Col, Container, Row} from "react-bootstrap";
 
 export const SearchHits = ({hits}) => {
 
@@ -57,12 +7,12 @@ export const SearchHits = ({hits}) => {
       <Row>
         <Col lg="12">
           <Card className={"illustration"}>
-            <CardBody>
+            <Card.Body>
               <div className="alert-message">
                 <h4 className="alert-heading">Your search did not return any results.</h4>
                 <p>Try broadening your search and try again.</p>
               </div>
-            </CardBody>
+            </Card.Body>
           </Card>
         </Col>
       </Row>
@@ -81,7 +31,7 @@ export const SearchHits = ({hits}) => {
 
     content = (
         <Row>
-          <Col lg="12">
+          <Col lg={12}>
             {list}
           </Col>
         </Row>
@@ -93,8 +43,8 @@ export const SearchHits = ({hits}) => {
       <Container fluid className="animated fadeIn">
 
         <Row className="justify-content-between align-items-center">
-          <Col xs="12">
-            <h1>Search Results</h1>
+          <Col xs={12}>
+            <h3>Search Results</h3>
           </Col>
         </Row>
 
@@ -149,7 +99,7 @@ const SearchHit = ({hit}) => {
   const study = hit.document;
   return (
       <Card>
-        <CardBody>
+        <Card.Body>
           <Row>
 
             <Col sm={8} md={10}>
@@ -160,7 +110,7 @@ const SearchHit = ({hit}) => {
 
             <Col sm={4} md={2}>
               <p className="text-muted">
-                <span className="float-right">{study.program.name}</span>
+                <span className="float-end">{study.program.name}</span>
               </p>
             </Col>
 
@@ -198,7 +148,7 @@ const SearchHit = ({hit}) => {
             </div>
 
           </Row>
-        </CardBody>
+        </Card.Body>
       </Card>
   )
 }
