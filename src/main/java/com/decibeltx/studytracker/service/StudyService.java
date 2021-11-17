@@ -252,6 +252,7 @@ public class StudyService {
     Study study = studyRepository.getOne(updated.getId());
 
     study.setDescription(updated.getDescription());
+    study.setExternalCode(updated.getExternalCode());
     study.setStatus(updated.getStatus());
     study.setStartDate(updated.getStartDate());
     study.setEndDate(updated.getEndDate());
