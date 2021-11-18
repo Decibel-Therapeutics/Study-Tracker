@@ -64,7 +64,11 @@ export const RepairableNotebookFolderButton = ({folder, repairUrl}) => {
     )
   } else {
     return (
-        <Button variant="warning" onClick={() => handleFolderRepairRequest(repairUrl)}>
+        <Button
+            variant="warning"
+            onClick={() => handleFolderRepairRequest(repairUrl)}
+            className={"mt-2"}
+        >
           <RefreshCw size={14} className="mb-1"/>
           &nbsp;
           Repair Folder

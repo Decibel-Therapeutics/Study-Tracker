@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {withRouter} from 'react-router-dom';
 import {history} from "../../App";
-import {cleanQueryParams, FilterSidebar} from "./filters";
+import {cleanQueryParams, FilterLabel, FilterSidebar} from "./filters";
 
 const qs = require('qs');
 
@@ -92,9 +92,7 @@ class UserFilters extends React.Component {
 
           <div className="settings-section">
 
-            <small className="d-block font-weight-bold text-muted mb-2">
-              Quick Views
-            </small>
+            <FilterLabel text={"Quick Views"} />
 
             <FormGroup>
               <Form.Check
@@ -115,9 +113,7 @@ class UserFilters extends React.Component {
 
           <div className="settings-section">
 
-            <small className="d-block font-weight-bold text-muted mb-2">
-              User Status
-            </small>
+            <FilterLabel text={"User Status"} />
 
             <FormGroup className="mb-2 ms-4">
               <Form.Check
