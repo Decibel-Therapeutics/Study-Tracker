@@ -108,7 +108,7 @@ const AssaySummaryCard = ({studyCode, assay}) => {
 
           <Row className="mt-2">
             <Col>
-              <Button outline size="md" color="primary"
+              <Button size="md" variant="outline-primary"
                       onClick={() => history.push(
                           "/study/" + studyCode + "/assay/" + assay.code)}>
                 Details
