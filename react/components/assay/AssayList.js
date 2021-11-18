@@ -50,7 +50,8 @@ const columns = [
     text: "Assay Type",
     sort: true,
     headerStyle: {width: '10%'},
-    formatter: (c, d, i, x) => d.assayType.name
+    formatter: (c, d, i, x) => d.assayType.name,
+    csvFormatter: (c, d, i, x) => d.assayType.name
   },
   {
     dataField: "status",
@@ -75,7 +76,8 @@ const columns = [
     sort: true,
     searchable: false,
     headerStyle: {width: '10%'},
-    formatter: (c, d, i, x) => new Date(d.updatedAt).toLocaleDateString()
+    formatter: (c, d, i, x) => new Date(d.updatedAt).toLocaleDateString(),
+    csvFormatter: (c, d, i, x) => new Date(d.updatedAt).toLocaleDateString()
   },
   {
     dataField: "program",
@@ -91,7 +93,8 @@ const columns = [
       }
       return 0;
     },
-    formatter: (cell, d, i, x) => d.study.program.name
+    formatter: (cell, d, i, x) => d.study.program.name,
+    csvFormatter: (cell, d, i, x) => d.study.program.name
   },
   {
     dataField: "name",
@@ -105,7 +108,8 @@ const columns = [
     text: "Owner",
     sort: true,
     headerStyle: {width: '10%'},
-    formatter: (c, d, i, x) => d.owner.displayName
+    formatter: (c, d, i, x) => d.owner.displayName,
+    csvFormatter: (c, d, i, x) => d.owner.displayName
   },
   {
     dataField: "cro",
@@ -127,6 +131,7 @@ const columns = [
       }
       return 0;
     },
+    csvFormatter: (c, d, i, x) => !!d.study.collaborator ? d.study.collaborator.organizationName : "",
     formatter: (c, d, i, x) => !!d.study.collaborator
         ? (
             <div>
@@ -146,6 +151,7 @@ const columns = [
     sort: false,
     searchable: false,
     headerStyle: {width: '10%'},
+    csvExport: false,
     formatter: (c, d, i, x) => {
       let links = [];
       if (!!d.storageFolder) {
@@ -176,6 +182,7 @@ const columns = [
     sort: false,
     isDummyField: true,
     hidden: true,
+    csvExport: false,
     formatter: (c, d, i, x) => '',
     filterValue: (c, d, i, x) => {
       const CRO = !!d.study.collaborator
