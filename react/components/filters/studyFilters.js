@@ -43,6 +43,8 @@ class StudyFilters extends React.Component {
 
     this.updateFilters = this.updateFilters.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
+    this.toggleAllStatusFilters = this.toggleAllStatusFilters.bind(this);
+    this.toggleAllProgramFilters = this.toggleAllProgramFilters.bind(this);
     this.props.dispatch(setFilters(defaults));
   }
 
@@ -93,7 +95,10 @@ class StudyFilters extends React.Component {
       const params = cleanQueryParams(
           qs.parse(this.props.location.search, {ignoreQueryPrefix: true}));
       if (params.hasOwnProperty(labels.PROGRAM)) {
-        params[labels.PROGRAM] = [...params[labels.PROGRAM].split(",")];
+        const p = String(params[labels.PROGRAM])
+        .split(",")
+        .map(p => parseInt(p));
+        params[labels.PROGRAM] = [...p];
       }
       if (params.hasOwnProperty(labels.STATUS)) {
         params[labels.STATUS] = [...params[labels.STATUS].split(",")];
@@ -138,6 +143,27 @@ class StudyFilters extends React.Component {
     });
   }
 
+  toggleAllStatusFilters() {
+    let filter = this.state.filters[labels.STATUS];
+    if (!!filter && filter.length > 0) {
+      filter = [];
+    } else {
+      filter = Object.values(statuses).map(status => status.value);
+    }
+    this.updateFilters({[labels.STATUS]: filter})
+  }
+
+  toggleAllProgramFilters() {
+    let filter = this.state.filters[labels.PROGRAM];
+    if (!!filter && filter.length > 0) {
+      filter = [];
+    } else {
+      filter = Object.values(this.state.programs)
+      .map(program => program.id);
+    }
+    this.updateFilters({[labels.PROGRAM]: filter})
+  }
+
   resetFilters() {
     this.updateFilters(this.state.defaults);
   }
@@ -149,9 +175,7 @@ class StudyFilters extends React.Component {
 
           <div className="settings-section">
 
-            <small className="d-block font-weight-bold text-muted mb-2">
-              Quick Views
-            </small>
+            <FilterLabel text={"Quick Views"} />
 
             {
               !!this.props.user ? (
@@ -201,7 +225,7 @@ class StudyFilters extends React.Component {
           <div className="settings-section">
 
             <FormGroup>
-              <FilterLabel text="Status"/>
+              <FilterLabel text="Status" toggle={this.toggleAllStatusFilters}/>
               <div>
                 {
                   Object.values(statuses).map(status => {
@@ -216,8 +240,7 @@ class StudyFilters extends React.Component {
                             onChange={(e) => {
                               let values = this.state.filters[labels.STATUS];
                               if (e.target.checked) {
-                                values.push(
-                                    status.value);
+                                values.push(status.value);
                               } else {
                                 values = values.filter(
                                     v => v !== status.value);
@@ -237,7 +260,7 @@ class StudyFilters extends React.Component {
             {
               !!this.state.programs ? (
                   <FormGroup>
-                    <FilterLabel text={"Programs"}/>
+                    <FilterLabel text={"Programs"} toggle={this.toggleAllProgramFilters}/>
                     <div>
                       {
                         this.state.programs.map(program => {
