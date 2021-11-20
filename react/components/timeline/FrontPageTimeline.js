@@ -1,18 +1,25 @@
 import React from 'react';
-import {Button, Card, Col, Container, Row} from "react-bootstrap";
+import {Card, Col, Container, Row} from "react-bootstrap";
 import {Timeline} from "../activity";
 import {
-  ActiveUsers,
   CompletedStudies,
   NewStudies,
   StudyUpdates,
-  TotalStudies
+  TotalStudies,
+  WelcomeBack
 } from './timelineWidgets';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import {ArrowLeft, ArrowRight} from "react-feather";
 
-const FrontPageTimeline = ({activity, stats, user, pageNumber, pageSize, hasNextPage, hasPreviousPage}) => {
+const FrontPageTimeline = ({
+  activity,
+  stats,
+  userStats,
+  user,
+  pageNumber,
+  pageSize,
+  hasNextPage,
+  hasPreviousPage
+}) => {
 
   let activityCount = stats.activityCount || 0;
   let activeUsers = stats.activeUserCount || 0;
@@ -30,40 +37,63 @@ const FrontPageTimeline = ({activity, stats, user, pageNumber, pageSize, hasNext
             <h3>Latest Activity</h3>
           </Col>
 
-          <Col xs="auto" className="ms-auto text-end mt-n1">
-            <a href="/studies/new">
-              <Button color="primary" className="me-1 mb-1">
-                <FontAwesomeIcon icon={faPlusCircle}/> New Study
-              </Button>
-            </a>
-          </Col>
+          {/*<Col xs="auto" className="ms-auto text-end mt-n1">*/}
+          {/*  <a href="/studies/new">*/}
+          {/*    <Button color="primary" className="me-1 mb-1">*/}
+          {/*      <FontAwesomeIcon icon={faPlusCircle}/> New Study*/}
+          {/*    </Button>*/}
+          {/*  </a>*/}
+          {/*</Col>*/}
 
         </Row>
 
+        {/*<Row>*/}
+
+        {/*  <Col xs={12} md={4} xl>*/}
+        {/*    <WelcomeBack />*/}
+        {/*  </Col>*/}
+
+        {/*  <Col xs={12} md={4} xl>*/}
+        {/*    <ActiveStudies count={userStats.activeStudyCount} />*/}
+        {/*    /!*<MyActiveStudies count={userStats.activeStudyCount} />*!/*/}
+        {/*  </Col>*/}
+
+        {/*  <Col xs={12} md={4} xl className="d-flex">*/}
+        {/*    <CompletedStudies count={userStats.completeStudyCount}*/}
+        {/*                      label={"My completed studies"}/>*/}
+        {/*    /!*<MyCompleteStudies count={userStats.completeStudyCount} />*!/*/}
+        {/*  </Col>*/}
+
+        {/*</Row>*/}
+
         <Row>
 
-          <Col lg={3}>
+          <Col lg={4}>
 
             <Row className="study-statistics">
 
-              <Col xs={6} md={4} lg={12} className="d-flex">
+              <Col xs={12} sm={6} md={4} lg={12} className="d-flex">
+                <WelcomeBack />
+              </Col>
+
+              <Col xs={12} sm={6} md={4} lg={12} className="d-flex">
                 <StudyUpdates count={activityCount} />
               </Col>
 
-              <Col xs={6} sm={4} md={3} lg={12} className="d-flex">
-                <ActiveUsers count={activeUsers}/>
+              {/*<Col xs={12} sm={6} sm={4} md={3} lg={12} className="d-flex">*/}
+              {/*  <ActiveUsers count={activeUsers}/>*/}
+              {/*</Col>*/}
+
+              <Col xs={12} sm={6} sm={4} md={3} lg={12} className="d-flex">
+                <NewStudies count={newStudies} />
               </Col>
 
-              <Col xs={6} sm={4} md={3} lg={12} className="d-flex">
-                <NewStudies count={newStudies} label={"New Studies This Week"}/>
-              </Col>
-
-              <Col xs={6} sm={4} md={3} lg={12} className="d-flex">
+              <Col xs={12} sm={6} sm={4} md={3} lg={12} className="d-flex">
                 <CompletedStudies count={completedStudies}
                                   label={"Completed Studies This Month"}/>
               </Col>
 
-              <Col xs={6} sm={4} md={3} lg={12} className="d-flex">
+              <Col xs={12} sm={6} sm={4} md={3} lg={12} className="d-flex">
                 <TotalStudies count={totalStudies}/>
               </Col>
 
@@ -71,7 +101,7 @@ const FrontPageTimeline = ({activity, stats, user, pageNumber, pageSize, hasNext
 
           </Col>
 
-          <Col lg={9}>
+          <Col lg={8}>
             <Card>
               <Card.Body>
                 <Row>
