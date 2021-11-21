@@ -991,7 +991,7 @@ export const StudyTimelineActivity = ({activity}) => {
   return (
       <div className="d-flex">
 
-        <div className="stat stat-transparent">
+        <div className="activity-icon">
           <ActivityIcon action={activity.eventType}/>
         </div>
 

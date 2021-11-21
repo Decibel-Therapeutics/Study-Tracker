@@ -361,6 +361,22 @@ public class StudyService {
     return studyRepository.countByCreatedAtBetween(startDate, endDate);
   }
 
+  public long countUserActiveStudies(User user) {
+    return studyRepository.countActiveUserStudies(user.getId());
+  }
+
+  public long countUserCompleteStudies(User user) {
+    return studyRepository.countCompleteUserStudies(user.getId());
+  }
+
+  public long countByProgram(Program program) {
+    return studyRepository.countByProgram(program);
+  }
+
+  public long countByProgramAfterDate(Program program, Date date) {
+    return studyRepository.countByProgramAndCreatedAtAfter(program, date);
+  }
+
   @Transactional
   public void repairStorageFolder(Study study) {
 

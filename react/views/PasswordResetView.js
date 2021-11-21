@@ -17,7 +17,6 @@
 import React from "react";
 
 import {Alert, Button, Card, Col, Container, Form, Row} from "react-bootstrap";
-import {User} from "react-feather";
 import NoNavWrapper from "../structure/NoNavWrapper";
 
 const qs = require('qs');
@@ -94,8 +93,14 @@ export default class PasswordResetView extends React.Component {
                   <Card.Body>
                     <div className="m-sm-4">
 
-                      <div className="text-center">
-                        <User size={80} className="align-middle me-2"/>
+                      <div className="text-center mb-4">
+                        {/*<User size={80} className="align-middle me-2"/>*/}
+                        <img
+                            src={"/static/images/clip/password.png"}
+                            className="img-fluid"
+                            width="150"
+                            height="150"
+                        />
                       </div>
 
                       <Form action={"/auth/passwordreset"} method={"post"}>
