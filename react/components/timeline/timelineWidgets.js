@@ -22,7 +22,7 @@ export const WelcomeBack = ({}) => {
                   Welcome back!
                 </h4>
                 <p className="mb-0">
-                  Ready to get to work?
+                  Ready to get started?
                 </p>
                 <br />
                 <Button variant={"outline-primary"} href={"/studies/new"}>
@@ -141,7 +141,7 @@ const IllustrationWidget = ({header, text, image}) => {
   )
 }
 
-const StatWidget = ({label, value, icon: Icon, color}) => {
+const StatWidget = ({label, value, icon: Icon, color, url}) => {
   return (
       <Card className="flex-fill">
         <Card.Body className="py-4">
@@ -149,8 +149,19 @@ const StatWidget = ({label, value, icon: Icon, color}) => {
           <div className="d-flex align-items-start">
 
             <div className="flex-grow-1">
-              <h3 className="mb-2">{value}</h3>
-              <p className="mb-2">{label}</p>
+              {
+                !!url ? (
+                    <a href={url}>
+                      <h3 className="mb-2">{value}</h3>
+                      <p className="mb-2">{label}</p>
+                    </a>
+                ) : (
+                    <React.Fragment>
+                      <h3 className="mb-2">{value}</h3>
+                      <p className="mb-2">{label}</p>
+                    </React.Fragment>
+                )
+              }
             </div>
 
             <div className="d-inline-block ms-3">
@@ -167,7 +178,13 @@ const StatWidget = ({label, value, icon: Icon, color}) => {
 }
 
 export const ActiveStudies = ({count}) => {
-  return <StatWidget label={"My active studies"} icon={ChevronsRight} value={count} color={"info"} />
+  return <StatWidget
+      label={"My active studies"}
+      icon={ChevronsRight}
+      value={count}
+      color={"info"}
+      url={"/studies?myStudy=true&status=IN_PLANNING,ACTIVE"}
+  />
 }
 
 export const StudyUpdates = ({count}) => {

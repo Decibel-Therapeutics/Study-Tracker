@@ -2,9 +2,9 @@ import React from 'react';
 import {Card, Col, Container, Row} from "react-bootstrap";
 import {Timeline} from "../activity";
 import {
+  ActiveStudies,
   CompletedStudies,
   NewStudies,
-  StudyUpdates,
   TotalStudies,
   WelcomeBack
 } from './timelineWidgets';
@@ -77,8 +77,12 @@ const FrontPageTimeline = ({
               </Col>
 
               <Col xs={12} sm={6} md={4} lg={12} className="d-flex">
-                <StudyUpdates count={activityCount} />
+                <ActiveStudies count={userStats.activeStudyCount} />
               </Col>
+
+              {/*<Col xs={12} sm={6} md={4} lg={12} className="d-flex">*/}
+              {/*  <StudyUpdates count={activityCount} />*/}
+              {/*</Col>*/}
 
               {/*<Col xs={12} sm={6} sm={4} md={3} lg={12} className="d-flex">*/}
               {/*  <ActiveUsers count={activeUsers}/>*/}
