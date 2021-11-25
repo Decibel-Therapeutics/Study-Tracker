@@ -205,8 +205,6 @@ const columns = [
           ' ' +
           CRO +
           ' ' +
-          d.createdBy.displayName +
-          ' ' +
           d.owner.displayName +
           ' ' +
           (d.study.externalCode || '');
