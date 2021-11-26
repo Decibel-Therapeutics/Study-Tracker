@@ -143,8 +143,8 @@ const FolderContents = ({folder, folderFileKey = DEFAULT_FOLDER_FILE_KEY, depth,
       return 0;
     }
   })
-  .map(f => {
-    return <Folder key={"folder-" + f.name} folder={f} depth={depth} folderFileKey={folderFileKey} />
+  .map((f, i) => {
+    return <Folder key={"folder-" + i + "-" + f.name} folder={f} depth={depth} folderFileKey={folderFileKey} />
   });
 
   const files = folder[folderFileKey]
@@ -157,8 +157,8 @@ const FolderContents = ({folder, folderFileKey = DEFAULT_FOLDER_FILE_KEY, depth,
       return 0;
     }
   })
-  .map(f => {
-    return <File key={"file-" + f.name} file={f}/>;
+  .map((f, i) => {
+    return <File key={"file-" + i + "-" + f.name} file={f}/>;
   });
 
   const items = [...subFolders, ...files];

@@ -234,7 +234,7 @@ const AssayList = ({assays, title, filters, user}) => {
   return (
       <Container fluid className="animated fadeIn">
 
-        <Row className="justify-content-between align-items-center">
+        <Row className="justify-content-between align-items-center mb-2">
           <Col>
             <h3>Assays</h3>
           </Col>

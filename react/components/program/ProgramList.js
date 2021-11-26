@@ -87,14 +87,14 @@ const ExportToCsv = (props) => {
   );
 };
 
-const ProgramList = ({title, user, programs}) => {
+const ProgramList = ({programs}) => {
 
   return (
       <Container fluid className="animated fadeIn">
 
-        <Row className="justify-content-between align-items-center">
-          <Col xs={8}>
-            <h3>{title}</h3>
+        <Row className="justify-content-between align-items-center mb-2">
+          <Col>
+            <h3>Programs</h3>
           </Col>
         </Row>
 

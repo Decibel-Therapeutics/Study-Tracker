@@ -127,7 +127,7 @@ class ExternalLinks extends React.Component {
 
     const links = this.state.links.map(link => {
       return (
-          <li key={"external-link-" + link.label}>
+          <li key={"external-link-" + link.id}>
             <FontAwesomeIcon icon={faLink}/>
             &nbsp;&nbsp;
             <a href={link.url} target="_blank">{link.label}</a>

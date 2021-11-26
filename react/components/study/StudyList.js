@@ -252,7 +252,7 @@ const StudyList = ({studies, title, filters, user}) => {
   return (
       <Container fluid className="animated fadeIn">
 
-        <Row className="justify-content-between align-items-center">
+        <Row className="justify-content-between align-items-center mb-2">
           <Col xs={8}>
             <h3>Studies</h3>
           </Col>

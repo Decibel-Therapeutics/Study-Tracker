@@ -37,34 +37,7 @@ const FrontPageTimeline = ({
             <h3>Latest Activity</h3>
           </Col>
 
-          {/*<Col xs="auto" className="ms-auto text-end mt-n1">*/}
-          {/*  <a href="/studies/new">*/}
-          {/*    <Button color="primary" className="me-1 mb-1">*/}
-          {/*      <FontAwesomeIcon icon={faPlusCircle}/> New Study*/}
-          {/*    </Button>*/}
-          {/*  </a>*/}
-          {/*</Col>*/}
-
         </Row>
-
-        {/*<Row>*/}
-
-        {/*  <Col xs={12} md={4} xl>*/}
-        {/*    <WelcomeBack />*/}
-        {/*  </Col>*/}
-
-        {/*  <Col xs={12} md={4} xl>*/}
-        {/*    <ActiveStudies count={userStats.activeStudyCount} />*/}
-        {/*    /!*<MyActiveStudies count={userStats.activeStudyCount} />*!/*/}
-        {/*  </Col>*/}
-
-        {/*  <Col xs={12} md={4} xl className="d-flex">*/}
-        {/*    <CompletedStudies count={userStats.completeStudyCount}*/}
-        {/*                      label={"My completed studies"}/>*/}
-        {/*    /!*<MyCompleteStudies count={userStats.completeStudyCount} />*!/*/}
-        {/*  </Col>*/}
-
-        {/*</Row>*/}
 
         <Row>
 
@@ -79,14 +52,6 @@ const FrontPageTimeline = ({
               <Col xs={12} sm={6} md={4} lg={12} className="d-flex">
                 <ActiveStudies count={userStats.activeStudyCount} />
               </Col>
-
-              {/*<Col xs={12} sm={6} md={4} lg={12} className="d-flex">*/}
-              {/*  <StudyUpdates count={activityCount} />*/}
-              {/*</Col>*/}
-
-              {/*<Col xs={12} sm={6} sm={4} md={3} lg={12} className="d-flex">*/}
-              {/*  <ActiveUsers count={activeUsers}/>*/}
-              {/*</Col>*/}
 
               <Col xs={12} sm={6} sm={4} md={3} lg={12} className="d-flex">
                 <NewStudies count={newStudies} />
