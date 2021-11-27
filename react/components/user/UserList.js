@@ -20,8 +20,6 @@ import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit';
 import paginationFactory from "react-bootstrap-table2-paginator";
 import {File} from "react-feather";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 
 const columns = [
   {
@@ -147,21 +145,9 @@ const UserList = ({title, user, users}) => {
   return (
       <Container fluid className="animated fadeIn">
 
-        <Row className="justify-content-between align-items-center">
-          <Col xs={8}>
+        <Row className="justify-content-between align-items-center mb-2">
+          <Col>
             <h3>Users</h3>
-          </Col>
-          <Col xs="auto">
-            {
-              !!user && !!user.admin
-                  ? (
-                      <a href={"/users/new"}>
-                        <Button color="primary" className="me-1 mb-1">
-                          <FontAwesomeIcon icon={faPlusCircle}/> New User
-                        </Button>
-                      </a>
-                  ) : ''
-            }
           </Col>
         </Row>
 

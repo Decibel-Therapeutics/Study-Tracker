@@ -11,9 +11,8 @@ import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 public interface StudyIndexRepository
-    extends ElasticsearchRepository<ElasticsearchStudyDocument, String> {
+    extends ElasticsearchRepository<ElasticsearchStudyDocument, Long> {
 
-  @Query("{\"multi_match\": {\"query\": \"?0\" }}")
   @Highlight(fields = {
       @HighlightField(name = "keywords.keyword"),
       @HighlightField(name = "name"),
@@ -32,6 +31,7 @@ public interface StudyIndexRepository
       @HighlightField(name = "comments.createdBy.displayName"),
       @HighlightField(name = "conclusions.content")
   })
+  @Query("{\"multi_match\": {\"query\": \"?0\" }}")
   SearchHits<ElasticsearchStudyDocument> findDocumentsByKeyword(String keyword);
 
   @Query("{\"multi_match\": {\"query\": \"?0\" }}")

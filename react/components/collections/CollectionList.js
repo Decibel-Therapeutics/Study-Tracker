@@ -211,7 +211,7 @@ export const CollectionList = ({collections, user}) => {
   return (
     <Container fluid className="animated fadeIn">
 
-      <Row className="justify-content-between align-items-center">
+      <Row className="justify-content-between align-items-center mb-2">
         <Col xs={8}>
           <h3>Study Collections</h3>
         </Col>

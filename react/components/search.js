@@ -115,7 +115,7 @@ const SearchHit = ({hit}) => {
             </Col>
 
             <Col sm={12}>
-              <p>{study.description}</p>
+              <p dangerouslySetInnerHTML={createMarkup(study.description)} />
             </Col>
 
             <Col xs={12}>
