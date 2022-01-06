@@ -28,13 +28,12 @@ export const AssayNotebookTemplatesDropdown = ({
     .sort((a, b) => {
       if (a.name > b.name) { return 1; }
       if (a.name < b.name) { return -1; }
-
       return 0;
     })
-    .map(({templateId, name}) => {
+    .map(t => {
       return {
-        value: templateId,
-        label: name,
+        value: t.referenceId,
+        label: t.name,
       };
     });
   const selectedValue = options.find(option => option.value === selectedTemplate);

@@ -1,5 +1,6 @@
 package com.decibeltx.studytracker.controller.api;
 
+import com.decibeltx.studytracker.eln.NotebookEntryTemplate;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.events.EventsService;
 import com.decibeltx.studytracker.events.util.AssayActivityUtils;
@@ -16,7 +17,6 @@ import com.decibeltx.studytracker.service.AssayTypeService;
 import com.decibeltx.studytracker.service.StudyService;
 import com.decibeltx.studytracker.service.UserService;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -99,7 +99,7 @@ public abstract class AbstractAssayController {
    * @param user
    * @return
    */
-  protected Assay createAssay(Assay assay, Study study, User user, String notebookTemplateId) {
+  protected Assay createAssay(Assay assay, Study study, User user, NotebookEntryTemplate template) {
 
 //    assay.setCreatedBy(user);
     assay.setStudy(study);
@@ -119,16 +119,13 @@ public abstract class AbstractAssayController {
     assayService.create(assay);
     Assert.notNull(assay.getId(), "Assay not persisted.");
 
-    if (notebookTemplateId != null) {
+    if (template != null) {
       if (studyNotebookService == null) {
         LOGGER.warn("StudyNotebookService is not defined, cannot create notebook entry.");
       } else {
-        Map<String, String> userAttributes = user.getAttributes();
-        String benchlingUserId =
-            userAttributes != null ? userAttributes.get("benchlingUserId") : null;
         try {
           studyNotebookService
-              .createAssayNotebookEntry(assay, notebookTemplateId, benchlingUserId);
+              .createAssayNotebookEntry(assay, template);
         } catch (NotebookException e) {
           e.printStackTrace();
           LOGGER.error("Failed to create notebook entry");

@@ -71,7 +71,7 @@ class AssayFormView extends React.Component {
       });
     });
 
-    const notebookTemplates = await fetch("/api/entryTemplate/active")
+    const notebookTemplates = await fetch("/api/eln/entrytemplate")
     .then(async response => await response.json())
     .catch(error => {
       console.error(error);
