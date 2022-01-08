@@ -249,7 +249,7 @@ public class StudyService {
   @Transactional
   public void update(Study updated) {
     LOGGER.info("Attempting to update existing study with code: " + updated.getCode());
-    Study study = studyRepository.getOne(updated.getId());
+    Study study = studyRepository.getById(updated.getId());
 
     study.setDescription(updated.getDescription());
     study.setExternalCode(updated.getExternalCode());
@@ -284,7 +284,7 @@ public class StudyService {
    */
   @Transactional
   public void delete(Study study) {
-    Study s = studyRepository.getOne(study.getId());
+    Study s = studyRepository.getById(study.getId());
     s.setActive(false);
     studyRepository.save(s);
   }
@@ -297,7 +297,7 @@ public class StudyService {
    */
   @Transactional
   public void updateStatus(Study study, Status status) {
-    Study s = studyRepository.getOne(study.getId());
+    Study s = studyRepository.getById(study.getId());
     s.setStatus(status);
     if (status.equals(Status.COMPLETE) && study.getEndDate() == null) {
       s.setEndDate(new Date());
@@ -336,7 +336,7 @@ public class StudyService {
    */
   @Transactional
   public void markAsUpdated(Study study, User user) {
-    Study s = studyRepository.getOne(study.getId());
+    Study s = studyRepository.getById(study.getId());
     s.setLastModifiedBy(user);
     s.setUpdatedAt(new Date());
     studyRepository.save(s);
@@ -393,7 +393,7 @@ public class StudyService {
     }
 
     // Update the  program record
-    FileStoreFolder f = fileStoreFolderRepository.getOne(study.getStorageFolder().getId());
+    FileStoreFolder f = fileStoreFolderRepository.getById(study.getStorageFolder().getId());
     f.setName(folder.getName());
     f.setPath(folder.getPath());
     f.setUrl(folder.getUrl());
@@ -416,7 +416,7 @@ public class StudyService {
     ELNFolder f;
     boolean isNew = false;
     try {
-      f = elnFolderRepository.getOne(study.getNotebookFolder().getId());
+      f = elnFolderRepository.getById(study.getNotebookFolder().getId());
     } catch (NullPointerException e) {
       f = new ELNFolder();
       isNew = true;

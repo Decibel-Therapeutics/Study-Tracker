@@ -48,7 +48,7 @@ export default class AssayForm extends React.Component {
       fields: {},
       tasks: [],
       attributes: {},
-      entryTemplateId: '',
+      notebookTemplateId: '',
     };
     assay.lastModifiedBy = this.props.user;
 
@@ -108,7 +108,7 @@ export default class AssayForm extends React.Component {
     this.setState({
       assay: {
         ...this.state.assay,
-        entryTemplateId: selectedItem
+        notebookTemplateId: selectedItem
           ? selectedItem.value
           : '',
       },

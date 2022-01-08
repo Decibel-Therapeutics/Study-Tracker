@@ -219,7 +219,7 @@ public class AssayService {
   public Assay update(Assay updated) {
 
     LOGGER.info("Updating assay record with code: " + updated.getCode());
-    Assay assay = assayRepository.getOne(updated.getId());
+    Assay assay = assayRepository.getById(updated.getId());
 
     assay.setDescription(updated.getDescription());
     assay.setStartDate(updated.getStartDate());
@@ -234,7 +234,7 @@ public class AssayService {
     // Update the tasks
     for (AssayTask task: updated.getTasks()) {
       if (task.getId() != null) {
-        AssayTask t = assayTaskRepository.getOne(task.getId());
+        AssayTask t = assayTaskRepository.getById(task.getId());
         t.setStatus(task.getStatus());
         t.setOrder(task.getOrder());
         t.setLabel(task.getLabel());
@@ -298,7 +298,7 @@ public class AssayService {
     }
 
     // Update the  program record
-    FileStoreFolder f = fileStoreFolderRepository.getOne(assay.getStorageFolder().getId());
+    FileStoreFolder f = fileStoreFolderRepository.getById(assay.getStorageFolder().getId());
     f.setName(folder.getName());
     f.setPath(folder.getPath());
     f.setUrl(folder.getUrl());
@@ -321,7 +321,7 @@ public class AssayService {
     ELNFolder f;
     boolean isNew = false;
     try {
-      f = elnFolderRepository.getOne(assay.getNotebookFolder().getId());
+      f = elnFolderRepository.getById(assay.getNotebookFolder().getId());
     } catch (NullPointerException e) {
       f = new ELNFolder();
       isNew = true;

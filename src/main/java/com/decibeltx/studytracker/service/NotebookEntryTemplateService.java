@@ -41,7 +41,7 @@ public class NotebookEntryTemplateService {
     public NotebookEntryTemplate update(NotebookEntryTemplate notebookEntryTemplate) {
         LOGGER.info("Updating entry template with name: " + notebookEntryTemplate.getName());
         NotebookEntryTemplate t = notebookEntryTemplateRepository
-            .getOne(notebookEntryTemplate.getId());
+            .getById(notebookEntryTemplate.getId());
         t.setActive(notebookEntryTemplate.isActive());
         t.setName(notebookEntryTemplate.getName());
         t.setTemplateId(notebookEntryTemplate.getTemplateId());

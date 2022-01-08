@@ -40,7 +40,7 @@ export const AssayNotebookTemplatesDropdown = ({
 
   return (
     <FormGroup>
-      <Form.Label>Notebook File Template</Form.Label>
+      <Form.Label>Notebook Entry Template</Form.Label>
       <Select
         className="react-select-container"
         classNamePrefix="react-select"

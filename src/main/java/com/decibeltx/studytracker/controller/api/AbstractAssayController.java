@@ -101,7 +101,6 @@ public abstract class AbstractAssayController {
    */
   protected Assay createAssay(Assay assay, Study study, User user, NotebookEntryTemplate template) {
 
-//    assay.setCreatedBy(user);
     assay.setStudy(study);
 
     // Assay team

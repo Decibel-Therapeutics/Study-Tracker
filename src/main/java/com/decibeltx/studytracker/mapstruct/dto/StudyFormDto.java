@@ -6,18 +6,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class StudyDetailsDto {
+public class StudyFormDto {
 
   private Long id;
   private String code;
   private String externalCode;
-  private Status status;
-  private String name;
+  private @NotNull Status status;
+  private @NotNull String name;
   private ProgramSummaryDto program;
-  private String description;
+  private @NotNull String description;
+  private String notebookTemplateId;
   private CollaboratorDto collaborator;
   private boolean legacy = false;
   private boolean active = true;
@@ -25,7 +27,7 @@ public class StudyDetailsDto {
   private FileStoreFolderDto storageFolder;
   private UserSummaryDto createdBy;
   private UserSummaryDto lastModifiedBy;
-  private Date startDate;
+  private @NotNull Date startDate;
   private Date endDate;
   private Date createdAt;
   private Date updatedAt;
