@@ -1,15 +1,15 @@
 package com.decibeltx.studytracker.benchling.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 
-@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BenchlingUser {
+@Data
+public class BenchlingUserList {
 
-  private String id;
-  private String name;
-  private String handle;
-  private String email;
+  private String nextToken;
+  private List<BenchlingUser> users = new ArrayList<>();
 
 }

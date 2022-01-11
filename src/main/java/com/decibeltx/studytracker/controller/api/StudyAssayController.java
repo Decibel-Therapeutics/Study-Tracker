@@ -94,19 +94,15 @@ public class StudyAssayController extends AbstractAssayController {
     Assay created;
 
     // If a notebook template was requested, find it
-    if (notebookService != null) {
-      NotebookEntryTemplate notebookEntryTemplate = null;
-      if (StringUtils.hasText(dto.getNotebookTemplateId())) {
-        Optional<NotebookEntryTemplate> templateOptional =
-            notebookService.findEntryTemplateById(dto.getNotebookTemplateId());
-        if (templateOptional.isPresent()) {
-          notebookEntryTemplate = templateOptional.get();
-        } else {
-          throw new RecordNotFoundException("Could not find notebook entry template: "
-              + dto.getNotebookTemplateId());
-        }
+    if (notebookService != null && StringUtils.hasText(dto.getNotebookTemplateId())) {
+      Optional<NotebookEntryTemplate> templateOptional =
+          notebookService.findEntryTemplateById(dto.getNotebookTemplateId());
+      if (templateOptional.isPresent()) {
+        created = this.createAssay(assay, study, user, templateOptional.get());
+      } else {
+        throw new RecordNotFoundException("Could not find notebook entry template: "
+            + dto.getNotebookTemplateId());
       }
-      created = this.createAssay(assay, study, user, notebookEntryTemplate);
     } else {
       created = this.createAssay(assay, study, user);
     }

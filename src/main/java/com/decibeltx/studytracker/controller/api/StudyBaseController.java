@@ -183,11 +183,8 @@ public class StudyBaseController extends AbstractStudyController {
     // Get authenticated user
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String username = UserAuthenticationUtils.getUsernameFromAuthentication(authentication);
-
-    // Created by
     User user = getUserService().findByUsername(username)
         .orElseThrow(RecordNotFoundException::new);
-//    study.setCreatedBy(user);
 
     Study study = this.getStudyMapper().fromStudyForm(dto);
 
@@ -204,22 +201,21 @@ public class StudyBaseController extends AbstractStudyController {
         .orElseThrow(() -> new RecordNotFoundException("Cannot find user: " + study.getOwner().getId())));
 
     // If a notebook template was requested, find it
-    if (notebookService != null) {
-      NotebookEntryTemplate notebookEntryTemplate = null;
-      if (StringUtils.hasText(dto.getNotebookTemplateId())) {
-        Optional<NotebookEntryTemplate> templateOptional =
-            notebookService.findEntryTemplateById(dto.getNotebookTemplateId());
-        if (templateOptional.isPresent()) {
-          notebookEntryTemplate = templateOptional.get();
-        } else {
-          throw new RecordNotFoundException("Could not find notebook entry template: "
-              + dto.getNotebookTemplateId());
-        }
+    if (notebookService != null && StringUtils.hasText(dto.getNotebookTemplateId())) {
+      Optional<NotebookEntryTemplate> templateOptional =
+          notebookService.findEntryTemplateById(dto.getNotebookTemplateId());
+      if (templateOptional.isPresent()) {
+        getStudyService().create(study, templateOptional.get());
+      } else {
+        throw new RecordNotFoundException("Could not find notebook entry template: "
+            + dto.getNotebookTemplateId());
       }
+    } else {
+      getStudyService().create(study);
     }
 
     // Save the record
-    getStudyService().create(study);
+
     Assert.notNull(study.getId(), "Study not persisted.");
 
     // Publish events

@@ -28,6 +28,8 @@ import com.decibeltx.studytracker.benchling.api.entities.BenchlingFolder;
 import com.decibeltx.studytracker.benchling.api.entities.BenchlingFolderList;
 import com.decibeltx.studytracker.benchling.api.entities.BenchlingProject;
 import com.decibeltx.studytracker.benchling.api.entities.BenchlingProjectList;
+import com.decibeltx.studytracker.benchling.api.entities.BenchlingUser;
+import com.decibeltx.studytracker.benchling.api.entities.BenchlingUserList;
 import com.decibeltx.studytracker.benchling.exception.BenchlingAuthenticationException;
 import com.decibeltx.studytracker.benchling.exception.BenchlingException;
 import com.decibeltx.studytracker.exception.StudyTrackerException;
@@ -456,6 +458,73 @@ public final class BenchlingElnRestClient {
       schema = response.getBody();
     }
     return Optional.ofNullable(schema);
+  }
+
+  public BenchlingUserList findUsers(@NotNull String authHeader, String nextToken) {
+    String url = resolveUrl("/api/v2/users",
+        Collections.singletonMap("nextToken", nextToken));
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", authHeader);
+    headers.set("Accept", "application/json");
+    headers.set("Cache-Control", "no-cache");
+
+    HttpEntity<BenchlingUserList> request = new HttpEntity<>(headers);
+    ResponseEntity<BenchlingUserList> response = restTemplate.exchange(
+        url,
+        HttpMethod.GET,
+        request,
+        BenchlingUserList.class
+    );
+    if (response.getStatusCode().equals(HttpStatus.OK)) {
+      return response.getBody();
+    } else {
+      throw new BenchlingException("Failed to fetch users");
+    }
+  }
+
+  public BenchlingUserList findUsersByUsername(@NotNull String username,
+      @NotNull String authHeader, String nextToken) {
+    String url = resolveUrl("/api/v2/users?handles=" + username,
+        Collections.singletonMap("nextToken", nextToken));
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", authHeader);
+    headers.set("Accept", "application/json");
+    headers.set("Cache-Control", "no-cache");
+
+    HttpEntity<BenchlingUserList> request = new HttpEntity<>(headers);
+    ResponseEntity<BenchlingUserList> response = restTemplate.exchange(
+        url,
+        HttpMethod.GET,
+        request,
+        BenchlingUserList.class
+    );
+    if (response.getStatusCode().equals(HttpStatus.OK)) {
+      return response.getBody();
+    } else {
+      throw new BenchlingException("Failed to fetch users");
+    }
+  }
+
+  public Optional<BenchlingUser> findUserById(@NotNull String id,
+      @NotNull String authHeader) {
+    String url = resolveUrl("/api/v2/users/" + id);
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", authHeader);
+    headers.set("Accept", "application/json");
+    headers.set("Cache-Control", "no-cache");
+
+    HttpEntity<BenchlingUser> request = new HttpEntity<>(headers);
+    ResponseEntity<BenchlingUser> response = restTemplate.exchange(
+        url,
+        HttpMethod.GET,
+        request,
+        BenchlingUser.class
+    );
+    BenchlingUser user = null;
+    if (response.getStatusCode().equals(HttpStatus.OK)) {
+      user = response.getBody();
+    }
+    return Optional.ofNullable(user);
   }
 
   private String resolveUrl(String endpoint, LinkedMultiValueMap<String, String> params) {

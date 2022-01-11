@@ -20,6 +20,7 @@ import com.decibeltx.studytracker.exception.NotebookException;
 import com.decibeltx.studytracker.model.Assay;
 import com.decibeltx.studytracker.model.Program;
 import com.decibeltx.studytracker.model.Study;
+import com.decibeltx.studytracker.model.User;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,5 +131,20 @@ public interface StudyNotebookService {
    */
   NotebookEntry createAssayNotebookEntry(Assay assay, NotebookEntryTemplate template)
       throws NotebookException;
+
+  /**
+   * Returns a list of all users registered in the ELN.
+   *
+   * @return
+   */
+  List<NotebookUser> findNotebookUsers();
+
+  /**
+   * Attempts to find a Study Tracker user in the ELN.
+   *
+   * @param user
+   * @return
+   */
+  Optional<NotebookUser> findNotebookUser(User user);
 
 }

@@ -16,6 +16,7 @@
 
 package com.decibeltx.studytracker.service;
 
+import com.decibeltx.studytracker.eln.NotebookEntryTemplate;
 import com.decibeltx.studytracker.eln.NotebookFolder;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.exception.InvalidConstraintException;
@@ -168,8 +169,12 @@ public class AssayService {
     }
   }
 
-  @Transactional
   public void create(Assay assay) {
+    this.create(assay, null);
+  }
+
+  @Transactional
+  public void create(Assay assay, NotebookEntryTemplate template) {
 
     LOGGER.info("Creating new assay record with name: " + assay.getName());
 
@@ -200,8 +205,16 @@ public class AssayService {
     if (notebookService != null) {
       if (study.getNotebookFolder() != null) {
         try {
+
+          LOGGER.info(String.format("Creating ELN entry for assay: %s", assay.getCode()));
+
+          // Create the notebook folder
           NotebookFolder notebookFolder = notebookService.createAssayFolder(assay);
           assay.setNotebookFolder(ELNFolder.from(notebookFolder));
+
+          // Create the notebook entry
+          notebookService.createAssayNotebookEntry(assay, template);
+
         } catch (Exception e) {
           e.printStackTrace();
           LOGGER.warn("Failed to create notebook entry for assay: " + assay.getCode());

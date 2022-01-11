@@ -4,7 +4,6 @@ import com.decibeltx.studytracker.eln.NotebookEntryTemplate;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.events.EventsService;
 import com.decibeltx.studytracker.events.util.AssayActivityUtils;
-import com.decibeltx.studytracker.exception.NotebookException;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
 import com.decibeltx.studytracker.model.Activity;
 import com.decibeltx.studytracker.model.Assay;
@@ -19,14 +18,10 @@ import com.decibeltx.studytracker.service.UserService;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 public abstract class AbstractAssayController {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAssayController.class);
 
   private AssayService assayService;
 
@@ -115,25 +110,14 @@ public abstract class AbstractAssayController {
     assay.setOwner(userService.findById(assay.getOwner().getId())
         .orElseThrow(() -> new RecordNotFoundException("Cannot find user: " + user.getId())));
 
-    assayService.create(assay);
+    // Create the record
+    assayService.create(assay, template);
     Assert.notNull(assay.getId(), "Assay not persisted.");
 
-    if (template != null) {
-      if (studyNotebookService == null) {
-        LOGGER.warn("StudyNotebookService is not defined, cannot create notebook entry.");
-      } else {
-        try {
-          studyNotebookService
-              .createAssayNotebookEntry(assay, template);
-        } catch (NotebookException e) {
-          e.printStackTrace();
-          LOGGER.error("Failed to create notebook entry");
-        }
-      }
-    }
-
+    // Update the study
     studyService.markAsUpdated(study, user);
 
+    // Add activity record and dispatch event
     Activity activity = AssayActivityUtils.fromNewAssay(assay, user);
     activityService.create(activity);
     eventsService.dispatchEvent(activity);

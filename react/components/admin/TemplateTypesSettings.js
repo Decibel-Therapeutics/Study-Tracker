@@ -13,7 +13,7 @@ export const TemplateTypesSettings = () => {
     const [templateTypes, setTemplateTypes] = useState([]);
 
     const fetchTemplates = () => {
-      fetch('/api/entryTemplate')
+      fetch('/api/eln/entrytemplate')
         .then(rs => rs.json())
         .then(json => setTemplateTypes(json))
         .catch(error => console.log(error));
@@ -45,7 +45,7 @@ export const TemplateTypesSettings = () => {
         },
       },
       {
-        dataField: 'templateId',
+        dataField: 'referenceId',
         text: 'Template ID',
         validator: (newValue) => {
           if (!newValue) {
