@@ -22,7 +22,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Deprecated
 @Entity
 @Table(name = "notebook_entry_templates")
 @EntityListeners(AuditingEntityListener.class)
@@ -66,6 +65,17 @@ public class NotebookEntryTemplate {
 
     @Column(name = "active", nullable = false)
     private boolean active = true;
+
+    @Column(name = "category", nullable = false)
+    private Category category;
+
+    @Column(name = "is_default", nullable = false)
+    private boolean isDefault = false;
+
+    public enum Category {
+        STUDY,
+        ASSAY
+    }
 
     public static NotebookEntryTemplate of(User user, String templateId,
                                            String name, Date timeStamp) {
@@ -141,5 +151,21 @@ public class NotebookEntryTemplate {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
     }
 }

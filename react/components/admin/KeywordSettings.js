@@ -45,7 +45,6 @@ export default class KeywordSettings extends React.Component {
         isModalOpen: false
       })
     }
-
   }
 
   toggleCategoryInput(e) {

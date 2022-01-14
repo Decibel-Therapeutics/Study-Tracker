@@ -182,15 +182,15 @@ const AssayTypeListCard = ({
           <Card.Title tag="h5" className="mb-0">
             Assay Types
             <span className="float-end">
-                  <Button
-                      variant={"primary"}
-                      href={"/assaytypes/new"}
-                  >
-                    New Assay Type
-                    &nbsp;
-                    <PlusCircle className="feather align-middle ms-2 mb-1"/>
-                  </Button>
-                </span>
+              <Button
+                  variant={"primary"}
+                  href={"/assaytypes/new"}
+              >
+                New Assay Type
+                &nbsp;
+                <PlusCircle className="feather align-middle ms-2 mb-1"/>
+              </Button>
+            </span>
           </Card.Title>
         </Card.Header>
         <Card.Body>
