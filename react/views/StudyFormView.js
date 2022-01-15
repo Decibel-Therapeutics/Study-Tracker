@@ -92,7 +92,7 @@ class StudyFormView extends React.Component {
     });
 
     // Entry Templates
-    fetch("/api/eln/entrytemplate")
+    fetch("/api/notebookentrytemplate?category=STUDY&active=true")
     .then(response => response.json())
     .then(templates => {
       this.setState({

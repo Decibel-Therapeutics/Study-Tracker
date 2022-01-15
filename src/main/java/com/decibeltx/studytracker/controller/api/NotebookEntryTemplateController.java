@@ -16,6 +16,7 @@ import com.decibeltx.studytracker.service.ActivityService;
 import com.decibeltx.studytracker.service.NotebookEntryTemplateService;
 import com.decibeltx.studytracker.service.UserService;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,9 +70,23 @@ public class NotebookEntryTemplateController {
     }
 
     @GetMapping("")
-    public List<NotebookEntryTemplateSlimDto> getEntryTemplates() {
+    public List<NotebookEntryTemplateSlimDto> findEntryTemplates(
+        @RequestParam(value = "category", required = false) NotebookEntryTemplate.Category category,
+        @RequestParam(value = "active", required = false) Boolean isActive
+    ) {
         LOGGER.info("Getting all entry templates");
-        return mapper.toSlimList(entryTemplateService.findAll());
+        List<NotebookEntryTemplate> templates = entryTemplateService.findAll();
+        if (category != null) {
+            templates = templates.stream()
+                .filter(t -> t.getCategory().equals(category))
+                .collect(Collectors.toList());
+        }
+        if (isActive != null) {
+            templates = templates.stream()
+                .filter(t -> t.isActive() == isActive)
+                .collect(Collectors.toList());
+        }
+        return mapper.toSlimList(templates);
     }
 
     @GetMapping("/active")

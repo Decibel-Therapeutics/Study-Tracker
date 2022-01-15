@@ -16,7 +16,7 @@ const defaultTemplate = {
   name: "",
   templateId: "",
   active: true,
-  isDefault: false
+  'default': false
 };
 
 export default class EntryTemplateSettings extends React.Component {
@@ -67,7 +67,7 @@ export default class EntryTemplateSettings extends React.Component {
           ? {
             ...template,
             active: true,
-            isDefault: false
+            'default': false
           }
           : defaultTemplate
     });
@@ -218,7 +218,7 @@ export default class EntryTemplateSettings extends React.Component {
         }
       },
       {
-        dataField: 'isDefault',
+        dataField: 'default',
         text: 'Default',
         sort: true,
         formatter: (c, d, i, x) => {
@@ -258,7 +258,7 @@ export default class EntryTemplateSettings extends React.Component {
                 }
 
                 {
-                  !d.isDefault ? (
+                  !d.default ? (
                       <a className="text-info" title={"Set as default"}
                          onClick={() => this.handleSetDefault(d)}>
                         <Star className="align-middle me-1" size={18}/>
@@ -519,8 +519,8 @@ export default class EntryTemplateSettings extends React.Component {
                           <Col xs={12}>
                             <Form.Check
                                 type="switch"
-                                name="isDefault"
-                                defaultChecked={values.isDefault}
+                                name="default"
+                                defaultChecked={values.default}
                                 onChange={handleChange}
                                 label="Make this template default for the selected category."
                             />

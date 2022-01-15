@@ -30,7 +30,7 @@ import CollaboratorInputs from "./collaborators";
 import ReactQuill from "react-quill";
 import {LoadingOverlay} from "../loading";
 import {Breadcrumbs} from "../common";
-import {AssayNotebookTemplatesDropdown} from "./assayNotebookTemplates";
+import {NotebookEntryTemplatesDropdown} from "./notebookEntryTemplates";
 
 export default class StudyForm extends React.Component {
 
@@ -351,7 +351,7 @@ export default class StudyForm extends React.Component {
 
                         {
                           !this.state.study.id ? (
-                              <AssayNotebookTemplatesDropdown
+                              <NotebookEntryTemplatesDropdown
                                   notebookTemplates={this.props.notebookTemplates}
                                   onChange={selectedItem => {
                                     this.handleFormUpdate({
