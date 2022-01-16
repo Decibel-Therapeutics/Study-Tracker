@@ -1,6 +1,15 @@
 import React from 'react';
 
-import {Badge, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Dropdown,
+  Form,
+  Modal,
+  Row
+} from 'react-bootstrap';
 import {CheckCircle, Edit, MinusCircle, PlusCircle, Star} from "react-feather";
 
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
@@ -76,7 +85,7 @@ export default class EntryTemplateSettings extends React.Component {
   showModal(template) {
     if (!!template) {
       this.setState({
-        selectedTemplate: {...template, templateId: template.referenceId},
+        selectedTemplate: {...template, referenceId: template.templateId},
         isModalOpen: true
       })
     } else {
@@ -197,15 +206,6 @@ export default class EntryTemplateSettings extends React.Component {
         dataField: 'templateId',
         text: 'Template ID',
       },
-      // {
-      //   dataField: "category",
-      //   text: "Category",
-      //   sort: true,
-      //   formatter: (c, d, i, x) => {
-      //     if (d.category === "STUDY") return "Study"
-      //     else return "ASSAY";
-      //   }
-      // },
       {
         dataField: 'active',
         text: 'Active',
@@ -237,34 +237,42 @@ export default class EntryTemplateSettings extends React.Component {
         formatter: (c, d, i, x) => {
           return (
               <React.Fragment>
+                <Dropdown className="d-inline me-2">
+                  <Dropdown.Toggle variant="light" className="bg-white shadow-sm">
+                    Options
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
 
-                <a className="text-warning" title={"Edit Template"}
-                   onClick={() => this.showModal(d)}>
-                  <Edit className="align-middle me-1" size={18}/>
-                </a>
+                    <Dropdown.Item
+                        onClick={() => this.showModal(d)}>
+                      <Edit className="feather align-middle mt-n1" /> Edit template
+                    </Dropdown.Item>
 
-                {
-                  !d.active ? (
-                      <a className="text-success" title={"Set as active"}
-                         onClick={() => this.handleStatusChange(d, true)}>
-                        <CheckCircle className="align-middle me-1" size={18}/>
-                      </a>
-                  ) : (
-                      <a className="text-warning" title={"Set as inactive"}
-                         onClick={() => this.handleStatusChange(d, false)}>
-                        <MinusCircle className="align-middle me-1" size={18}/>
-                      </a>
-                  )
-                }
+                    {
+                      !d.active ? (
+                          <Dropdown.Item
+                             onClick={() => this.handleStatusChange(d, true)}>
+                            <CheckCircle className="feather align-middle mt-n1" /> Set active
+                          </Dropdown.Item>
+                      ) : (
+                          <Dropdown.Item
+                             onClick={() => this.handleStatusChange(d, false)}>
+                            <MinusCircle className="feather align-middle mt-n1" /> Set inactive
+                          </Dropdown.Item>
+                      )
+                    }
 
-                {
-                  !d.default ? (
-                      <a className="text-info" title={"Set as default"}
-                         onClick={() => this.handleSetDefault(d)}>
-                        <Star className="align-middle me-1" size={18}/>
-                      </a>
-                  ) : ''
-                }
+                    {
+                      !d.default ? (
+                          <Dropdown.Item
+                             onClick={() => this.handleSetDefault(d)}>
+                            <Star className="feather align-middle mt-n1" /> Set as default
+                          </Dropdown.Item>
+                      ) : ''
+                    }
+
+                  </Dropdown.Menu>
+                </Dropdown>
 
               </React.Fragment>
           )
@@ -432,7 +440,7 @@ export default class EntryTemplateSettings extends React.Component {
 
                           {
                             !values.id ? (
-                                <Col xs={12}>
+                                <Col xs={12} className="mb-3">
                                   <Form.Group>
                                     <Form.Label>Available Templates</Form.Label>
                                     <Select
@@ -455,7 +463,7 @@ export default class EntryTemplateSettings extends React.Component {
                             ) : ''
                           }
 
-                          <Col xs={12}>
+                          <Col xs={12} className="mb-3">
                             <Form.Group>
                               <Form.Label>Name</Form.Label>
                               <Form.Control
@@ -468,7 +476,7 @@ export default class EntryTemplateSettings extends React.Component {
                             </Form.Group>
                           </Col>
 
-                          <Col xs={12}>
+                          <Col xs={12} className="mb-3">
                             <Form.Group>
                               <Form.Label>Template ID</Form.Label>
                               <Form.Control
@@ -481,7 +489,7 @@ export default class EntryTemplateSettings extends React.Component {
                             </Form.Group>
                           </Col>
 
-                          <Col xs={12}>
+                          <Col xs={12} className="mb-3">
                             <Form.Group>
                               <Form.Label>Category</Form.Label>
                               <Select
@@ -506,7 +514,7 @@ export default class EntryTemplateSettings extends React.Component {
                             </Form.Group>
                           </Col>
 
-                          <Col xs={12}>
+                          <Col xs={12} className="mb-3">
                             <Form.Check
                                 type="switch"
                                 name="active"
@@ -516,7 +524,7 @@ export default class EntryTemplateSettings extends React.Component {
                             />
                           </Col>
 
-                          <Col xs={12}>
+                          <Col xs={12} className="mb-3">
                             <Form.Check
                                 type="switch"
                                 name="default"
@@ -528,7 +536,7 @@ export default class EntryTemplateSettings extends React.Component {
 
                         </Row>
 
-                        <Row className="mt-3">
+                        <Row>
                           <Col xs={12}>
                             <div className="text-center">
                               <Button
