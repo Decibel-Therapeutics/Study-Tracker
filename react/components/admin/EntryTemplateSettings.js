@@ -18,7 +18,8 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import {Form as FormikForm, Formik} from "formik";
 import Select from "react-select";
 import swal from "sweetalert";
-import {LoadingOverlay} from "../loading";
+import {LoadingOverlay, SettingsLoadingMessage} from "../loading";
+import {SettingsErrorMessage} from "../errors";
 
 const defaultTemplate = {
   category: "STUDY",
@@ -196,90 +197,6 @@ export default class EntryTemplateSettings extends React.Component {
 
   render() {
 
-    const templateTableColumns = [
-      {
-        dataField: 'name',
-        text: 'Name',
-        sort: true
-      },
-      {
-        dataField: 'templateId',
-        text: 'Template ID',
-      },
-      {
-        dataField: 'active',
-        text: 'Active',
-        formatter: (c, d, i, x) => {
-          if (!d.active) {
-            return <Badge bg="danger">Inactive</Badge>
-          } else {
-            return <Badge bg="success">Active</Badge>
-          }
-        }
-      },
-      {
-        dataField: 'default',
-        text: 'Default',
-        sort: true,
-        formatter: (c, d, i, x) => {
-          if (d.default) {
-            return <Badge bg="info">Default</Badge>
-          } else {
-            return ''
-          }
-        }
-      },
-      {
-        dataField: "controls",
-        text: "Options",
-        sort: false,
-        headerStyle: {width: '10%'},
-        formatter: (c, d, i, x) => {
-          return (
-              <React.Fragment>
-                <Dropdown className="d-inline me-2">
-                  <Dropdown.Toggle variant="light" className="bg-white shadow-sm">
-                    Options
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-
-                    <Dropdown.Item
-                        onClick={() => this.showModal(d)}>
-                      <Edit className="feather align-middle mt-n1" /> Edit template
-                    </Dropdown.Item>
-
-                    {
-                      !d.active ? (
-                          <Dropdown.Item
-                             onClick={() => this.handleStatusChange(d, true)}>
-                            <CheckCircle className="feather align-middle mt-n1" /> Set active
-                          </Dropdown.Item>
-                      ) : (
-                          <Dropdown.Item
-                             onClick={() => this.handleStatusChange(d, false)}>
-                            <MinusCircle className="feather align-middle mt-n1" /> Set inactive
-                          </Dropdown.Item>
-                      )
-                    }
-
-                    {
-                      !d.default ? (
-                          <Dropdown.Item
-                             onClick={() => this.handleSetDefault(d)}>
-                            <Star className="feather align-middle mt-n1" /> Set as default
-                          </Dropdown.Item>
-                      ) : ''
-                    }
-
-                  </Dropdown.Menu>
-                </Dropdown>
-
-              </React.Fragment>
-          )
-        }
-      }
-    ];
-
     const availableTemplateOptions = this.state.availableTemplates
     .sort((a, b) => {
       if (a.name < b.name) return -1;
@@ -295,6 +212,19 @@ export default class EntryTemplateSettings extends React.Component {
 
     const studyTemplates = this.state.registeredTemplates.filter(t => t.category === "STUDY");
     const assayTemplates = this.state.registeredTemplates.filter(t => t.category === "ASSAY");
+
+    let content = <SettingsLoadingMessage />;
+    if (!!this.state.isLoaded) {
+      content = <RegisteredEntryTemplateLists
+          showModal={this.showModal}
+          handleStatusChange={this.handleStatusChange}
+          handleSetDefault={this.handleSetDefault}
+          studyTemplates={studyTemplates}
+          assayTemplates={assayTemplates}
+      />;
+    } else if (this.state.isError) {
+      content = <SettingsErrorMessage />;
+    }
 
     return (
         <Card>
@@ -315,87 +245,7 @@ export default class EntryTemplateSettings extends React.Component {
 
           <Card.Body>
 
-            {/* Study Templates */}
-            <Row>
-              <Col xs={12}>
-
-                <h3>Study Templates</h3>
-
-                <ToolkitProvider
-                    keyField="id"
-                    data={studyTemplates}
-                    columns={templateTableColumns}
-                    search
-                >
-                  {props => (
-                      <div>
-                        <div className="float-end">
-                          <Search.SearchBar
-                              {...props.searchProps}
-                          />
-                        </div>
-                        <BootstrapTable
-                            bootstrap4
-                            keyField="id"
-                            bordered={false}
-                            pagination={paginationFactory({
-                              sizePerPage: 10,
-                              sizePerPageList: [10, 20, 40, 80]
-                            })}
-                            defaultSorted={[{
-                              dataField: "name",
-                              order: "asc"
-                            }]}
-                            {...props.baseProps}
-                        >
-                        </BootstrapTable>
-                      </div>
-                  )}
-                </ToolkitProvider>
-
-              </Col>
-            </Row>
-
-            {/* Study Templates */}
-            <Row className="mt-4">
-              <Col xs={12}>
-
-                <h3>Assay Templates</h3>
-
-                <ToolkitProvider
-                    keyField="id"
-                    data={assayTemplates}
-                    columns={templateTableColumns}
-                    search
-                >
-                  {props => (
-                      <div>
-                        <div className="float-end">
-                          <Search.SearchBar
-                              {...props.searchProps}
-                          />
-                        </div>
-                        <BootstrapTable
-                            bootstrap4
-                            keyField="id"
-                            bordered={false}
-                            pagination={paginationFactory({
-                              sizePerPage: 10,
-                              sizePerPageList: [10, 20, 40, 80]
-                            })}
-                            defaultSorted={[{
-                              dataField: "name",
-                              order: "asc"
-                            }]}
-                            {...props.baseProps}
-                        >
-                        </BootstrapTable>
-                      </div>
-                  )}
-                </ToolkitProvider>
-
-              </Col>
-            </Row>
+            { content }
 
             {/* Modal Form */}
             <Modal
@@ -571,4 +421,183 @@ export default class EntryTemplateSettings extends React.Component {
     );
 
   }
+}
+
+const RegisteredEntryTemplateLists = ({
+  studyTemplates,
+  assayTemplates,
+  showModal,
+  handleStatusChange,
+  handleSetDefault
+}) => {
+
+  const columns = [
+    {
+      dataField: 'name',
+      text: 'Name',
+      sort: true
+    },
+    {
+      dataField: 'templateId',
+      text: 'Template ID',
+    },
+    {
+      dataField: 'active',
+      text: 'Active',
+      formatter: (c, d, i, x) => {
+        if (!d.active) {
+          return <Badge bg="danger">Inactive</Badge>
+        } else {
+          return <Badge bg="success">Active</Badge>
+        }
+      }
+    },
+    {
+      dataField: 'default',
+      text: 'Default',
+      sort: true,
+      formatter: (c, d, i, x) => {
+        if (d.default) {
+          return <Badge bg="info">Default</Badge>
+        } else {
+          return ''
+        }
+      }
+    },
+    {
+      dataField: "controls",
+      text: "Options",
+      sort: false,
+      headerStyle: {width: '10%'},
+      formatter: (c, d, i, x) => {
+        return (
+            <React.Fragment>
+              <Dropdown className="d-inline me-2">
+                <Dropdown.Toggle variant="light" className="bg-white shadow-sm">
+                  Options
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+
+                  <Dropdown.Item
+                      onClick={() => showModal(d)}>
+                    <Edit className="feather align-middle mt-n1" /> Edit template
+                  </Dropdown.Item>
+
+                  {
+                    !d.active ? (
+                        <Dropdown.Item
+                            onClick={() => handleStatusChange(d, true)}>
+                          <CheckCircle className="feather align-middle mt-n1" /> Set active
+                        </Dropdown.Item>
+                    ) : (
+                        <Dropdown.Item
+                            onClick={() => handleStatusChange(d, false)}>
+                          <MinusCircle className="feather align-middle mt-n1" /> Set inactive
+                        </Dropdown.Item>
+                    )
+                  }
+
+                  {
+                    !d.default ? (
+                        <Dropdown.Item
+                            onClick={() => handleSetDefault(d)}>
+                          <Star className="feather align-middle mt-n1" /> Set as default
+                        </Dropdown.Item>
+                    ) : ''
+                  }
+
+                </Dropdown.Menu>
+              </Dropdown>
+
+            </React.Fragment>
+        )
+      }
+    }
+  ];
+
+  return (
+      <React.Fragment>
+        {/* Study Templates */}
+        <Row>
+          <Col xs={12}>
+
+            <h3>Study Templates</h3>
+
+            <ToolkitProvider
+                keyField="id"
+                data={studyTemplates}
+                columns={columns}
+                search
+            >
+              {props => (
+                  <div>
+                    <div className="float-end">
+                      <Search.SearchBar
+                          {...props.searchProps}
+                      />
+                    </div>
+                    <BootstrapTable
+                        bootstrap4
+                        keyField="id"
+                        bordered={false}
+                        pagination={paginationFactory({
+                          sizePerPage: 10,
+                          sizePerPageList: [10, 20, 40, 80]
+                        })}
+                        defaultSorted={[{
+                          dataField: "name",
+                          order: "asc"
+                        }]}
+                        {...props.baseProps}
+                    >
+                    </BootstrapTable>
+                  </div>
+              )}
+            </ToolkitProvider>
+
+          </Col>
+        </Row>
+
+        {/* Study Templates */}
+        <Row className="mt-4">
+          <Col xs={12}>
+
+            <h3>Assay Templates</h3>
+
+            <ToolkitProvider
+                keyField="id"
+                data={assayTemplates}
+                columns={columns}
+                search
+            >
+              {props => (
+                  <div>
+                    <div className="float-end">
+                      <Search.SearchBar
+                          {...props.searchProps}
+                      />
+                    </div>
+                    <BootstrapTable
+                        bootstrap4
+                        keyField="id"
+                        bordered={false}
+                        pagination={paginationFactory({
+                          sizePerPage: 10,
+                          sizePerPageList: [10, 20, 40, 80]
+                        })}
+                        defaultSorted={[{
+                          dataField: "name",
+                          order: "asc"
+                        }]}
+                        {...props.baseProps}
+                    >
+                    </BootstrapTable>
+                  </div>
+              )}
+            </ToolkitProvider>
+
+          </Col>
+        </Row>
+      </React.Fragment>
+  )
 }
