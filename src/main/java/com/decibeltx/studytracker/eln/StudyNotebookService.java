@@ -82,15 +82,15 @@ public interface StudyNotebookService {
    *
    * @return
    */
-  List<NotebookEntryTemplate> findEntryTemplates();
+  List<NotebookTemplate> findEntryTemplates();
 
   /**
-   * Finds and returns a {@link NotebookEntryTemplate} if one exists with the provided ID.
+   * Finds and returns a {@link NotebookTemplate} if one exists with the provided ID.
    *
    * @param id
    * @return
    */
-  Optional<NotebookEntryTemplate> findEntryTemplateById(String id);
+  Optional<NotebookTemplate> findEntryTemplateById(String id);
 
   /**
    * Creates a blank notebook entry for a study in the ELN and returns a {@link NotebookEntry}.
@@ -109,7 +109,7 @@ public interface StudyNotebookService {
    * @return
    * @throws NotebookException
    */
-  NotebookEntry createStudyNotebookEntry(Study study, NotebookEntryTemplate template)
+  NotebookEntry createStudyNotebookEntry(Study study, NotebookTemplate template)
       throws NotebookException;
 
   /**
@@ -129,7 +129,7 @@ public interface StudyNotebookService {
    * @return
    * @throws NotebookException
    */
-  NotebookEntry createAssayNotebookEntry(Assay assay, NotebookEntryTemplate template)
+  NotebookEntry createAssayNotebookEntry(Assay assay, NotebookTemplate template)
       throws NotebookException;
 
   /**

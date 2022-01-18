@@ -1,6 +1,6 @@
 package com.decibeltx.studytracker.controller.api;
 
-import com.decibeltx.studytracker.eln.NotebookEntryTemplate;
+import com.decibeltx.studytracker.eln.NotebookTemplate;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.events.EventsService;
 import com.decibeltx.studytracker.events.util.AssayActivityUtils;
@@ -94,7 +94,7 @@ public abstract class AbstractAssayController {
    * @param user
    * @return
    */
-  protected Assay createAssay(Assay assay, Study study, User user, NotebookEntryTemplate template) {
+  protected Assay createAssay(Assay assay, Study study, User user, NotebookTemplate template) {
 
     assay.setStudy(study);
 

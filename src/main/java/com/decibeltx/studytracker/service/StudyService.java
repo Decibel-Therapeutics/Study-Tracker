@@ -17,8 +17,8 @@
 package com.decibeltx.studytracker.service;
 
 import com.decibeltx.studytracker.eln.NotebookEntry;
-import com.decibeltx.studytracker.eln.NotebookEntryTemplate;
 import com.decibeltx.studytracker.eln.NotebookFolder;
+import com.decibeltx.studytracker.eln.NotebookTemplate;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.exception.DuplicateRecordException;
 import com.decibeltx.studytracker.exception.InvalidConstraintException;
@@ -165,7 +165,7 @@ public class StudyService {
    * @param study new study
    */
   @Transactional
-  public void create(Study study, NotebookEntryTemplate template) {
+  public void create(Study study, NotebookTemplate template) {
 
     LOGGER.info("Attempting to create new study with name: " + study.getName());
 

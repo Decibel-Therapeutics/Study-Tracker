@@ -17,7 +17,7 @@
 package com.decibeltx.studytracker.controller.api;
 
 import com.decibeltx.studytracker.controller.UserAuthenticationUtils;
-import com.decibeltx.studytracker.eln.NotebookEntryTemplate;
+import com.decibeltx.studytracker.eln.NotebookTemplate;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.exception.NotebookException;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
@@ -95,7 +95,7 @@ public class StudyAssayController extends AbstractAssayController {
 
     // If a notebook template was requested, find it
     if (notebookService != null && StringUtils.hasText(dto.getNotebookTemplateId())) {
-      Optional<NotebookEntryTemplate> templateOptional =
+      Optional<NotebookTemplate> templateOptional =
           notebookService.findEntryTemplateById(dto.getNotebookTemplateId());
       if (templateOptional.isPresent()) {
         created = this.createAssay(assay, study, user, templateOptional.get());

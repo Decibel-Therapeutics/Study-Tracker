@@ -77,11 +77,12 @@ public class NotebookEntryTemplate {
         ASSAY
     }
 
-    public static NotebookEntryTemplate of(User user, String templateId,
-                                           String name, Date timeStamp) {
+    public static NotebookEntryTemplate of(User user, String templateId, String name,
+        Category category, Date timeStamp) {
         NotebookEntryTemplate notebookEntryTemplate = new NotebookEntryTemplate();
         notebookEntryTemplate.setTemplateId(templateId);
         notebookEntryTemplate.setName(name);
+        notebookEntryTemplate.setCategory(category);
         notebookEntryTemplate.setCreatedBy(user);
         notebookEntryTemplate.setLastModifiedBy(user);
         notebookEntryTemplate.setCreatedAt(timeStamp);

@@ -1,6 +1,6 @@
 package com.decibeltx.studytracker.controller.api;
 
-import com.decibeltx.studytracker.eln.NotebookEntryTemplate;
+import com.decibeltx.studytracker.eln.NotebookTemplate;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
 import java.util.List;
 import java.util.Optional;
@@ -25,18 +25,18 @@ public class NotebookController {
   private StudyNotebookService notebookService;
 
   @GetMapping("/entrytemplate")
-  public HttpEntity<List<NotebookEntryTemplate>> findNotebookEntryTemplates() {
+  public HttpEntity<List<NotebookTemplate>> findNotebookEntryTemplates() {
     if (notebookService == null) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    List<NotebookEntryTemplate> templates = notebookService.findEntryTemplates();
+    List<NotebookTemplate> templates = notebookService.findEntryTemplates();
     LOGGER.info(templates.toString());
     return new ResponseEntity<>(templates, HttpStatus.OK);
   }
 
   @GetMapping("/entrytemplate/{id}")
-  public HttpEntity<NotebookEntryTemplate> findNotebookEntryTemplateById(@PathVariable String id) {
-    Optional<NotebookEntryTemplate> optional = notebookService.findEntryTemplateById(id);
+  public HttpEntity<NotebookTemplate> findNotebookEntryTemplateById(@PathVariable String id) {
+    Optional<NotebookTemplate> optional = notebookService.findEntryTemplateById(id);
     if (optional.isPresent()) {
       return new ResponseEntity<>(optional.get(), HttpStatus.OK);
     } else {

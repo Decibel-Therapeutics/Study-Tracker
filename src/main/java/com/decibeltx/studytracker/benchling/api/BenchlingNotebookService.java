@@ -30,8 +30,8 @@ import com.decibeltx.studytracker.benchling.api.entities.BenchlingUser;
 import com.decibeltx.studytracker.benchling.api.entities.BenchlingUserList;
 import com.decibeltx.studytracker.benchling.exception.EntityNotFoundException;
 import com.decibeltx.studytracker.eln.NotebookEntry;
-import com.decibeltx.studytracker.eln.NotebookEntryTemplate;
 import com.decibeltx.studytracker.eln.NotebookFolder;
+import com.decibeltx.studytracker.eln.NotebookTemplate;
 import com.decibeltx.studytracker.eln.NotebookUser;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.exception.MalformedEntityException;
@@ -197,15 +197,15 @@ public final class BenchlingNotebookService implements StudyNotebookService {
     return notebookFolder;
   }
 
-  private NotebookEntryTemplate convertNotebookEntryTemplate(BenchlingEntryTemplate benchlingTemplate) {
-    NotebookEntryTemplate template = new NotebookEntryTemplate();
+  private NotebookTemplate convertNotebookEntryTemplate(BenchlingEntryTemplate benchlingTemplate) {
+    NotebookTemplate template = new NotebookTemplate();
     template.setName(benchlingTemplate.getName());
     template.setReferenceId(benchlingTemplate.getId());
     return template;
   }
 
-  private List<NotebookEntryTemplate> convertNotebookEntryTemplates(List<BenchlingEntryTemplate> benchlingEntryTemplates) {
-    List<NotebookEntryTemplate> templates = new ArrayList<>();
+  private List<NotebookTemplate> convertNotebookEntryTemplates(List<BenchlingEntryTemplate> benchlingEntryTemplates) {
+    List<NotebookTemplate> templates = new ArrayList<>();
     for (BenchlingEntryTemplate benchlingEntryTemplate: benchlingEntryTemplates) {
       templates.add(this.convertNotebookEntryTemplate(benchlingEntryTemplate));
     }
@@ -508,7 +508,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   }
 
   @Override
-  public List<NotebookEntryTemplate> findEntryTemplates() {
+  public List<NotebookTemplate> findEntryTemplates() {
     LOGGER.info("Fetching Benchling notebook entry templates.");
     String authHeader = generateAuthorizationHeader();
     List<BenchlingEntryTemplate> templates = new ArrayList<>();
@@ -524,7 +524,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   }
 
   @Override
-  public Optional<NotebookEntryTemplate> findEntryTemplateById(String id) {
+  public Optional<NotebookTemplate> findEntryTemplateById(String id) {
     LOGGER.info("Fetching Benchling notebook entry template: " + id);
     String authHeader = generateAuthorizationHeader();
     BenchlingEntryTemplate template = client.findEntryTemplateById(id, authHeader);
@@ -537,7 +537,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   }
 
   @Override
-  public NotebookEntry createStudyNotebookEntry(Study study, NotebookEntryTemplate template)
+  public NotebookEntry createStudyNotebookEntry(Study study, NotebookTemplate template)
       throws NotebookException {
 
     BenchlingEntryRequest request = new BenchlingEntryRequest();
@@ -584,7 +584,7 @@ public final class BenchlingNotebookService implements StudyNotebookService {
   }
 
   @Override
-  public NotebookEntry createAssayNotebookEntry(Assay assay, NotebookEntryTemplate template)
+  public NotebookEntry createAssayNotebookEntry(Assay assay, NotebookTemplate template)
       throws NotebookException {
 
     BenchlingEntryRequest request = new BenchlingEntryRequest();

@@ -16,8 +16,8 @@
 
 package com.decibeltx.studytracker.service;
 
-import com.decibeltx.studytracker.eln.NotebookEntryTemplate;
 import com.decibeltx.studytracker.eln.NotebookFolder;
+import com.decibeltx.studytracker.eln.NotebookTemplate;
 import com.decibeltx.studytracker.eln.StudyNotebookService;
 import com.decibeltx.studytracker.exception.InvalidConstraintException;
 import com.decibeltx.studytracker.exception.RecordNotFoundException;
@@ -174,7 +174,7 @@ public class AssayService {
   }
 
   @Transactional
-  public void create(Assay assay, NotebookEntryTemplate template) {
+  public void create(Assay assay, NotebookTemplate template) {
 
     LOGGER.info("Creating new assay record with name: " + assay.getName());
 
