@@ -326,7 +326,6 @@ export default class EntryTemplateSettings extends React.Component {
                                   type="text"
                                   name="name"
                                   value={values.name}
-                                  disabled={true}
                                   onChange={handleChange}
                               />
                             </Form.Group>
