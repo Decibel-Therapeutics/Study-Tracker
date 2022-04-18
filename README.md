@@ -1,5 +1,7 @@
 # Study Tracker 
 
+## UPDATE: Study Tracker has moved! [You can find the latest builds of Study Tracker here.](https://github.com/Study-Tracker/Study-Tracker) No future updates will be published to this repository.
+
 Study Tracker makes the job of managing your team's research easier by providing a user-friendly web
 application that serves as a single source-of-truth for your organization. Save time by
 connecting with other required platforms, such as electronic laboratory notebooks (ELNs), data file
