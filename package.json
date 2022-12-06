@@ -51,7 +51,7 @@
     "formik": "2.2.9",
     "history": "4.10.1",
     "i18next": "21.2.4",
-    "qs": "^6.10.1",
+    "qs": "^6.10.3",
     "react": "16.14.0",
     "react-app-polyfill": "2.0.0",
     "react-bootstrap": "2.0.2",
